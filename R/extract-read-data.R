@@ -6,6 +6,7 @@
 #' @param read_path Full path of a FAST5 read
 #'
 #' @return A list of relevant data extracted from the FAST5 file
+#' @export
 #'
 #' @examples
 extract_read_data <- function(read_path){
