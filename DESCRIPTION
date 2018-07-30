@@ -1,11 +1,12 @@
 Package: tailfinder
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Poly(A) and poly(T) tail length finder in Nanopore reads
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Author: Adnan Niazi
+Maintainer: Adnan Niazi <adnaniazi@gmail.com>
+Description: A package to find poly(A)-tail length in Nanopore RNA and cNDA data. It can also be used to find poly(T)-tail length in cDNA data
+License: MIT
 Encoding: UTF-8
 LazyData: true
+RoxygenNote: 6.0.1
+Imports: rhdf5, ggplot2
