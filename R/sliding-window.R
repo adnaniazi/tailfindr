@@ -15,8 +15,7 @@
 #' @examples
 #' sliding_window('mean, c(1,2,3,4,5,6,7,8), 2, 1)
 #'
-sliding_window <- function (FUN, data, window_size, step_size)
-{
+sliding_window <- function(FUN, data, window_size, step_size) {
     total <- length(data)
     spots <- seq(from = 1, to = (total - window_size), by = step_size)
     result <- vector(length = length(spots))

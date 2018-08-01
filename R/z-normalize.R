@@ -6,10 +6,11 @@
 #'
 #' @return z_normalized_timeseries A z-normalized timeseries
 #' @examples
-#' z_norm(c(1,2,3,4,5))
-z_norm <- function(timeseries){
+#' z_normalize(c(1,2,3,4,5))
+#'
+z_normalize <- function(timeseries) {
     ts_mean <- mean(timeseries)
-    ts_stdev <- sd(timeseries)
+    ts_stdev <- stats::sd(timeseries)
     z_normalized_timeseries <- (timeseries - ts_mean)/ts_stdev
     return(z_normalized_timeseries)
 }
