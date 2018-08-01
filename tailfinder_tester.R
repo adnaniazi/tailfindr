@@ -1,3 +1,4 @@
+rm(list=ls())
 library(tailfinder)
 library(ggplot2)
 devtools::load_all()
@@ -9,11 +10,15 @@ file_path <- system.file(package="tailfinder",
 
 read_data <- extract_read_data(file_path)
 norm_data <- z_normalize(read_data$raw_data)
+truncated_data <- truncate_spikes(norm_data, spike_threshold=.1)
 
 df = data.frame(x=c(1:length(read_data$raw_data)),
                 raw_data=read_data$raw_data,
+                norm_data=norm_data,
+                truncated_data=truncated_data,
                 moves=read_data$moves_sample_wise_vector)
 
-ggplot(data = df, aes(x = x)) +
-    geom_line(aes(y = raw_data)) +
-    geom_line(aes(y = moves))
+ggplot2::ggplot(data = df, ggplot2::aes(x = x)) +
+    ggplot2::geom_line(ggplot2::aes(y = norm_data), color='red') +
+    ggplot2::geom_line(ggplot2::aes(y = truncated_data), color='blue') +
+    ggplot2::geom_line(ggplot2::aes(y = moves))

@@ -4,7 +4,7 @@
 \alias{find_cdna_polya}
 \title{Find Poly(A) tail in a cDNA read}
 \usage{
-find_cdna_polya(file_path)
+find_cdna_polya(file_path = "a")
 }
 \arguments{
 \item{file_path}{Path of the FAST5 file}
