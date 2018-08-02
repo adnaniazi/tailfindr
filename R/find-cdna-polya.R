@@ -13,7 +13,7 @@ find_cdna_polya <- function(file_path='a'){
     #                          "0.fast5")
     file_path <- '/Users/adnaniazi/Documents/phd/code/tailfinder/data-raw/cdna-polya-reads/1.fast5'
 
-    read_data <- extract_read_data(file_path)
+    read_data <- extract_read_data_hdf5r(file_path)
     norm_data <- z_normalize(read_data$raw_data)
     truncated_data <- truncate_spikes(norm_data, spike_threshold=2)
 
