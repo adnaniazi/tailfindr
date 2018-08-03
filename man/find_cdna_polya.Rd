@@ -9,6 +9,12 @@ find_cdna_polya(file_path = "a")
 \arguments{
 \item{file_path}{Path of the FAST5 file}
 }
+\value{
+A list of Fast5 file data
+}
 \description{
 Find Poly(A) tail in a cDNA read
+}
+\examples{
+find_cdna_polya('path/to/fast5/file')
 }

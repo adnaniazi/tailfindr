@@ -8,6 +8,8 @@
 #' @return A list of relevant data extracted from the FAST5 file
 #'
 #' @examples
+#' extract_read_data_rhdf5('path/to/fast5/file')
+
 extract_read_data_rhdf5 <- function(read_path){
     # extract raw data
     f5_tree <- rhdf5::h5ls(read_path)

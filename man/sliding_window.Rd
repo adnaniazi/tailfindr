@@ -23,3 +23,7 @@ A signal that has been smoothed using the sliding window. N.B. The
 Applies a function to window that can slide across a timeseries
 Acknowledgment: evobiR tool
 }
+\examples{
+sliding_window('mean', c(1,2,3,4,5,6,7,8), 2, 1)
+
+}

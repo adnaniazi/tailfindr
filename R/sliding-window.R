@@ -10,10 +10,9 @@
 #'
 #' @return A signal that has been smoothed using the sliding window. N.B. The
 #'   singal is now shorter in lenght
-#' @export
 #'
 #' @examples
-#' sliding_window('mean, c(1,2,3,4,5,6,7,8), 2, 1)
+#' sliding_window('mean', c(1,2,3,4,5,6,7,8), 2, 1)
 #'
 sliding_window <- function(FUN, data, window_size, step_size) {
     total <- length(data)
@@ -22,5 +21,6 @@ sliding_window <- function(FUN, data, window_size, step_size) {
     for (i in 1:length(spots)) {
         result[i] <- match.fun(FUN)(data[spots[i]:(spots[i] + window_size - 1)])
     }
+    result <- c(result, rep(NA, times=(length(data)-length(result))))
     return(result)
 }

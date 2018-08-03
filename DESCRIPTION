@@ -15,4 +15,7 @@ Imports:
     stats (>= 3.5.1), 
     dplyr (>= 0.7.6),
     hdf5r (>= 1.0.0),
+    dygraphs (>= 1.1.1),
+    xts,
+    changepoint (>= 2.2.2)
 Suggests: testthat
