@@ -1,9 +1,14 @@
 Package: tailfinder
 Type: Package
-Title: Find Poly(A) and Poly(T) Tail Length in Nanopore reads
+Title: Find Poly(A) and Poly(T) Tail Length in Nanopore Reads
 Version: 0.1.0
-Author: Adnan Niazi
-Maintainer: Adnan Niazi <adnaniazi@gmail.com>
+Authors@R: c(
+  person(given = "Adnan", family = "Niazi", email = "adnan.niazi@uib.no", role = c("aut", "cre", "cph")),
+  person(given = "Maximilian", family = "Kruise", email = "Maximilian.Krause@uib.no", role = c("dtc")),
+  person(given = "Kornel", family = "Labun", email = "kornellabun@gmail.com", role = c("ctb")),
+  person(given = "Florian", family = "Muller", email = "florianisch.flo@googlemail.com ", role = c("ctb")),
+  person(given = "Evind", family = "Valen", email = "eivind.valen@gmail.com", role = c("ths", "fnd")) )
+Maintainer: Adnan Niazi <adnan.niazi@uib.no>
 Description: A package to find poly(A)-tail length in Nanopore RNA and cNDA data. It can also be used to find poly(T)-tail length in cDNA data.
 License: MIT + file LICENSE
 Encoding: UTF-8
@@ -15,7 +20,8 @@ Imports:
     stats (>= 3.5.1), 
     dplyr (>= 0.7.6),
     hdf5r (>= 1.0.0),
-    dygraphs (>= 1.1.1),
-    xts,
-    changepoint (>= 2.2.2)
+    foreach (>= 1.4.4),
+    doParallel (>= 1.0.11),
+    parallel (>= 3.5.1),
+    Rsamtools (>= 1.32.3)
 Suggests: testthat

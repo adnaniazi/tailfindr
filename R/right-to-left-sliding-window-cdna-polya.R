@@ -10,7 +10,6 @@
 #'
 #' @return
 #'
-#' @examples
 right_to_left_sliding_window_cdna_polya <-
     function(FUN, data, window_size, step_size) {
     #Reverse the data first

@@ -3,11 +3,13 @@
 #' @param file_path Path of the FAST5 file
 #'
 #' @return A list of Fast5 file data
-#' @export
 #'
 #' @examples
 #' find_read_tail_cdna_polya('path/to/fast5/file')
-find_read_tail_cdna_polya <- function(file_path, show_plots=FALSE, save_plots=FALSE, save_dir='~'){
+find_read_tail_cdna_polya <- function(file_path,
+                                      save_plots=FALSE,
+                                      show_plots=FALSE,
+                                      save_dir='~'){
 
     # Empirical parameters
     POLY_A_CNDA_THRESHOLD <- 0.31
@@ -17,6 +19,7 @@ find_read_tail_cdna_polya <- function(file_path, show_plots=FALSE, save_plots=FA
 
     # read the FAST5 data
     read_data <- extract_read_data_hdf5r(file_path)
+    sampling_rate <- read_data$sampling_rate
 
     # Z-normalize the data
     norm_data <- z_normalize(read_data$raw_data)
@@ -25,7 +28,8 @@ find_read_tail_cdna_polya <- function(file_path, show_plots=FALSE, save_plots=FA
     rectified_data <- rectify(norm_data)
 
     # Windsorize the data (clip anything above a threshold)
-    truncated_data <- truncate_spikes(rectified_data, spike_threshold=POLY_A_CNDA_SPIKE_THRESHOLD)
+    truncated_data <- truncate_spikes(rectified_data,
+                                      spike_threshold=POLY_A_CNDA_SPIKE_THRESHOLD)
 
     # smoothen the data
     smoothed_data_1 <- left_to_right_sliding_window_cdna_polya('mean', truncated_data, POLY_A_CDNA_MOVING_WINDOW_SIZE, 1)
@@ -68,7 +72,8 @@ find_read_tail_cdna_polya <- function(file_path, show_plots=FALSE, save_plots=FA
     # bullshit(FALSE) --> pri_polyA(TRUE) --> bullshit(FALSE) of some length> POLY_A_CDNA_SEC_POLY_A_MAX_GAP
     # $lengths: 1901 9877  734  360
     # $values:TRUE FALSE  TRUE FALSE
-    else if (!rle_values[len_rle] && rle_values[(len_rle-1)] && !rle_values[(len_rle-2)]){
+    else if (!rle_values[len_rle] && rle_values[(len_rle-1)] &&
+             !rle_values[(len_rle-2)]){
         pri_poly_a_start <- rle_indices[(len_rle-2)]
         pri_poly_a_end <- rle_indices[(len_rle-1)]
         cdna_poly_a_read_type <- '..010'
@@ -108,7 +113,8 @@ find_read_tail_cdna_polya <- function(file_path, show_plots=FALSE, save_plots=FA
     # Run Length Encoding
     # lengths: int [1:3] 599 9273 416
     # values : logi [1:3] TRUE FALSE TRUE
-    else if (rle_values[len_rle] && !rle_values[(len_rle-1)] && rle_values[(len_rle-2)]){
+    else if (rle_values[len_rle] && !rle_values[(len_rle-1)]
+             && rle_values[(len_rle-2)]){
         pri_poly_a_start <- rle_indices[(len_rle-1)]
         pri_poly_a_end <- rle_indices[(len_rle)]
         cdna_poly_a_read_type <- 'adaptor01'
@@ -160,8 +166,9 @@ find_read_tail_cdna_polya <- function(file_path, show_plots=FALSE, save_plots=FA
         if (save_plots){
             filename <- basename(file_path)
             filename <- paste(filename,'.png', sep='')
-            filepath <- file.path(save_dir, filename, fsep = .Platform$file.sep)
-            ggsave(filepath, width = 300, height = 70, units = 'mm')
+            dir.create(file.path(save_dir, 'plots', fsep = .Platform$file.sep))
+            save_path <- file.path(save_dir, 'plots', filename, fsep = .Platform$file.sep)
+            ggplot2::ggsave(save_path, width = 300, height = 70, units = 'mm')
         }
 
     }
@@ -194,7 +201,9 @@ find_read_tail_cdna_polya <- function(file_path, show_plots=FALSE, save_plots=FA
                  gap2_start=gap2_start,
                  gap2_end=gap2_end,
                  sec2_poly_a_start=sec2_poly_a_start,
-                 sec2_poly_a_end=sec2_poly_a_end)
+                 sec2_poly_a_end=sec2_poly_a_end,
+                 sampling_rate=sampling_rate,
+                 file_path=file_path)
 
     return(data)
 }
