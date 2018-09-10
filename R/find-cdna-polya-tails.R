@@ -45,7 +45,7 @@ find_cdna_polya_tails <- function(cdna_polya_fast5_dir,
     `%do%` <- foreach::`%do%`
 
     #loop
-    ls2<-foreach(file_path = fast5_files_list, .combine='rbind') %dopar% {
+    ls2<-foreach::foreach(file_path = fast5_files_list, .combine='rbind') %dopar% {
         tryCatch({
             find_read_tail_cdna_polya(file_path,
                                       show_plots=show_plots,
@@ -56,11 +56,7 @@ find_cdna_polya_tails <- function(cdna_polya_fast5_dir,
             cat("ERROR :",conditionMessage(e), "\n")
             print(e)
         })
-
     }
     parallel::stopCluster(cl)
-
-
     return(ls2)
-
 }

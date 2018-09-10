@@ -22,6 +22,6 @@ Imports:
     hdf5r (>= 1.0.0),
     foreach (>= 1.4.4),
     doParallel (>= 1.0.11),
-    parallel (>= 3.5.1),
+    parallel (>= 3.5.0),
     Rsamtools (>= 1.32.3)
 Suggests: testthat
