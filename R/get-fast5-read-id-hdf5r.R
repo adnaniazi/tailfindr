@@ -1,4 +1,4 @@
-get_fast5_read_id <- function(file_path){
+get_fast5_read_id_hdf5r <- function(file_path){
     f5_obj <- hdf5r::H5File$new(file_path)
     f5_tree <- f5_obj$ls(recursive=TRUE)
     f5_tree <- f5_tree$name
