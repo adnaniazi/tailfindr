@@ -16,7 +16,8 @@ find_cdna_tails <- function(fast5_dir, alignment_bam_file, tails='both',
 
     # Read read_ids from Fast5s
     message('Step 1 of 3: Finding read IDs from Fast5 files\n')
-    df_fast5 <- data.frame(get_fast5_read_ids_parallel_hdf5r(fast5_dir))
+    df_fast5 <- data.frame(get_fast5_read_ids_parallel_hdf5r(fast5_dir), byrow=T)
+    df_fast5 <- sapply(df_fast5, unlist)
     message('\nDone!\n')
 
     # get read_ids and strand info from Fast5s
@@ -24,7 +25,11 @@ find_cdna_tails <- function(fast5_dir, alignment_bam_file, tails='both',
     message('This may take a while; please wait....')
     df_bam <- segregate_forward_and_reverse_strand_reads (alignment_bam_file)
     message('Done!\n')
+
+    df_bam$qname <- as.character(df_bam$qname)
+    df_bam$strand <- as.character(df_bam$strand)
     df_bam <- dplyr::rename(df_bam, read_id = qname)
+
     # merge the two dfs
     df <- dplyr::inner_join(df_fast5, df_bam, by='read_id')
     df <- na.omit(df)
