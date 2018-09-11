@@ -23,10 +23,11 @@
 #     ggplot2::geom_line(ggplot2::aes(y = truncated_data), color='blue') +
 #     ggplot2::geom_line(ggplot2::aes(y = moves))
 
-
+rm(list=ls())
 #fast5_dir <- '/Users/adnaniazi/mnt/kjempetuja/export/valenfs/data/processed_data/MinION/20180516_1429_polya_cdna_shield_run1/basecalled_data/workspace/pass/0'
-fast5_dir <- '/Users/adnaniazi/Documents/phd/delete/0'
-alignment_bam_file <- '/Users/adnaniazi/mnt/kjempetuja/export/valenfs/data/processed_data/MinION/20180516_1429_polya_cdna_shield_run1/alignment_to_genome/aln.bam'
+fast5_dir <- '/Users/adnaniazi/Documents/phd/delete/1'
+alignment_bam_file <- '/Users/adnaniazi/Documents/phd/delete/bam/sorted.aln.bam'
+#alignment_bam_file <- '/Users/adnaniazi/mnt/kjempetuja/export/valenfs/data/processed_data/MinION/20180516_1429_polya_cdna_shield_run1/alignment_to_genome/aln.bam'
 
 find_cdna_tails(fast5_dir=fast5_dir,
                 alignment_bam_file=alignment_bam_file,

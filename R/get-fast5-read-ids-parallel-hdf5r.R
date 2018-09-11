@@ -1,4 +1,4 @@
-get_fast_read_ids_parallel_hdf5r <- function(fast5_dir){
+get_fast5_read_ids_parallel_hdf5r <- function(fast5_dir){
     fast5_files_list <- list.files(path = fast5_dir,
                                    pattern = "\\.fast5$",
                                    recursive = TRUE,
@@ -9,14 +9,20 @@ get_fast_read_ids_parallel_hdf5r <- function(fast5_dir){
 
     # Initiate cluster
     cl <- parallel::makeCluster(no_cores)
-    doParallel::registerDoParallel(cl)
+    doSNOW::registerDoSNOW(cl)
 
     `%dopar%` <- foreach::`%dopar%`
+    `%do%` <- foreach::`%do%`
+
+    # progress bar
+    pb <- txtProgressBar(min=1, max=length(fast5_files_list), style=3)
+    progress <- function(n) setTxtProgressBar(pb, n)
+    opts <- list(progress=progress)
 
     #loop
-    ls2<-foreach::foreach(file_path = fast5_files_list, .combine='rbind') %dopar% {
+    ls2<-foreach::foreach(file_path = fast5_files_list, .combine='rbind', .options.snow=opts) %dopar% {
         tryCatch({
-            read_id_path <- get_fast5_read_id(file_path)
+            read_id_path <- get_fast5_read_id_hdf5r(file_path)
         },
         error=function(e){
             cat("ERROR :",conditionMessage(e), "\n")

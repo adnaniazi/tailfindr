@@ -17,11 +17,13 @@ RoxygenNote: 6.1.0
 Depends: R (>= 3.1.0)
 Imports: 
     ggplot2 (>= 3.0.0), 
-    stats (>= 3.5.1), 
+    stats (>= 3.0.0), 
     dplyr (>= 0.7.6),
     hdf5r (>= 1.0.0),
     foreach (>= 1.4.4),
     doParallel (>= 1.0.11),
     parallel (>= 3.5.0),
-    Rsamtools (>= 1.32.3)
+    Rsamtools (>= 1.32.3),
+    progress (>= 1.2.0),
+    doSNOW (>= 1.0.16)
 Suggests: testthat
