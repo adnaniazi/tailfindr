@@ -3,13 +3,14 @@
 #' @param file_path Path of the FAST5 file
 #'
 #' @return A list of Fast5 file data
+#' @export
 #'
 #' @examples
 #' find_read_tail_cdna_polya('path/to/fast5/file')
-find_read_tail_cdna_polya <- function(file_path,
-                                      save_plots=FALSE,
-                                      show_plots=FALSE,
-                                      save_dir='~'){
+find_cdna_polya_tail_per_read <- function(file_path,
+                                          save_plots=FALSE,
+                                          show_plots=FALSE,
+                                          save_dir='~'){
 
     # Empirical parameters
     POLY_A_CNDA_THRESHOLD <- 0.31
@@ -89,18 +90,18 @@ find_read_tail_cdna_polya <- function(file_path,
                 gap1_start <- sec1_poly_a_end + 1
                 gap1_end <- pri_poly_a_start - 1
                 cdna_poly_a_read_type <- '..01010'
-            }
-            # if first secondary tails is found, then find the second secondary tail
-            if (len_rle > 6) {
-                # if we have a small gap then we a have the first secondary poly-a tail
-                # file: 0.fast5
-                if ((rle_lengths[(len_rle-4)] < POLY_A_CDNA_SEC_POLY_A_MAX_GAP)&&
-                    rle_values[(len_rle-5)] && !rle_values[(len_rle-6)]){
-                    sec2_poly_a_start <- rle_indices[(len_rle-6)]
-                    sec2_poly_a_end <- rle_indices[(len_rle-5)]
-                    gap2_start <- sec2_poly_a_end + 1
-                    gap2_end <- sec1_poly_a_start - 1
-                    cdna_poly_a_read_type <- '..0101010'
+                # if first secondary tails is found, then find the second secondary tail
+                if (len_rle > 6) {
+                    # if we have a small gap then we a have the first secondary poly-a tail
+                    # file: 0.fast5
+                    if ((rle_lengths[(len_rle-4)] < POLY_A_CDNA_SEC_POLY_A_MAX_GAP)&&
+                        rle_values[(len_rle-5)] && !rle_values[(len_rle-6)]){
+                        sec2_poly_a_start <- rle_indices[(len_rle-6)]
+                        sec2_poly_a_end <- rle_indices[(len_rle-5)]
+                        gap2_start <- sec2_poly_a_end + 1
+                        gap2_end <- sec1_poly_a_start - 1
+                        cdna_poly_a_read_type <- '..0101010'
+                    }
                 }
             }
         }
@@ -190,9 +191,11 @@ find_read_tail_cdna_polya <- function(file_path,
     if (!exists('pri_poly_a_start')){
         pri_poly_a_start <- NA
         pri_poly_a_end <- NA
+        cdna_poly_a_read_type <- 'Tail not found'
     }
 
-    data <- list(pri_poly_a_start=pri_poly_a_start,
+    data <- list(read_id=read_data$read_id,
+                 pri_poly_a_start=pri_poly_a_start,
                  pri_poly_a_end=pri_poly_a_end,
                  gap1_start=gap1_start,
                  gap1_end=gap1_end,
@@ -203,8 +206,8 @@ find_read_tail_cdna_polya <- function(file_path,
                  sec2_poly_a_start=sec2_poly_a_start,
                  sec2_poly_a_end=sec2_poly_a_end,
                  sampling_rate=sampling_rate,
+                 cdna_poly_a_read_type=cdna_poly_a_read_type,
                  file_path=file_path)
-
     return(data)
 }
 

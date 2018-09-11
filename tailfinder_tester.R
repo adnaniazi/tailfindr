@@ -1,3 +1,27 @@
+rm(list=ls())
+
+#fast5_dir <- '/Users/adnaniazi/mnt/kjempetuja/export/valenfs/data/processed_data/MinION/20180516_1429_polya_cdna_shield_run1/basecalled_data/workspace/pass/0'
+fast5_dir <- '/export/valenfs/data/processed_data/MinION/20180516_1429_polya_cdna_shield_run1/basecalled_data/workspace/pass/0'
+#fast5_dir <- '/Users/adnaniazi/Documents/phd/delete/1'
+#alignment_bam_file <- '/Users/adnaniazi/Documents/phd/delete/bam/sorted.aln.bam'
+#alignment_bam_file <- '/Users/adnaniazi/mnt/kjempetuja/export/valenfs/data/processed_data/MinION/20180516_1429_polya_cdna_shield_run1/alignment_to_genome/aln.bam'
+alignment_bam_file <- '/export/valenfs/data/processed_data/MinION/20180516_1429_polya_cdna_shield_run1/alignment_to_gfp/aln.bam'
+save_dir <- '/export/valenfs/data/processed_data/MinION/20180516_1429_polya_cdna_shield_run1/bullshit_delete_later'
+csv_file_name <- 'polya-tails.csv'
+save_plots <- TRUE
+num_cores <- 120
+find_cdna_tails(fast5_dir=fast5_dir,
+                alignment_bam_file=alignment_bam_file,
+                tails='both',
+                save_dir=save_dir,
+                csv_file_name=csv_file_name,
+                save_plots=save_plots,
+                num_cores=num_cores)
+
+
+
+
+
 # rm(list=ls())
 # library(tailfinder)
 # library(ggplot2)
@@ -22,16 +46,3 @@
 #     ggplot2::geom_line(ggplot2::aes(y = norm_data), color='red') +
 #     ggplot2::geom_line(ggplot2::aes(y = truncated_data), color='blue') +
 #     ggplot2::geom_line(ggplot2::aes(y = moves))
-
-rm(list=ls())
-fast5_dir <- '/Users/adnaniazi/mnt/kjempetuja/export/valenfs/data/processed_data/MinION/20180516_1429_polya_cdna_shield_run1/basecalled_data/workspace/pass/0'
-#fast5_dir <- '/Users/adnaniazi/Documents/phd/delete/1'
-alignment_bam_file <- '/Users/adnaniazi/Documents/phd/delete/bam/sorted.aln.bam'
-#alignment_bam_file <- '/Users/adnaniazi/mnt/kjempetuja/export/valenfs/data/processed_data/MinION/20180516_1429_polya_cdna_shield_run1/alignment_to_genome/aln.bam'
-
-find_cdna_tails(fast5_dir=fast5_dir,
-                alignment_bam_file=alignment_bam_file,
-                tails='both',
-                save_dir='.',
-                csv_file_name='.',
-                save_plots=FALSE)
