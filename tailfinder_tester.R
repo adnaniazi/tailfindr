@@ -8,7 +8,7 @@ fast5_dir <- '/export/valenfs/data/processed_data/MinION/20180516_1429_polya_cdn
 alignment_bam_file <- '/export/valenfs/data/processed_data/MinION/20180516_1429_polya_cdna_shield_run1/alignment_to_gfp/aln.bam'
 save_dir <- '/export/valenfs/data/processed_data/MinION/20180516_1429_polya_cdna_shield_run1/bullshit_delete_later'
 csv_file_name <- 'polya-tails.csv'
-save_plots <- TRUE
+save_plots <- FALSE
 num_cores <- 120
 find_cdna_tails(fast5_dir=fast5_dir,
                 alignment_bam_file=alignment_bam_file,

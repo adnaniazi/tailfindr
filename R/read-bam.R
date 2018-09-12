@@ -10,7 +10,7 @@ read_bam <- function(bam_file_path){
     #c lean up
     df_bam$qname <- as.character(df_bam$qname)
     df_bam$strand <- as.character(df_bam$strand)
-    df_bam <- dplyr::rename(df_bam, read_id = qname)
+    df_bam <- dplyr::rename(df_bam, read_id = qname, bam_mapping_quality=mapq)
     return(df_bam)
 }
 

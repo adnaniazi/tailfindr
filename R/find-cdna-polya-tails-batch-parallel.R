@@ -63,6 +63,8 @@ find_cdna_polya_tails_batch_parallel <- function(fast5_files_list,
                          sec2_poly_a_end=NA,
                          sampling_rate=NA,
                          cdna_poly_a_read_type='Fatal Error',
+                         tail_adaptor=NA,
+                         has_valid_poly_a_tail <- FALSE,
                          file_path=file_path)
         })
     }

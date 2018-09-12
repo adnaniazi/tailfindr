@@ -121,6 +121,25 @@ find_cdna_polya_tail_per_read <- function(file_path,
         cdna_poly_a_read_type <- 'adaptor01'
     }
 
+    # find the adaptor attached to the end of primary poly(A) tail by
+    # aligning anything that comes after the primary poly(A) tail to the ONT-provided adaptor sequences
+    # adaptor seq: GAAGATAGAGCGACAGGCAAGT | 22
+    if (exists('pri_poly_a_start')){
+        event_data <- read_data$event_data
+        if (pri_poly_a_end == read_length){
+            tail_adaptor <- paste('Tail adaptor absent; aln score: NA; adaptor seq: NA')
+            has_valid_poly_a_tail <- FALSE
+        } else {
+            ta_hvpat <- align_cdna_polya_adaptor(read_data$event_data, pri_poly_a_end)
+            tail_adaptor <- ta_hvpat[1]
+            has_valid_poly_a_tail <- ta_hvpat[2]
+        }
+
+    } else {
+        tail_adaptor <- NA
+        has_valid_poly_a_tail <- FALSE
+    }
+
     if (show_plots || save_plots){
         df = data.frame(x=c(1:length(read_data$raw_data)),
                         raw_data=read_data$raw_data,
@@ -192,43 +211,7 @@ find_cdna_polya_tail_per_read <- function(file_path,
         pri_poly_a_start <- NA
         pri_poly_a_end <- NA
         cdna_poly_a_read_type <- 'Tail not found'
-    }
-
-    # find the adaptor attached to the end of primary poly(A) tail by
-    # aligning anything that comes after the primary poly(A) tail to the ONT-provided adaptor sequences
-    # GAAGATAGAGCGACAGGCAAGT | 22
-    if (exists('pri_poly_a_start')){
-        # get at the most 22 + 6 bases from FASTQ file from the events data after the end of poly(A) tail
-        event_data <- read_data$event_data
-        # get the row index of the end point of primary poly(A) tail
-        row_index <- which.min(abs(event_data$start - pri_poly_a_end))
-        i <- row_index
-        num_bases <- 0
-        fastq_bases <- ''
-        while (i < length(event_data$move)){
-            if (num_bases==0){
-                fastq_bases <- event_data$model_state[i]
-            } else if (event_data$move[i]==1) {
-                fastq_bases <- paste(fastq_bases, substr(event_data$model_state[i], 5, 5), sep='')
-                num_bases <- num_bases + 1
-            } else if (event_data$move[i]==2) {
-                fastq_bases <- paste(fastq_bases, substr(event_data$model_state[i], 4, 5), sep='')
-                num_bases <- num_bases + 2
-            }
-            i <- i + 1
-            if (num_bases == 28){
-                break
-            }
-        }
-        print(fastq_bases)
-        print('adnan')
-
-        # align these with the adaptor sequence GAAGATAGAGCGACAGGCAAGT (do local alignment)
-        # give confidence score to the poly(A) found using the alignment score
-
-    } else {
-        print('bs')
-        print('anaother bs')
+        has_valid_poly_a_tail <- FALSE
     }
 
     data <- list(read_id=read_data$read_id,
@@ -244,6 +227,8 @@ find_cdna_polya_tail_per_read <- function(file_path,
                  sec2_poly_a_end=sec2_poly_a_end,
                  sampling_rate=sampling_rate,
                  cdna_poly_a_read_type=cdna_poly_a_read_type,
+                 tail_adaptor=tail_adaptor,
+                 has_valid_poly_a_tail=has_valid_poly_a_tail,
                  file_path=file_path)
     return(data)
 }

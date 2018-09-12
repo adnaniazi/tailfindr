@@ -76,6 +76,12 @@ find_cdna_tails <- function(fast5_dir, alignment_bam_file,
                                                             show_plots=FALSE,
                                                             num_cores=num_cores)
         polya_tails <- data.frame(polya_tails)
+        # include mapping information in the results
+        polya_tails$read_id <- as.character(polya_tails$read_id)
+        polya_tails <- dplyr::inner_join(polya_tails,
+                                         dplyr::select(df_polya, bam_mapping_quality, read_id),
+                                         by='read_id')
+        polya_tails <- unique(polya_tails)
         data.table::fwrite(polya_tails, file.path(save_dir, csv_file_name))
         message('Done!\n')
 
