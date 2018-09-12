@@ -194,6 +194,43 @@ find_cdna_polya_tail_per_read <- function(file_path,
         cdna_poly_a_read_type <- 'Tail not found'
     }
 
+    # find the adaptor attached to the end of primary poly(A) tail by
+    # aligning anything that comes after the primary poly(A) tail to the ONT-provided adaptor sequences
+    # GAAGATAGAGCGACAGGCAAGT | 22
+    if (exists('pri_poly_a_start')){
+        # get at the most 22 + 6 bases from FASTQ file from the events data after the end of poly(A) tail
+        event_data <- read_data$event_data
+        # get the row index of the end point of primary poly(A) tail
+        row_index <- which.min(abs(event_data$start - pri_poly_a_end))
+        i <- row_index
+        num_bases <- 0
+        fastq_bases <- ''
+        while (i < length(event_data$move)){
+            if (num_bases==0){
+                fastq_bases <- event_data$model_state[i]
+            } else if (event_data$move[i]==1) {
+                fastq_bases <- paste(fastq_bases, substr(event_data$model_state[i], 5, 5), sep='')
+                num_bases <- num_bases + 1
+            } else if (event_data$move[i]==2) {
+                fastq_bases <- paste(fastq_bases, substr(event_data$model_state[i], 4, 5), sep='')
+                num_bases <- num_bases + 2
+            }
+            i <- i + 1
+            if (num_bases == 28){
+                break
+            }
+        }
+        print(fastq_bases)
+        print('adnan')
+
+        # align these with the adaptor sequence GAAGATAGAGCGACAGGCAAGT (do local alignment)
+        # give confidence score to the poly(A) found using the alignment score
+
+    } else {
+        print('bs')
+        print('anaother bs')
+    }
+
     data <- list(read_id=read_data$read_id,
                  pri_poly_a_start=pri_poly_a_start,
                  pri_poly_a_end=pri_poly_a_end,

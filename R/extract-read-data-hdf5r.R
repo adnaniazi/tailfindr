@@ -39,7 +39,12 @@ extract_read_data_hdf5r <- function(read_path){
                                       rep( NA, length(raw_data) - (utils::tail(event_data$start, n=1)+event_data$length[1])))
 
     }
+
+    # drop useless columns in event data
+    event_data <- dplyr::select(event_data, start, move, model_state)
+
     read_data = list(raw_data = raw_data,
+                     event_data = event_data,
                      moves_sample_wise_vector = moves_sample_wise_vector,
                      fast5_event_length = event_data$length[1],
                      read_id = read_id,
