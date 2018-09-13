@@ -17,5 +17,5 @@ A list of Fast5 file data
 Find Poly(A) tail in a single cDNA read. The read must be a poly(A) read.
 }
 \examples{
-find_read_tail_cdna_polya('path/to/fast5/file')
+find_cdna_polya_tail_per_read('path/to/fast5/file')
 }

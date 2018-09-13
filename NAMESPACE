@@ -2,4 +2,6 @@
 
 export(find_cdna_polya_tail_per_read)
 export(find_cdna_polya_tails_batch_parallel)
+export(find_cdna_polyt_tail_per_read)
+export(find_cdna_polyt_tails_batch_parallel)
 export(find_cdna_tails)

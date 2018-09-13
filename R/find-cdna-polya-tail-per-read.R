@@ -1,4 +1,4 @@
-#' Find Poly(T) tail in a single cDNA read. The read must be a poly(A) read.
+#' Find Poly(A) tail in a single cDNA read. The read must be a poly(A) read.
 #'
 #' @param file_path Path of the FAST5 file
 #'
