@@ -1,4 +1,4 @@
-#' Find Poly(T) tail in a single cDNA read. The read must be a poly(A) read.
+#' Find Poly(A) tail in a single cDNA read. The read must be a poly(A) read.
 #'
 #' @param file_path Path of the FAST5 file
 #'
@@ -6,8 +6,8 @@
 #' @export
 #'
 #' @examples
-#' find_cdna_polya_tail_per_read('path/to/fast5/file')
-find_cdna_polya_tail_per_read <- function(file_path,
+#' find_cdna_polyt_tail_per_read('path/to/fast5/file')
+find_cdna_polyt_tail_per_read <- function(file_path,
                                           save_plots=FALSE,
                                           show_plots=FALSE,
                                           save_dir='~'){
@@ -77,7 +77,6 @@ find_cdna_polya_tail_per_read <- function(file_path,
              !rle_values[(len_rle-2)]){
         pri_poly_a_start <- rle_indices[(len_rle-2)]
         pri_poly_a_end <- rle_indices[(len_rle-1)]
-        pri_poly_a_fastq <- extract_fastq_in_interval(read_data$event_data, pri_poly_a_start, pri_poly_a_end)
         cdna_poly_a_read_type <- '..010'
 
         # find the first secondary tail
@@ -88,10 +87,8 @@ find_cdna_polya_tail_per_read <- function(file_path,
                 rle_values[(len_rle-3)] && !rle_values[(len_rle-4)]){
                 sec1_poly_a_start <- rle_indices[(len_rle-4)]
                 sec1_poly_a_end <- rle_indices[(len_rle-3)]
-                sec1_poly_a_fastq <- extract_fastq_in_interval(read_data$event_data, sec1_poly_a_start, sec1_poly_a_end)
                 gap1_start <- sec1_poly_a_end + 1
                 gap1_end <- pri_poly_a_start - 1
-                gap1_fastq <- extract_fastq_in_interval(read_data$event_data, gap1_start, gap1_end)
                 cdna_poly_a_read_type <- '..01010'
                 # if first secondary tails is found, then find the second secondary tail
                 if (len_rle > 6) {
@@ -101,10 +98,8 @@ find_cdna_polya_tail_per_read <- function(file_path,
                         rle_values[(len_rle-5)] && !rle_values[(len_rle-6)]){
                         sec2_poly_a_start <- rle_indices[(len_rle-6)]
                         sec2_poly_a_end <- rle_indices[(len_rle-5)]
-                        sec2_poly_a_fastq <- extract_fastq_in_interval(read_data$event_data, sec2_poly_a_start, sec2_poly_a_end)
                         gap2_start <- sec2_poly_a_end + 1
                         gap2_end <- sec1_poly_a_start - 1
-                        gap2_fastq <- extract_fastq_in_interval(read_data$event_data, gap2_start, gap2_end)
                         cdna_poly_a_read_type <- '..0101010'
                     }
                 }
@@ -123,7 +118,6 @@ find_cdna_polya_tail_per_read <- function(file_path,
              && rle_values[(len_rle-2)]){
         pri_poly_a_start <- rle_indices[(len_rle-1)]
         pri_poly_a_end <- rle_indices[(len_rle)]
-        pri_poly_a_fastq <- extract_fastq_in_interval(read_data$event_data, pri_poly_a_start, pri_poly_a_end)
         cdna_poly_a_read_type <- 'adaptor01'
     }
 
@@ -157,21 +151,21 @@ find_cdna_polya_tail_per_read <- function(file_path,
                         moves=read_data$moves_sample_wise_vector)
 
         p <- ggplot2::ggplot(data = df, ggplot2::aes(x = x)) +
-             #ggplot2::geom_line(ggplot2::aes(y = norm_data), color='red') +
-             ggplot2::geom_line(ggplot2::aes(y = truncated_data), color='blue') +
-             ggplot2::geom_line(ggplot2::aes(y = smoothed_data_1), color='black') +
-             ggplot2::geom_line(ggplot2::aes(y = smoothed_data_2), color='green') +
-             ggplot2::geom_line(ggplot2::aes(y = smoothed_data_3), color='orange') +
-             ggplot2::geom_line(ggplot2::aes(y = moves)) +
-             ggplot2::geom_hline(yintercept=POLY_A_CNDA_THRESHOLD, color = "black") +
-             ggplot2::scale_x_continuous(limits = c(1,
-                                                    ceiling(length(smoothed_data_1)/1)))
+            #ggplot2::geom_line(ggplot2::aes(y = norm_data), color='red') +
+            ggplot2::geom_line(ggplot2::aes(y = truncated_data), color='blue') +
+            ggplot2::geom_line(ggplot2::aes(y = smoothed_data_1), color='black') +
+            ggplot2::geom_line(ggplot2::aes(y = smoothed_data_2), color='green') +
+            ggplot2::geom_line(ggplot2::aes(y = smoothed_data_3), color='orange') +
+            ggplot2::geom_line(ggplot2::aes(y = moves)) +
+            ggplot2::geom_hline(yintercept=POLY_A_CNDA_THRESHOLD, color = "black") +
+            ggplot2::scale_x_continuous(limits = c(1,
+                                                   ceiling(length(smoothed_data_1)/1)))
 
         if (exists('pri_poly_a_start')) {
             p <- p+ggplot2::geom_line(ggplot2::aes(y = c(rep(NA, times=pri_poly_a_start-1),
                                                          truncated_data[pri_poly_a_start:pri_poly_a_end],
                                                          rep(NA, times=(read_length-pri_poly_a_end)))), color='red')+
-            ggplot2::geom_line(ggplot2::aes(y = smoothed_data_3), color='orange')
+                ggplot2::geom_line(ggplot2::aes(y = smoothed_data_3), color='orange')
         }
 
         if (exists('sec1_poly_a_start')) {
@@ -202,19 +196,15 @@ find_cdna_polya_tail_per_read <- function(file_path,
     if (!exists('sec2_poly_a_start')){
         sec2_poly_a_start <- NA
         sec2_poly_a_end <- NA
-        sec2_poly_a_fastq <- NA
         gap2_start <- NA
         gap2_end <- NA
-        gap2_fastq <- NA
     }
 
     if (!exists('sec1_poly_a_start')){
         sec1_poly_a_start <- NA
         sec1_poly_a_end <- NA
-        sec1_poly_a_fastq <- NA
         gap1_start <- NA
         gap1_end <- NA
-        gap1_fastq <- NA
     }
 
     if (!exists('pri_poly_a_start')){
@@ -222,31 +212,19 @@ find_cdna_polya_tail_per_read <- function(file_path,
         pri_poly_a_end <- NA
         cdna_poly_a_read_type <- 'Tail not found'
         has_valid_poly_a_tail <- FALSE
-        pri_poly_a_fastq <- NA
     }
 
     data <- list(read_id=read_data$read_id,
-
                  pri_poly_a_start=pri_poly_a_start,
                  pri_poly_a_end=pri_poly_a_end,
-                 pri_poly_a_fastq=pri_poly_a_fastq,
-
                  gap1_start=gap1_start,
                  gap1_end=gap1_end,
-                 gap1_fastq=gap1_fastq,
-
                  sec1_poly_a_start=sec1_poly_a_start,
                  sec1_poly_a_end=sec1_poly_a_end,
-                 sec1_poly_a_fastq=sec1_poly_a_fastq,
-
                  gap2_start=gap2_start,
                  gap2_end=gap2_end,
-                 gap2_fastq=gap2_fastq,
-
                  sec2_poly_a_start=sec2_poly_a_start,
                  sec2_poly_a_end=sec2_poly_a_end,
-                 sec2_poly_a_fastq=sec2_poly_a_fastq,
-
                  sampling_rate=sampling_rate,
                  cdna_poly_a_read_type=cdna_poly_a_read_type,
                  tail_adaptor=tail_adaptor,

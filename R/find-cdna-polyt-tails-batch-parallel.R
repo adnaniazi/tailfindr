@@ -4,7 +4,7 @@
 #' for poly(A) tails in these reads, and then returns a dataframe that contains
 #' the data about poly-(A) tails found
 #'
-#' @param fast5_files_list a character list.
+#' @param fast5_files_list a character string.
 #' @param save_dir a character string. Path of the directory in which to save the
 #' results csv file and plots (optional)
 #' @param csv_file_name a character string. Name of the csv file in which to store the results.
@@ -19,8 +19,8 @@
 #' @export
 #'
 #' @examples
-#' df <- find_cdna_polya_tails_batch_parallel('/FORWARD/STRAND/FAST5/FILES/DIRECTORY', 'SAVE/DIR', 'polya-tail-data.csv')
-find_cdna_polya_tails_batch_parallel <- function(fast5_files_list,
+#' df <- find_cdna_polyt_tails_batch_parallel('/FORWARD/STRAND/FAST5/FILES/DIRECTORY', 'SAVE/DIR', 'polya-tail-data.csv')
+find_cdna_polyt_tails_batch_parallel <- function(fast5_files_list,
                                                  save_dir,
                                                  csv_file_name,
                                                  save_plots=FALSE,
@@ -40,10 +40,10 @@ find_cdna_polya_tails_batch_parallel <- function(fast5_files_list,
     message('\t  Done!')
 
     #loop
-    message('\t- Searching for Poly(A) tails...\r')
+    message('\t- Searching for Poly(T) tails...\r')
     ls2<-foreach::foreach(file_path = fast5_files_list, .combine='rbind', .options.snow=opts) %dopar% {
         tryCatch({
-            find_cdna_polya_tail_per_read(file_path,
+            find_cdna_polyt_tail_per_read(file_path,
                                           show_plots=show_plots,
                                           save_plots=save_plots,
                                           save_dir=save_dir)
@@ -52,23 +52,18 @@ find_cdna_polya_tails_batch_parallel <- function(fast5_files_list,
             ls <- list(read_id=NA,
                        pri_poly_a_start=NA,
                        pri_poly_a_end=NA,
-                       pri_poly_a_fastq=NA,
                        gap1_start=NA,
                        gap1_end=NA,
-                       gap1_fastq=NA,
                        sec1_poly_a_start=NA,
                        sec1_poly_a_end=NA,
-                       sec1_poly_a_fastq=NA,
                        gap2_start=NA,
                        gap2_end=NA,
-                       gap2_fastq=NA,
                        sec2_poly_a_start=NA,
                        sec2_poly_a_end=NA,
-                       sec2_poly_a_fastq=NA,
                        sampling_rate=NA,
                        cdna_poly_a_read_type='Fatal Error',
                        tail_adaptor=NA,
-                       has_valid_poly_a_tail=FALSE,
+                       has_valid_poly_a_tail <- FALSE,
                        file_path=file_path)
         })
     }
