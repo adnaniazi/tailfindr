@@ -4,7 +4,8 @@
 #' @param alignment_bam_file
 #' @param tails
 #' @param save_dir
-#' @param csv_file_name
+#' @param poly_a_csv_file_name
+#' @param poly_t_csv_file_name
 #' @param save_plots
 #'
 #' @return
@@ -12,7 +13,9 @@
 #'
 #' @examples
 find_cdna_tails <- function(fast5_dir, alignment_bam_file,
-                            tails='both', save_dir, csv_file_name,
+                            tails='both', save_dir,
+                            poly_a_csv_file_name,
+                            poly_t_csv_file_name,
                             save_plots=FALSE, num_cores=1){
 
     polya_cadidates_file_path <- file.path(save_dir, 'candidate-poly-a-reads.csv')
@@ -82,7 +85,7 @@ find_cdna_tails <- function(fast5_dir, alignment_bam_file,
                                          dplyr::select(df_polya, bam_mapping_quality, read_id),
                                          by='read_id')
         polya_tails <- unique(polya_tails)
-        data.table::fwrite(polya_tails, file.path(save_dir, csv_file_name))
+        data.table::fwrite(polya_tails, file.path(save_dir, poly_a_csv_file_name))
         message('Done!\n')
 
     }
@@ -93,6 +96,20 @@ find_cdna_tails <- function(fast5_dir, alignment_bam_file,
         } else {
             message('Step 3: Finding Poly(T) tails in reverse strand reads')
         }
+        polyt_tails <- find_cdna_polyt_tails_batch_parallel(df_polyt$file_path,
+                                                            save_dir=save_dir,
+                                                            csv_file_name=csv_file_name,
+                                                            save_plots=save_plots,
+                                                            show_plots=FALSE,
+                                                            num_cores=num_cores)
+        polyt_tails <- data.frame(polyt_tails)
+        # include mapping information in the results
+        polyt_tails$read_id <- as.character(polyt_tails$read_id)
+        polyt_tails <- dplyr::inner_join(polyt_tails,
+                                         dplyr::select(df_polyt, bam_mapping_quality, read_id),
+                                         by='read_id')
+        polyt_tails <- unique(polyt_tails)
+        data.table::fwrite(polyt_tails, file.path(save_dir, poly_t_csv_file_name))
         message('Done!\n')
     }
 

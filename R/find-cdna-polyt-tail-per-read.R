@@ -13,7 +13,7 @@ find_cdna_polyt_tail_per_read <- function(file_path,
                                           save_dir='~'){
 
     # Empirical parameters
-    POLY_T_CNDA_THRESHOLD <- 0.31
+    POLY_T_CNDA_THRESHOLD <- 0.30
     POLY_T_CNDA_SPIKE_THRESHOLD <- 2.0
     POLY_T_CDNA_SEC_POLY_A_MAX_GAP <- 1200
     POLY_T_CDNA_MOVING_WINDOW_SIZE <- 120
@@ -55,8 +55,83 @@ find_cdna_polyt_tail_per_read <- function(file_path,
     len_rle <- length(rle_values)
     read_length <- length(read_data$raw_data)
 
-    # find ploy(T) tail
     cdna_poly_t_read_type <- ''
+
+    if (rle_values[1]){
+        # ignore the bullshit poly(T) looking stuff at the beginning
+        rle_start <- 2
+        cdna_poly_t_read_type_begin <- '1'
+    } else {
+        rle_start <- 1
+        cdna_poly_t_read_type_begin <- ''
+    }
+
+    # find ploy(T) tail
+    # CASE 1: bullshit --> adaptor --> tail --> some_sequence
+    # file: 0.fast5
+    #$lengths
+    #[1]  719  399  400 8566
+    #$values
+    #[1]  TRUE FALSE  TRUE FALSE
+
+    if (len_rle >= 3 && !rle_values[rle_start] && rle_values[rle_start+1]) {
+        pri_poly_t_start <- rle_indices[rle_start]
+        pri_poly_t_end <- rle_indices[rle_start+1]
+        pri_poly_t_fastq <- extract_fastq_in_interval(read_data$event_data,
+                                                      pri_poly_t_start,
+                                                      pri_poly_t_end)
+        cdna_poly_t_read_type <- paste(cdna_poly_t_read_type_begin, 'adaptor10', sep = '')
+
+        # find the first secondary tail
+        if (len_rle >= 5 && !rle_values[rle_start+2] && rle_values[rle_start+3] &&
+            rle_lengths[rle_start+2] < POLY_T_CDNA_SEC_POLY_A_MAX_GAP) {
+            gap1_start <- pri_poly_t_end + 1
+            gap1_end <- rle_indices[rle_start+2] - 1
+            sec1_poly_t_start <- rle_indices[rle_start+2]
+            sec1_poly_t_end <- rle_indices[rle_start+3]
+            sec1_poly_t_fastq <- extract_fastq_in_interval(read_data$event_data,
+                                                           sec1_poly_t_start,
+                                                           sec1_poly_t_end)
+            gap1_fastq <- extract_fastq_in_interval(read_data$event_data,
+                                                    gap1_start,
+                                                    gap1_end)
+            cdna_poly_t_read_type <- paste(cdna_poly_t_read_type_begin, '10', sep = '')
+
+            # find the second secondary tail
+            if (len_rle >= 7 && !rle_values[rle_start] && rle_values[rle_start+1] &&
+                rle_lengths[rle_start+4] < POLY_T_CDNA_SEC_POLY_A_MAX_GAP) {
+                gap2_start <- sec1_poly_t_end + 1
+                gap2_end <- rle_indices[rle_start+4] - 1
+                sec2_poly_t_start <- rle_indices[rle_start+4]
+                sec2_poly_t_end <- rle_indices[rle_start+5]
+                sec2_poly_t_fastq <- extract_fastq_in_interval(read_data$event_data,
+                                                               sec2_poly_t_start,
+                                                               sec2_poly_t_end)
+                gap2_fastq <- extract_fastq_in_interval(read_data$event_data,
+                                                        gap2_start,
+                                                        gap2_end)
+                cdna_poly_t_read_type <- paste(cdna_poly_t_read_type_begin, '10', sep = '')
+            }
+        }
+    }
+
+    # find the adaptor attached to the beginning of primary poly(T) tail by
+    # aligning anything that comes before the primary poly(T) tail to the ONT-provided adaptor sequences
+    # adaptor seq: ACTTGCCTGTCGCTCTATCTTC | 22
+    if (exists('pri_poly_t_start')){
+        if (pri_poly_t_start == 0){
+            tail_adaptor <- paste('Tail adaptor absent; aln score: NA; adaptor seq: NA')
+            has_valid_poly_t_tail <- FALSE
+        } else {
+            ta_hvptt <- align_cdna_polyt_adaptor(read_data$event_data, pri_poly_t_start)
+            tail_adaptor <- ta_hvptt[1]
+            has_valid_poly_t_tail <- ta_hvptt[2]
+        }
+
+    } else {
+        tail_adaptor <- NA
+        has_valid_poly_t_tail <- FALSE
+    }
 
     if (show_plots || save_plots){
         df = data.frame(x=c(1:length(read_data$raw_data)),
@@ -101,17 +176,70 @@ find_cdna_polyt_tail_per_read <- function(file_path,
         }
 
         if (show_plots){
-            (p)
+            print(p)
         }
-        p
         if (save_plots){
             filename <- basename(file_path)
             filename <- paste(filename,'.png', sep='')
             dir.create(file.path(save_dir, 'plots', fsep = .Platform$file.sep))
             save_path <- file.path(save_dir, 'plots', filename, fsep = .Platform$file.sep)
-            ggplot2::ggsave(save_path, width = 300, height = 70, units = 'mm')
+            ggplot2::ggsave(save_path, plot = p, width = 300, height = 70, units = 'mm')
         }
-
     }
+
+    if (!exists('sec2_poly_t_start')){
+        sec2_poly_t_start <- NA
+        sec2_poly_t_end <- NA
+        sec2_poly_t_fastq <- NA
+        gap2_start <- NA
+        gap2_end <- NA
+        gap2_fastq <- NA
+    }
+
+    if (!exists('sec1_poly_t_start')){
+        sec1_poly_t_start <- NA
+        sec1_poly_t_end <- NA
+        sec1_poly_t_fastq <- NA
+        gap1_start <- NA
+        gap1_end <- NA
+        gap1_fastq <- NA
+    }
+
+    if (!exists('pri_poly_t_start')){
+        pri_poly_t_start <- NA
+        pri_poly_t_end <- NA
+        cdna_poly_t_read_type <- 'Tail not found'
+        has_valid_poly_t_tail <- FALSE
+        pri_poly_t_fastq <- NA
+    }
+
+    data <- list(read_id=read_data$read_id,
+
+                 pri_poly_t_start=pri_poly_t_start,
+                 pri_poly_t_end=pri_poly_t_end,
+                 pri_poly_t_fastq=pri_poly_t_fastq,
+
+                 gap1_start=gap1_start,
+                 gap1_end=gap1_end,
+                 gap1_fastq=gap1_fastq,
+
+                 sec1_poly_t_start=sec1_poly_t_start,
+                 sec1_poly_t_end=sec1_poly_t_end,
+                 sec1_poly_t_fastq=sec1_poly_t_fastq,
+
+                 gap2_start=gap2_start,
+                 gap2_end=gap2_end,
+                 gap2_fastq=gap2_fastq,
+
+                 sec2_poly_t_start=sec2_poly_t_start,
+                 sec2_poly_t_end=sec2_poly_t_end,
+                 sec2_poly_t_fastq=sec2_poly_t_fastq,
+
+                 sampling_rate=sampling_rate,
+                 cdna_poly_t_read_type=cdna_poly_t_read_type,
+                 tail_adaptor=tail_adaptor,
+                 has_valid_poly_t_tail=has_valid_poly_t_tail,
+                 file_path=file_path)
+    return(data)
 }
 

@@ -7,14 +7,18 @@ fast5_dir <- '/export/valenfs/data/processed_data/MinION/20180516_1429_polya_cdn
 #alignment_bam_file <- '/Users/adnaniazi/mnt/kjempetuja/export/valenfs/data/processed_data/MinION/20180516_1429_polya_cdna_shield_run1/alignment_to_genome/aln.bam'
 alignment_bam_file <- '/export/valenfs/data/processed_data/MinION/20180516_1429_polya_cdna_shield_run1/alignment_to_gfp/aln.bam'
 save_dir <- '/export/valenfs/data/processed_data/MinION/20180516_1429_polya_cdna_shield_run1/bullshit_delete_later'
-csv_file_name <- 'polya-tails.csv'
+poly_a_csv_file_name <- 'polya-tails.csv'
+poly_t_csv_file_name <- 'polyt-tails.csv'
+
 save_plots <- FALSE
 num_cores <- 120
 find_cdna_tails(fast5_dir=fast5_dir,
                 alignment_bam_file=alignment_bam_file,
                 tails='both',
                 save_dir=save_dir,
-                csv_file_name=csv_file_name,
+                poly_a_csv_file_name=poly_a_csv_file_name,
+                poly_t_csv_file_name=poly_t_csv_file_name,
+
                 save_plots=save_plots,
                 num_cores=num_cores)
 

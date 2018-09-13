@@ -24,7 +24,7 @@ left_to_right_sliding_window_cdna_polyt <-
             result[i] <- match.fun(FUN)(data[spots[i]:(spots[i] + window_size - 1)])
         }
 
-        data_to_append <- mean(tail(result, n=150))
+        data_to_append <- mean(tail(result, n=400))
         result <- c(result, rep(data_to_append, times=(length(data)-length(result))))
         return(result)
     }

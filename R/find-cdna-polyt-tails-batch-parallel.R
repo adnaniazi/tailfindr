@@ -15,7 +15,7 @@
 #' option to TRUE could cause the algorithm to run very slowly.
 #' @param num_cores
 #'
-#' @return A dataframe containing information about poly(A) tail lengths of each read
+#' @return A dataframe containing information about poly(T) tail lengths of each read
 #' @export
 #'
 #' @examples
@@ -50,20 +50,20 @@ find_cdna_polyt_tails_batch_parallel <- function(fast5_files_list,
         },
         error=function(e){
             ls <- list(read_id=NA,
-                       pri_poly_a_start=NA,
-                       pri_poly_a_end=NA,
+                       pri_poly_t_start=NA,
+                       pri_poly_t_end=NA,
                        gap1_start=NA,
                        gap1_end=NA,
-                       sec1_poly_a_start=NA,
-                       sec1_poly_a_end=NA,
+                       sec1_poly_t_start=NA,
+                       sec1_poly_t_end=NA,
                        gap2_start=NA,
                        gap2_end=NA,
-                       sec2_poly_a_start=NA,
-                       sec2_poly_a_end=NA,
+                       sec2_poly_t_start=NA,
+                       sec2_poly_t_end=NA,
                        sampling_rate=NA,
-                       cdna_poly_a_read_type='Fatal Error',
+                       cdna_poly_t_read_type='Fatal Error',
                        tail_adaptor=NA,
-                       has_valid_poly_a_tail <- FALSE,
+                       has_valid_poly_t_tail <- FALSE,
                        file_path=file_path)
         })
     }

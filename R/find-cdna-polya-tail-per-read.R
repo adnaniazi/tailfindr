@@ -131,7 +131,6 @@ find_cdna_polya_tail_per_read <- function(file_path,
     # aligning anything that comes after the primary poly(A) tail to the ONT-provided adaptor sequences
     # adaptor seq: GAAGATAGAGCGACAGGCAAGT | 22
     if (exists('pri_poly_a_start')){
-        event_data <- read_data$event_data
         if (pri_poly_a_end == read_length){
             tail_adaptor <- paste('Tail adaptor absent; aln score: NA; adaptor seq: NA')
             has_valid_poly_a_tail <- FALSE
@@ -188,13 +187,13 @@ find_cdna_polya_tail_per_read <- function(file_path,
                 ggplot2::geom_line(ggplot2::aes(y = smoothed_data_3), color='orange')
         }
 
-        if (show_plots){p}
+        if (show_plots){print(p)}
         if (save_plots){
             filename <- basename(file_path)
             filename <- paste(filename,'.png', sep='')
             dir.create(file.path(save_dir, 'plots', fsep = .Platform$file.sep))
             save_path <- file.path(save_dir, 'plots', filename, fsep = .Platform$file.sep)
-            ggplot2::ggsave(save_path, width = 300, height = 70, units = 'mm')
+            ggplot2::ggsave(save_path, plot = p, width = 300, height = 70, units = 'mm')
         }
 
     }
