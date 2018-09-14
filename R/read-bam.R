@@ -11,7 +11,7 @@ read_bam <- function(bam_file_path){
     df_bam$qname <- as.character(df_bam$qname)
     df_bam$strand <- as.character(df_bam$strand)
     df_bam <- dplyr::rename(df_bam, read_id = qname, bam_mapping_quality=mapq)
-    return(df_bam)
+    return(unique(df_bam))
 }
 
 

@@ -25,15 +25,13 @@ find_cdna_tails <- function(fast5_dir, alignment_bam_file,
         !file.exists(polyt_cadidates_file_path)){
         # Read read_ids from Fast5s
         message('Step 1: Extracting read IDs from Fast5 files\r')
-        df_fast5 <- get_fast5_read_ids_parallel_hdf5r(fast5_dir, num_cores=num_cores)
-        df_fast5 <- unique(df_fast5)
-        message('Done!\n')
+        df_fast5 <- get_fast5_read_ids_mclapply_hdf5r(fast5_dir, num_cores=num_cores)
+        message('Completed step 1 successfully!\n')
 
         # get read_ids and strand info from Fast5s
         message('Step 2: Finding forward and reverse strand information from the BAM file\r')
         message('This may take a while depending on the bam file size. Please wait...\r')
         df_bam <- read_bam(alignment_bam_file)
-        df_bam <- unique(df_bam)
 
         # merge the two dfs
         df <- dplyr::inner_join(df_fast5, df_bam, by='read_id')
@@ -47,7 +45,7 @@ find_cdna_tails <- function(fast5_dir, alignment_bam_file,
         # write to file
         data.table::fwrite(df_polya, polya_cadidates_file_path)
         data.table::fwrite(df_polyt, polyt_cadidates_file_path)
-        message('Done!\n')
+        message('Completed step 2 successfully!\n')
     }else {
         # load files from disk
         message('Step 1: Extracting read IDs from Fast5 files (SKIPPED)\r')
@@ -72,21 +70,22 @@ find_cdna_tails <- function(fast5_dir, alignment_bam_file,
     # find poly(A) and poly(T) tails
     if (tails == 'polyA' | tails == 'both'){
         message('Step 3: Finding Poly(A) tails in forward strand reads\r')
-        polya_tails <- find_cdna_polya_tails_batch_parallel(df_polya$file_path,
+        polya_tails <- find_cdna_polya_tails_batch_mclapply(df_polya$file_path,
                                                             save_dir=save_dir,
                                                             csv_file_name=csv_file_name,
                                                             save_plots=save_plots,
                                                             show_plots=FALSE,
                                                             num_cores=num_cores)
-        polya_tails <- data.frame(polya_tails)
         # include mapping information in the results
-        polya_tails$read_id <- as.character(polya_tails$read_id)
         polya_tails <- dplyr::inner_join(polya_tails,
                                          dplyr::select(df_polya, bam_mapping_quality, read_id),
                                          by='read_id')
         polya_tails <- unique(polya_tails)
         data.table::fwrite(polya_tails, file.path(save_dir, poly_a_csv_file_name))
-        message('Done!\n')
+        message('Poly(A) tail metadata has been saved in the following file:')
+        message(file.path(save_dir, poly_a_csv_file_name))
+
+        message('Completed step 3 successfully!\n')
 
     }
 
@@ -96,21 +95,26 @@ find_cdna_tails <- function(fast5_dir, alignment_bam_file,
         } else {
             message('Step 3: Finding Poly(T) tails in reverse strand reads')
         }
-        polyt_tails <- find_cdna_polyt_tails_batch_parallel(df_polyt$file_path,
+        polyt_tails <- find_cdna_polyt_tails_batch_mclapply(df_polyt$file_path,
                                                             save_dir=save_dir,
                                                             csv_file_name=csv_file_name,
                                                             save_plots=save_plots,
                                                             show_plots=FALSE,
                                                             num_cores=num_cores)
-        polyt_tails <- data.frame(polyt_tails)
         # include mapping information in the results
-        polyt_tails$read_id <- as.character(polyt_tails$read_id)
         polyt_tails <- dplyr::inner_join(polyt_tails,
                                          dplyr::select(df_polyt, bam_mapping_quality, read_id),
                                          by='read_id')
         polyt_tails <- unique(polyt_tails)
         data.table::fwrite(polyt_tails, file.path(save_dir, poly_t_csv_file_name))
-        message('Done!\n')
+        message('Poly(T) tail metadata has been saved in the following file:')
+        message(file.path(save_dir, poly_t_csv_file_name))
+
+        if (tails == 'both'){
+            message('Completed step 4 successfully!\n')
+        } else {
+            message('Completed step 3 successfully!\n')
+        }
     }
 
 }
