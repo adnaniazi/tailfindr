@@ -57,6 +57,8 @@ find_cdna_polya_tail_per_read <- function(file_path,
 
     # find ploy(A) tail
     cdna_poly_a_read_type <- ''
+    non_poly_a_seq_start <- NA
+    non_poly_a_seq_end <- NA
 
     # case X
     # file: 1.fast5
@@ -79,6 +81,8 @@ find_cdna_polya_tail_per_read <- function(file_path,
         pri_poly_a_end <- rle_indices[(len_rle-1)]
         pri_poly_a_fastq <- extract_fastq_in_interval(read_data$event_data, pri_poly_a_start, pri_poly_a_end)
         cdna_poly_a_read_type <- '..010'
+        non_poly_a_seq_start <- rle_indices[(len_rle-3)]
+        non_poly_a_seq_end <- pri_poly_a_start - 1
 
         # find the first secondary tail
         if (len_rle > 4) {
@@ -93,6 +97,9 @@ find_cdna_polya_tail_per_read <- function(file_path,
                 gap1_end <- pri_poly_a_start - 1
                 gap1_fastq <- extract_fastq_in_interval(read_data$event_data, gap1_start, gap1_end)
                 cdna_poly_a_read_type <- '..01010'
+                non_poly_a_seq_start <- rle_indices[(len_rle-5)]
+                non_poly_a_seq_end <- sec1_poly_a_start - 1
+
                 # if first secondary tails is found, then find the second secondary tail
                 if (len_rle > 6) {
                     # if we have a small gap then we a have the first secondary poly-a tail
@@ -106,6 +113,8 @@ find_cdna_polya_tail_per_read <- function(file_path,
                         gap2_end <- sec1_poly_a_start - 1
                         gap2_fastq <- extract_fastq_in_interval(read_data$event_data, gap2_start, gap2_end)
                         cdna_poly_a_read_type <- '..0101010'
+                        non_poly_a_seq_start <- rle_indices[(len_rle-7)]
+                        non_poly_a_seq_end <- sec2_poly_a_start - 1
                     }
                 }
             }
@@ -125,6 +134,8 @@ find_cdna_polya_tail_per_read <- function(file_path,
         pri_poly_a_end <- rle_indices[(len_rle)]
         pri_poly_a_fastq <- extract_fastq_in_interval(read_data$event_data, pri_poly_a_start, pri_poly_a_end)
         cdna_poly_a_read_type <- 'adaptor01'
+        non_poly_a_seq_start <- rle_indices[(len_rle-2)]
+        non_poly_a_seq_end <- pri_poly_a_start - 1
     }
 
     # find the adaptor attached to the end of primary poly(A) tail by
@@ -144,6 +155,13 @@ find_cdna_polya_tail_per_read <- function(file_path,
         tail_adaptor <- NA
         has_valid_poly_a_tail <- FALSE
     }
+
+    # Calculate the length of non-poly-A region
+    # This information can be used to find the dwell time per basepair
+    if (!is.na(non_poly_a_seq_start)) {
+        moves_in_non_poly_a_region <- extract_moves_in_interval(read_data$event_data, non_poly_a_seq_start, non_poly_a_seq_end)
+    }
+
 
     if (show_plots || save_plots){
         df = data.frame(x=c(1:length(read_data$raw_data)),
@@ -245,6 +263,10 @@ find_cdna_polya_tail_per_read <- function(file_path,
                  sec2_poly_a_start=sec2_poly_a_start,
                  sec2_poly_a_end=sec2_poly_a_end,
                  sec2_poly_a_fastq=sec2_poly_a_fastq,
+
+                 non_poly_a_seq_start = non_poly_a_seq_start,
+                 non_poly_a_seq_end = non_poly_a_seq_end,
+                 moves_in_non_poly_a_region = moves_in_non_poly_a_region,
 
                  sampling_rate=sampling_rate,
                  cdna_poly_a_read_type=cdna_poly_a_read_type,

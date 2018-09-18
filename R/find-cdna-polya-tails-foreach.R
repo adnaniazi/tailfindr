@@ -4,7 +4,7 @@
 #' for poly(A) tails in these reads, and then returns a dataframe that contains
 #' the data about poly-(A) tails found
 #'
-#' @param fast5_files_list a character string.
+#' @param fast5_files_list a character list.
 #' @param save_dir a character string. Path of the directory in which to save the
 #' results csv file and plots (optional)
 #' @param csv_file_name a character string. Name of the csv file in which to store the results.
@@ -15,12 +15,12 @@
 #' option to TRUE could cause the algorithm to run very slowly.
 #' @param num_cores
 #'
-#' @return A dataframe containing information about poly(T) tail lengths of each read
+#' @return A dataframe containing information about poly(A) tail lengths of each read
 #' @export
 #'
 #' @examples
-#' df <- find_cdna_polyt_tails_batch_parallel('/FORWARD/STRAND/FAST5/FILES/DIRECTORY', 'SAVE/DIR', 'polya-tail-data.csv')
-find_cdna_polyt_tails_batch_parallel <- function(fast5_files_list,
+#' df <- find_cdna_polya_tails_batch_parallel('/FORWARD/STRAND/FAST5/FILES/DIRECTORY', 'SAVE/DIR', 'polya-tail-data.csv')
+find_cdna_polya_tails_foreach <- function(fast5_files_list,
                                                  save_dir,
                                                  csv_file_name,
                                                  save_plots=FALSE,
@@ -40,34 +40,49 @@ find_cdna_polyt_tails_batch_parallel <- function(fast5_files_list,
     message('\t  Done!')
 
     #loop
-    message('\t- Searching for Poly(T) tails...\r')
-    ls2<-foreach::foreach(file_path = fast5_files_list, .combine='rbind', .options.snow=opts) %dopar% {
+    message('\t- Searching for Poly(A) tails...\r')
+    mcoptions <- list(preschedule=FALSE, set.seed=FALSE, cleanup=TRUE)
+    data_list <-foreach::foreach(file_path = fast5_files_list,
+                                 .combine = 'rbind',
+                                 .options.snow = opts,
+                                 .options.multicore = mcoptions) %dopar% {
         tryCatch({
-            find_cdna_polyt_tail_per_read(file_path,
+            find_cdna_polya_tail_per_read(file_path,
                                           show_plots=show_plots,
                                           save_plots=save_plots,
                                           save_dir=save_dir)
         },
         error=function(e){
             ls <- list(read_id=NA,
-                       pri_poly_t_start=NA,
-                       pri_poly_t_end=NA,
+                       pri_poly_a_start=NA,
+                       pri_poly_a_end=NA,
+                       pri_poly_a_fastq=NA,
                        gap1_start=NA,
                        gap1_end=NA,
-                       sec1_poly_t_start=NA,
-                       sec1_poly_t_end=NA,
+                       gap1_fastq=NA,
+                       sec1_poly_a_start=NA,
+                       sec1_poly_a_end=NA,
+                       sec1_poly_a_fastq=NA,
                        gap2_start=NA,
                        gap2_end=NA,
-                       sec2_poly_t_start=NA,
-                       sec2_poly_t_end=NA,
+                       gap2_fastq=NA,
+                       sec2_poly_a_start=NA,
+                       sec2_poly_a_end=NA,
+                       sec2_poly_a_fastq=NA,
+                       non_poly_a_seq_start = NA,
+                       non_poly_a_seq_end = NA,
+                       moves_in_non_poly_a_region = NA,
                        sampling_rate=NA,
-                       cdna_poly_t_read_type='Fatal Error',
+                       cdna_poly_a_read_type='Fatal Error',
                        tail_adaptor=NA,
-                       has_valid_poly_t_tail <- FALSE,
+                       has_valid_poly_a_tail=FALSE,
                        file_path=file_path)
         })
     }
     close(pb)
     parallel::stopCluster(cl)
-    return(ls2)
+
+    data_list <- data.frame(data_list)
+    data_list$read_id <- as.character(data_list$read_id)
+    return(data_list)
 }

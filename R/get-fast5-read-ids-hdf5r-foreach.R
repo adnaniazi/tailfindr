@@ -1,4 +1,4 @@
-get_fast5_read_ids_parallel_hdf5r <- function(fast5_dir, num_cores=1){
+get_fast5_read_ids_hdf5r_foreach <- function(fast5_dir, num_cores=1){
     # recursively search for fast5 files
     message('\t- Searching for all Fast5 files...\r')
     fast5_files_list <- list.files(path=fast5_dir,
@@ -23,7 +23,11 @@ get_fast5_read_ids_parallel_hdf5r <- function(fast5_dir, num_cores=1){
 
     #loop
     message('\t- Extracting read IDs...\r')
-    list_data <- foreach::foreach(file_path = fast5_files_list, .combine='rbind', .options.snow=opts) %dopar% {
+    mcoptions <- list(preschedule=FALSE, set.seed=FALSE, cleanup=TRUE)
+    list_data <- foreach::foreach(file_path = fast5_files_list,
+                                  .combine='rbind',
+                                  .options.snow=opts,
+                                  .options.multicore = mcoptions) %dopar% {
         tryCatch({
             read_id_path <- get_fast5_read_id_hdf5r(file_path)
         },

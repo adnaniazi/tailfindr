@@ -1,5 +1,6 @@
 rm(list=ls())
 #file_path <- '/Home/ii/adnann/code/tailfinder/data-raw/cdna-polyt-reads/1.fast5'
-file_path <- '/Users/adnaniazi/Documents/phd/code/tailfinder/data-raw/cdna-polyt-reads/53.fast5'
-find_cdna_polyt_tail_per_read(file_path, save_plots=FALSE, show_plots=TRUE, save_dir='~')
+file_path <- '/export/valenfs/data/processed_data/MinION/20180516_1429_polya_cdna_shield_run1/basecalled_data/workspace/pass/0/sars_HP_Z240_Tower_Workstation_20180516_FAH88184_MN21607_sequencing_run_shield1_97778_read_120_ch_160_strand.fast5'
+#file_path <- '/Users/adnaniazi/Documents/phd/code/tailfinder/data-raw/cdna-polyt-reads/52.fast5'
+a <- find_cdna_polyt_tail_per_read(file_path, save_plots=FALSE, show_plots=TRUE, save_dir='~')
 

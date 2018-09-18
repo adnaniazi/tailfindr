@@ -1,3 +1,4 @@
 rm(list=ls())
-file_path <- '/Home/ii/adnann/code/tailfinder/data-raw/cdna-polya-reads/3.fast5'
+#file_path <- '/Home/ii/adnann/code/tailfinder/data-raw/cdna-polya-reads/28.fast5'
+file_path <- '/export/valenfs/data/processed_data/MinION/20180516_1429_polya_cdna_shield_run1/basecalled_data/workspace/pass/0/sars_HP_Z240_Tower_Workstation_20180516_FAH88184_MN21607_sequencing_run_shield1_97778_read_26_ch_303_strand.fast5'
 a <- find_cdna_polya_tail_per_read(file_path, save_plots=TRUE, show_plots=TRUE, save_dir='~')

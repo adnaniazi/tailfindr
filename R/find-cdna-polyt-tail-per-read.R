@@ -56,6 +56,8 @@ find_cdna_polyt_tail_per_read <- function(file_path,
     read_length <- length(read_data$raw_data)
 
     cdna_poly_t_read_type <- ''
+    non_poly_t_seq_start <- NA
+    non_poly_t_seq_end <- NA
 
     if (rle_values[1]){
         # ignore the bullshit poly(T) looking stuff at the beginning
@@ -81,6 +83,8 @@ find_cdna_polyt_tail_per_read <- function(file_path,
                                                       pri_poly_t_start,
                                                       pri_poly_t_end)
         cdna_poly_t_read_type <- paste(cdna_poly_t_read_type_begin, 'adaptor10', sep = '')
+        non_poly_t_seq_start <- pri_poly_t_end + 1
+        non_poly_t_seq_end <- rle_indices[rle_start+2]
 
         # find the first secondary tail
         if (len_rle >= 5 && !rle_values[rle_start+2] && rle_values[rle_start+3] &&
@@ -96,6 +100,8 @@ find_cdna_polyt_tail_per_read <- function(file_path,
                                                     gap1_start,
                                                     gap1_end)
             cdna_poly_t_read_type <- paste(cdna_poly_t_read_type_begin, '10', sep = '')
+            non_poly_t_seq_start <- sec1_poly_t_end + 1
+            non_poly_t_seq_end <-  rle_indices[rle_start+4]
 
             # find the second secondary tail
             if (len_rle >= 7 && !rle_values[rle_start] && rle_values[rle_start+1] &&
@@ -111,6 +117,8 @@ find_cdna_polyt_tail_per_read <- function(file_path,
                                                         gap2_start,
                                                         gap2_end)
                 cdna_poly_t_read_type <- paste(cdna_poly_t_read_type_begin, '10', sep = '')
+                non_poly_t_seq_start <- sec2_poly_t_end + 1
+                non_poly_t_seq_end <-  rle_indices[rle_start+6]
             }
         }
     }
@@ -131,6 +139,12 @@ find_cdna_polyt_tail_per_read <- function(file_path,
     } else {
         tail_adaptor <- NA
         has_valid_poly_t_tail <- FALSE
+    }
+
+    # Calculate the length of non-poly-T region
+    # This information can be used to find the dwell time per basepair
+    if (!is.na(non_poly_t_seq_start)) {
+        moves_in_non_poly_t_region <- extract_moves_in_interval(read_data$event_data, non_poly_t_seq_start, non_poly_t_seq_end)
     }
 
     if (show_plots || save_plots){
@@ -234,6 +248,10 @@ find_cdna_polyt_tail_per_read <- function(file_path,
                  sec2_poly_t_start=sec2_poly_t_start,
                  sec2_poly_t_end=sec2_poly_t_end,
                  sec2_poly_t_fastq=sec2_poly_t_fastq,
+
+                 non_poly_t_seq_start = non_poly_t_seq_start,
+                 non_poly_t_seq_end = non_poly_t_seq_end,
+                 moves_in_non_poly_t_region = moves_in_non_poly_t_region,
 
                  sampling_rate=sampling_rate,
                  cdna_poly_t_read_type=cdna_poly_t_read_type,

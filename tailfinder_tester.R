@@ -1,6 +1,6 @@
 rm(list=ls())
 start.time <- Sys.time()
-
+library(tailfinder)
 #fast5_dir <- '/Users/adnaniazi/mnt/kjempetuja/export/valenfs/data/processed_data/MinION/20180516_1429_polya_cdna_shield_run1/basecalled_data/workspace/pass/0'
 fast5_dir <- '/export/valenfs/data/processed_data/MinION/20180516_1429_polya_cdna_shield_run1/basecalled_data/workspace/pass/'
 #fast5_dir <- '/Users/adnaniazi/Documents/phd/delete/1'
@@ -13,7 +13,7 @@ poly_t_csv_file_name <- 'polyt-tails.csv'
 
 save_plots <- FALSE
 num_cores <- 120
-find_cdna_tails(fast5_dir=fast5_dir,
+find_cdna_tails_foreach(fast5_dir=fast5_dir,
                 alignment_bam_file=alignment_bam_file,
                 tails='both',
                 save_dir=save_dir,
