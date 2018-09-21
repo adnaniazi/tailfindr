@@ -58,6 +58,7 @@ find_cdna_polyt_tail_per_read <- function(file_path,
     cdna_poly_t_read_type <- ''
     non_poly_t_seq_start <- NA
     non_poly_t_seq_end <- NA
+    moves_in_non_poly_t_region <- NA
 
     if (rle_values[1]){
         # ignore the bullshit poly(T) looking stuff at the beginning

@@ -59,6 +59,7 @@ find_cdna_polya_tail_per_read <- function(file_path,
     cdna_poly_a_read_type <- ''
     non_poly_a_seq_start <- NA
     non_poly_a_seq_end <- NA
+    moves_in_non_poly_a_region <- NA
 
     # case X
     # file: 1.fast5
@@ -81,7 +82,11 @@ find_cdna_polya_tail_per_read <- function(file_path,
         pri_poly_a_end <- rle_indices[(len_rle-1)]
         pri_poly_a_fastq <- extract_fastq_in_interval(read_data$event_data, pri_poly_a_start, pri_poly_a_end)
         cdna_poly_a_read_type <- '..010'
-        non_poly_a_seq_start <- rle_indices[(len_rle-3)]
+        if (length(rle_indices)==3){
+            non_poly_a_seq_start <- 0
+        } else {
+            non_poly_a_seq_start <- rle_indices[(len_rle-3)]
+        }
         non_poly_a_seq_end <- pri_poly_a_start - 1
 
         # find the first secondary tail
@@ -97,7 +102,11 @@ find_cdna_polya_tail_per_read <- function(file_path,
                 gap1_end <- pri_poly_a_start - 1
                 gap1_fastq <- extract_fastq_in_interval(read_data$event_data, gap1_start, gap1_end)
                 cdna_poly_a_read_type <- '..01010'
-                non_poly_a_seq_start <- rle_indices[(len_rle-5)]
+                if (length(rle_indices)==5){
+                    non_poly_a_seq_start <- 0
+                } else {
+                    non_poly_a_seq_start <- rle_indices[(len_rle-5)]
+                }
                 non_poly_a_seq_end <- sec1_poly_a_start - 1
 
                 # if first secondary tails is found, then find the second secondary tail
@@ -113,7 +122,11 @@ find_cdna_polya_tail_per_read <- function(file_path,
                         gap2_end <- sec1_poly_a_start - 1
                         gap2_fastq <- extract_fastq_in_interval(read_data$event_data, gap2_start, gap2_end)
                         cdna_poly_a_read_type <- '..0101010'
-                        non_poly_a_seq_start <- rle_indices[(len_rle-7)]
+                        if (length(rle_indices)==7){
+                            non_poly_a_seq_start <- 0
+                        } else {
+                            non_poly_a_seq_start <- rle_indices[(len_rle-7)]
+                        }
                         non_poly_a_seq_end <- sec2_poly_a_start - 1
                     }
                 }
