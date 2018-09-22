@@ -60,6 +60,33 @@ find_cdna_polyt_tail_per_read <- function(file_path,
     non_poly_t_seq_end <- NA
     moves_in_non_poly_t_region <- NA
 
+    # Do  a second pass with smaller windows to capture shorter tail that the wider window migth have missed
+    if (length(rle_values) <= 2) {
+        # smoothen the data
+        POLY_T_CDNA_MOVING_WINDOW_SIZE <- POLY_T_CDNA_MOVING_WINDOW_SIZE/4
+        smoothed_data_1 <- left_to_right_sliding_window_cdna_polyt('mean', truncated_data, POLY_T_CDNA_MOVING_WINDOW_SIZE, 1)
+        smoothed_data_2 <- right_to_left_sliding_window_cdna_polyt('mean', truncated_data, POLY_T_CDNA_MOVING_WINDOW_SIZE, 1)
+        smoothed_data_3 <- pmin(smoothed_data_1, smoothed_data_2)
+        smoothed_data <- smoothed_data_3
+
+        # find intersections with the threshold
+        intersections <- smoothed_data < POLY_T_CNDA_THRESHOLD
+        rle_intersections <- rle(intersections)
+
+        # merge small intervals in RLE into the bigger intervals
+        rle_intersections <- merge_small_rle_intervals(rle_intersections, threshold=20)
+
+        # smoothen the rle, ie remove kinks in it prduced due to the two overlapping windows
+        smoothed_rle_intersections <- smoothen_rle_intersections(rle_intersections)
+        smoothed_rle_intersections <- smoothen_rle_intersections(smoothed_rle_intersections)
+
+        rle_lengths <- smoothed_rle_intersections$lengths
+        rle_values <- smoothed_rle_intersections$values
+        rle_indices <- cumsum(rle_lengths)
+        len_rle <- length(rle_values)
+    }
+
+
     if (rle_values[1]){
         # ignore the bullshit poly(T) looking stuff at the beginning
         rle_start <- 2

@@ -67,7 +67,30 @@ find_cdna_polya_tail_per_read <- function(file_path,
     # lengths: int [1:2] 946 14784
     # values : logi [1:2] TRUE FALSE
     if (len_rle <= 2){
-        cdna_poly_a_read_type <- 'adaptor0'
+        # Do  a second pass with smaller windows to capture shorter tail that the wider window migth have missed
+        cdna_poly_a_read_type <- 'second-round'
+        POLY_A_CDNA_MOVING_WINDOW_SIZE <- POLY_A_CDNA_MOVING_WINDOW_SIZE/4
+        # smoothen the data
+        smoothed_data_1 <- left_to_right_sliding_window_cdna_polya('mean', truncated_data, POLY_A_CDNA_MOVING_WINDOW_SIZE, 1)
+        smoothed_data_2 <- right_to_left_sliding_window_cdna_polya('mean', truncated_data, POLY_A_CDNA_MOVING_WINDOW_SIZE, 1)
+        smoothed_data_3 <- pmin(smoothed_data_1, smoothed_data_2)
+        smoothed_data <- smoothed_data_3
+
+        # find intersections with the threshold
+        intersections <- smoothed_data < POLY_A_CNDA_THRESHOLD
+        rle_intersections <- rle(intersections)
+
+        # merge small intervals in RLE into the bigger intervals
+        rle_intersections <- merge_small_rle_intervals(rle_intersections, threshold=20)
+
+        # smoothen the rle, ie remove kinks in it prduced due to the two overlapping windows
+        smoothed_rle_intersections <- smoothen_rle_intersections(rle_intersections)
+        smoothed_rle_intersections <- smoothen_rle_intersections(smoothed_rle_intersections)
+
+        rle_lengths <- smoothed_rle_intersections$lengths
+        rle_values <- smoothed_rle_intersections$values
+        rle_indices <- cumsum(rle_lengths)
+        len_rle <- length(rle_values)
     }
 
     # case X
@@ -76,7 +99,7 @@ find_cdna_polya_tail_per_read <- function(file_path,
     # bullshit(FALSE) --> pri_polyA(TRUE) --> bullshit(FALSE) of some length> POLY_A_CDNA_SEC_POLY_A_MAX_GAP
     # $lengths: 1901 9877  734  360
     # $values:TRUE FALSE  TRUE FALSE
-    else if (!rle_values[len_rle] && rle_values[(len_rle-1)] &&
+    if (!rle_values[len_rle] && rle_values[(len_rle-1)] &&
              !rle_values[(len_rle-2)]){
         pri_poly_a_start <- rle_indices[(len_rle-2)]
         pri_poly_a_end <- rle_indices[(len_rle-1)]
