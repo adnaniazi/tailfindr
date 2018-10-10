@@ -13,7 +13,7 @@ find_cdna_polyt_tail_per_read <- function(file_path,
                                           save_dir='~'){
 
     # Empirical parameters
-    POLY_T_CNDA_THRESHOLD <- 0.30
+    POLY_T_CNDA_THRESHOLD <- 0.20
     POLY_T_CNDA_SPIKE_THRESHOLD <- 2.0
     POLY_T_CDNA_SEC_POLY_A_MAX_GAP <- 1200
     POLY_T_CDNA_MOVING_WINDOW_SIZE <- 120
@@ -64,6 +64,7 @@ find_cdna_polyt_tail_per_read <- function(file_path,
     if (length(rle_values) <= 2) {
         # smoothen the data
         POLY_T_CDNA_MOVING_WINDOW_SIZE <- POLY_T_CDNA_MOVING_WINDOW_SIZE/4
+        POLY_T_CNDA_THRESHOLD <- POLY_T_CNDA_THRESHOLD
         smoothed_data_1 <- left_to_right_sliding_window_cdna_polyt('mean', truncated_data, POLY_T_CDNA_MOVING_WINDOW_SIZE, 1)
         smoothed_data_2 <- right_to_left_sliding_window_cdna_polyt('mean', truncated_data, POLY_T_CDNA_MOVING_WINDOW_SIZE, 1)
         smoothed_data_3 <- pmin(smoothed_data_1, smoothed_data_2)
