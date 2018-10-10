@@ -18,7 +18,7 @@ find_cdna_polyt_tail_per_read <- function(file_path,
     POLY_T_CDNA_SEC_POLY_A_MAX_GAP <- 1200
     POLY_T_CDNA_MOVING_WINDOW_SIZE <- 120
 
-    # read the FAST5 data
+    # Read the FAST5 data
     read_data <- extract_read_data_hdf5r(file_path)
     sampling_rate <- read_data$sampling_rate
 
