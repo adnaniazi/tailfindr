@@ -6,7 +6,7 @@ extract_fastq_in_interval <- function(event_data, start, end){
     i <- row_index_start
     fastq_bases <- ''
 
-    # make a fastq sequence at the most 28 bases long
+    # make a fastq sequence
     while (i <= row_index_end){
         if (i == row_index_start){
             fastq_bases <- event_data$model_state[i]

@@ -4,4 +4,4 @@ rm(list=ls())
 folder_path <- '/export/valenfs/data/processed_data/MinION/20180918_max_cdna_256_polya/demultiplexed_gfp_spikeins/poly_a_reads_100_percent_match_threshold/fished_out_reads/_10bp_reads/pass/0/'
 
 file_path <- list.files(path=folder_path, full.names = TRUE)
-a <- find_cdna_polya_tail_per_read(file_path[10], save_plots=TRUE, show_plots=TRUE, save_dir='~')
+a <- find_cdna_polya_tail_per_read(file_path[13], save_plots=TRUE, show_plots=TRUE, save_dir='~')
