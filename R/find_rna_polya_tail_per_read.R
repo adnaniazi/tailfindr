@@ -117,17 +117,18 @@ find_rna_polya_tail_per_read <- function(file_path,
             if (plot_debug) {
                 p <- p + ggplot2::geom_line(ggplot2::aes(y = moves)) +
                 ggplot2::geom_hline(yintercept=POLY_A_RNA_THRESHOLD, color = "black") +
+                ggplot2::geom_line(ggplot2::aes(y = slope, color = "red")) +
                 ggplot2::geom_hline(yintercept=-POLY_A_RNA_THRESHOLD, color = "black") +
                 ggplot2::scale_x_continuous(limits = c(1, ceiling(length(smoothed_data_1)/1)))
             }
             if (!is.na(precise_polya_boundries$start)) {
                 p <- p + ggplot2::geom_line(ggplot2::aes(y = c(rep(NA, times=precise_polya_boundries$start-1),
                                                                truncated_data[precise_polya_boundries$start:precise_polya_boundries$end],
-                                                               rep(NA, times=(read_length-precise_polya_boundries$end)))), color='red') +
-                ggplot2::scale_colour_manual(values =c('red'='red', 'blue'='blue'), labels = c('Poly(A) tail','Normalized windsorized data'))
+                                                               rep(NA, times=(read_length-precise_polya_boundries$end)))), color='red')
             }
             if (plot_debug){
-                p <- p + ggplot2::geom_line(ggplot2::aes(y = smoothed_data_3), color='orange')
+                p <- p + ggplot2::geom_line(ggplot2::aes(y = smoothed_data_3), color='orange') +
+                ggplot2::geom_line(ggplot2::aes(y = mean_data, color = "green"))
             }
             p <- p + ggplot2::ggtitle(filename) +
                 ggplot2::xlab('Sample index') +
