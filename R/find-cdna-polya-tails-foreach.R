@@ -21,11 +21,11 @@
 #' @examples
 #' df <- find_cdna_polya_tails_batch_parallel('/FORWARD/STRAND/FAST5/FILES/DIRECTORY', 'SAVE/DIR', 'polya-tail-data.csv')
 find_cdna_polya_tails_foreach <- function(fast5_files_list,
-                                                 save_dir,
-                                                 csv_file_name,
-                                                 save_plots=FALSE,
-                                                 show_plots=FALSE,
-                                                 num_cores=1){
+                                          save_dir,
+                                          csv_file_name,
+                                          save_plots=FALSE,
+                                          show_plots=FALSE,
+                                          num_cores=1){
 
     message('\t- Starting a parallel cluster...\r')
     # Initiate cluster
@@ -46,39 +46,39 @@ find_cdna_polya_tails_foreach <- function(fast5_files_list,
                                  .combine = 'rbind',
                                  .options.snow = opts,
                                  .options.multicore = mcoptions) %dopar% {
-        tryCatch({
-            find_cdna_polya_tail_per_read(file_path,
-                                          show_plots=show_plots,
-                                          save_plots=save_plots,
-                                          save_dir=save_dir)
-        },
-        error=function(e){
-            ls <- list(read_id=NA,
-                       pri_poly_a_start=NA,
-                       pri_poly_a_end=NA,
-                       pri_poly_a_fastq=NA,
-                       gap1_start=NA,
-                       gap1_end=NA,
-                       gap1_fastq=NA,
-                       sec1_poly_a_start=NA,
-                       sec1_poly_a_end=NA,
-                       sec1_poly_a_fastq=NA,
-                       gap2_start=NA,
-                       gap2_end=NA,
-                       gap2_fastq=NA,
-                       sec2_poly_a_start=NA,
-                       sec2_poly_a_end=NA,
-                       sec2_poly_a_fastq=NA,
-                       non_poly_a_seq_start = NA,
-                       non_poly_a_seq_end = NA,
-                       moves_in_non_poly_a_region = NA,
-                       sampling_rate=NA,
-                       cdna_poly_a_read_type='Fatal Error',
-                       tail_adaptor=NA,
-                       has_valid_poly_a_tail=FALSE,
-                       file_path=file_path)
-        })
-    }
+                                     tryCatch({
+                                         find_cdna_polya_tail_per_read(file_path,
+                                                                       show_plots=show_plots,
+                                                                       save_plots=save_plots,
+                                                                       save_dir=save_dir)
+                                     },
+                                     error=function(e){
+                                         ls <- list(read_id=NA,
+                                                    pri_poly_a_start=NA,
+                                                    pri_poly_a_end=NA,
+                                                    pri_poly_a_fastq=NA,
+                                                    gap1_start=NA,
+                                                    gap1_end=NA,
+                                                    gap1_fastq=NA,
+                                                    sec1_poly_a_start=NA,
+                                                    sec1_poly_a_end=NA,
+                                                    sec1_poly_a_fastq=NA,
+                                                    gap2_start=NA,
+                                                    gap2_end=NA,
+                                                    gap2_fastq=NA,
+                                                    sec2_poly_a_start=NA,
+                                                    sec2_poly_a_end=NA,
+                                                    sec2_poly_a_fastq=NA,
+                                                    non_poly_a_seq_start = NA,
+                                                    non_poly_a_seq_end = NA,
+                                                    moves_in_non_poly_a_region = NA,
+                                                    sampling_rate=NA,
+                                                    cdna_poly_a_read_type='Fatal Error',
+                                                    tail_adaptor=NA,
+                                                    has_valid_poly_a_tail=FALSE,
+                                                    file_path=file_path)
+                                     })
+                                 }
     close(pb)
     parallel::stopCluster(cl)
 

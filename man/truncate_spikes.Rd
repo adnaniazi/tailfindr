@@ -9,7 +9,7 @@ truncate_spikes(data, spike_threshold)
 \arguments{
 \item{data}{Data that needs its spikes to be truncated}
 
-\item{spike_threshold}{Threshold above which spikes will be clipped}
+\item{spike_threshold}{Threshold beyond which spikes will be clipped}
 }
 \value{
 Same data as input but with spikes clipped

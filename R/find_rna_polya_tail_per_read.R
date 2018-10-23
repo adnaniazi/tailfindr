@@ -177,7 +177,6 @@ find_rna_polya_tail_per_read <- function(file_path,
         }
     }
 
-
     data <- list(read_id=read_data$read_id,
                  poly_a_start=precise_polya_boundries$start,
                  poly_a_end=precise_polya_boundries$end,
