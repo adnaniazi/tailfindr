@@ -257,37 +257,38 @@ find_cdna_polyt_tail_per_read <- function(file_path,
         pri_poly_t_fastq <- NA
     }
 
-    data <- list(read_id=read_data$read_id,
+    data <- list(read_id = read_data$read_id,
 
-                 pri_poly_t_start=pri_poly_t_start,
-                 pri_poly_t_end=pri_poly_t_end,
-                 pri_poly_t_fastq=pri_poly_t_fastq,
+                 pri_poly_t_start = pri_poly_t_start,
+                 pri_poly_t_end = pri_poly_t_end,
+                 pri_poly_t_fastq = pri_poly_t_fastq,
 
-                 gap1_start=gap1_start,
-                 gap1_end=gap1_end,
-                 gap1_fastq=gap1_fastq,
+                 gap1_start = gap1_start,
+                 gap1_end = gap1_end,
+                 gap1_fastq = gap1_fastq,
 
-                 sec1_poly_t_start=sec1_poly_t_start,
-                 sec1_poly_t_end=sec1_poly_t_end,
-                 sec1_poly_t_fastq=sec1_poly_t_fastq,
+                 sec1_poly_t_start = sec1_poly_t_start,
+                 sec1_poly_t_end = sec1_poly_t_end,
+                 sec1_poly_t_fastq = sec1_poly_t_fastq,
 
-                 gap2_start=gap2_start,
-                 gap2_end=gap2_end,
-                 gap2_fastq=gap2_fastq,
+                 gap2_start = gap2_start,
+                 gap2_end = gap2_end,
+                 gap2_fastq = gap2_fastq,
 
-                 sec2_poly_t_start=sec2_poly_t_start,
-                 sec2_poly_t_end=sec2_poly_t_end,
-                 sec2_poly_t_fastq=sec2_poly_t_fastq,
+                 sec2_poly_t_start = sec2_poly_t_start,
+                 sec2_poly_t_end = sec2_poly_t_end,
+                 sec2_poly_t_fastq = sec2_poly_t_fastq,
 
                  non_poly_t_seq_start = non_poly_t_seq_start,
                  non_poly_t_seq_end = non_poly_t_seq_end,
                  moves_in_non_poly_t_region = moves_in_non_poly_t_region,
 
-                 sampling_rate=sampling_rate,
-                 cdna_poly_t_read_type=cdna_poly_t_read_type,
-                 tail_adaptor=tail_adaptor,
-                 has_valid_poly_t_tail=has_valid_poly_t_tail,
-                 file_path=file_path)
+                 sampling_rate = sampling_rate,
+                 cdna_poly_t_read_type = cdna_poly_t_read_type,
+                 tail_adaptor = tail_adaptor,
+                 has_valid_poly_t_tail = has_valid_poly_t_tail,
+                 samples_per_nt = read_data$samples_per_nt,
+                 file_path = file_path)
     return(data)
 }
 

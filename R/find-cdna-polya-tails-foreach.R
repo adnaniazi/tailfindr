@@ -78,6 +78,7 @@ find_cdna_polya_tails_foreach <- function(fast5_files_list,
                                                     cdna_poly_a_read_type='Fatal Error',
                                                     tail_adaptor=NA,
                                                     has_valid_poly_a_tail=FALSE,
+                                                    samples_per_nt = NA,
                                                     file_path=file_path)
                                      })
                                  }

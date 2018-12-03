@@ -309,6 +309,7 @@ find_cdna_polya_tail_per_read <- function(file_path,
                  cdna_poly_a_read_type=cdna_poly_a_read_type,
                  tail_adaptor=tail_adaptor,
                  has_valid_poly_a_tail=has_valid_poly_a_tail,
+                 samples_per_nt = read_data$samples_per_nt,
                  file_path=file_path)
     return(data)
 }
