@@ -21,11 +21,12 @@
 #' @examples
 #' df <- find_cdna_polyt_tails_batch_parallel('/FORWARD/STRAND/FAST5/FILES/DIRECTORY', 'SAVE/DIR', 'polya-tail-data.csv')
 find_cdna_polyt_tails_foreach <- function(fast5_files_list,
-                                                 save_dir,
-                                                 csv_file_name,
-                                                 save_plots=FALSE,
-                                                 show_plots=FALSE,
-                                                 num_cores=1){
+                                          poly_t_adaptor="ACTTGCCTGTCGCTCTATCTTC",
+                                          save_dir,
+                                          csv_file_name,
+                                          save_plots=FALSE,
+                                          show_plots=FALSE,
+                                          num_cores=1){
 
     message('\t- Starting a parallel cluster...\r')
     # Initiate cluster
@@ -48,6 +49,7 @@ find_cdna_polyt_tails_foreach <- function(fast5_files_list,
                                  .options.multicore = mcoptions) %dopar% {
         tryCatch({
             find_cdna_polyt_tail_per_read(file_path,
+                                          poly_t_adaptor=poly_t_adaptor,
                                           show_plots=show_plots,
                                           save_plots=save_plots,
                                           save_dir=save_dir)

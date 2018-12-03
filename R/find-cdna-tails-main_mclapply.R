@@ -13,7 +13,10 @@
 #'
 #' @examples
 find_cdna_tails <- function(fast5_dir, alignment_bam_file,
-                            tails='both', save_dir,
+                            tails='both',
+                            poly_a_adaptor="GAAGATAGAGCGACAGGCAAGT",
+                            poly_t_adaptor="ACTTGCCTGTCGCTCTATCTTC",
+                            save_dir,
                             poly_a_csv_file_name,
                             poly_t_csv_file_name,
                             save_plots=FALSE, num_cores=1){
@@ -71,6 +74,7 @@ find_cdna_tails <- function(fast5_dir, alignment_bam_file,
     if (tails == 'polyA' | tails == 'both'){
         message('Step 3: Finding Poly(A) tails in forward strand reads\r')
         polya_tails <- find_cdna_polya_tails_batch_mclapply(df_polya$file_path,
+                                                            poly_a_adaptor=poly_a_adaptor,
                                                             save_dir=save_dir,
                                                             csv_file_name=csv_file_name,
                                                             save_plots=save_plots,
@@ -96,6 +100,7 @@ find_cdna_tails <- function(fast5_dir, alignment_bam_file,
             message('Step 3: Finding Poly(T) tails in reverse strand reads')
         }
         polyt_tails <- find_cdna_polyt_tails_batch_mclapply(df_polyt$file_path,
+                                                            poly_t_adaptor=poly_t_adaptor,
                                                             save_dir=save_dir,
                                                             csv_file_name=csv_file_name,
                                                             save_plots=save_plots,

@@ -1,4 +1,4 @@
-align_cdna_polyt_adaptor <- function(event_data, pri_poly_t_start, polyt_adaptor="ACTTGCCTGTCGCTCTATCTTC"){
+align_cdna_polyt_adaptor <- function(event_data, pri_poly_t_start, poly_t_adaptor="ACTTGCCTGTCGCTCTATCTTC"){
     # get the row index of the end point of primary poly(A) tail
     row_index <- which.min(abs(event_data$start - pri_poly_t_start))
 
@@ -8,7 +8,7 @@ align_cdna_polyt_adaptor <- function(event_data, pri_poly_t_start, polyt_adaptor
 
     # get the fastq sequence adjacent to the poly(A) tail
     # take 2 bases extra as well
-    adaptor_length <- nchar(polya_adaptor) + 2
+    adaptor_length <- nchar(poly_t_adaptor) + 2
 
     while ((i > 0) & (num_bases < adaptor_length)){
         if (event_data$move[i]==1) {
@@ -29,17 +29,17 @@ align_cdna_polyt_adaptor <- function(event_data, pri_poly_t_start, polyt_adaptor
                                                        mismatch = -1,
                                                        baseOnly = TRUE)
     aln_score <- Biostrings::pairwiseAlignment(pattern=fastq_bases,
-                                               subject=polyt_adaptor,
+                                               subject=poly_t_adaptor,
                                                substitutionMatrix = submat,
                                                type='local',
                                                scoreOnly = TRUE)
 
     # if 6 or more bases match, then we found a good poly(A)tail
     if (aln_score > 5){
-        tail_adaptor <- paste('Tail polyt_adaptor found; aln score: ', aln_score, '; polyt_adaptor seq: ', fastq_bases, sep='')
+        tail_adaptor <- paste('Tail poly_t_adaptor found; aln score: ', aln_score, '; poly_t_adaptor seq: ', fastq_bases, sep='')
         has_valid_poly_t_tail <- TRUE
     } else {
-        tail_adaptor <- paste('Tail polyt_adaptor absent; aln score: ', aln_score, '; polyt_adaptor seq: ', fastq_bases, sep='')
+        tail_adaptor <- paste('Tail poly_t_adaptor absent; aln score: ', aln_score, '; poly_t_adaptor seq: ', fastq_bases, sep='')
         has_valid_poly_t_tail <- FALSE
     }
     return(c(tail_adaptor, has_valid_poly_t_tail))

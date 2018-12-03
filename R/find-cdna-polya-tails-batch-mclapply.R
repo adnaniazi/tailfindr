@@ -21,6 +21,7 @@
 #' @examples
 #' df <- find_cdna_polya_tails_batch_mclapply('/FORWARD/STRAND/FAST5/FILES/DIRECTORY', 'SAVE/DIR', 'polya-tail-data.csv')
 find_cdna_polya_tails_batch_mclapply <- function(fast5_files_list,
+                                                 poly_a_adaptor="GAAGATAGAGCGACAGGCAAGT",
                                                  save_dir,
                                                  csv_file_name,
                                                  save_plots=FALSE,
@@ -52,6 +53,7 @@ find_cdna_polya_tails_batch_mclapply <- function(fast5_files_list,
         reads_subset = fast5_files_list[file_indices]
         message('\t- Processing chunk ', i, ' of ', num_chunks_ceil)
         tmp <- parallel::mclapply(reads_subset, find_cdna_polya_tail_per_read,
+                                  poly_a_adaptor=poly_a_adaptor,
                                   show_plots=show_plots, save_plots=save_plots,
                                   save_dir=save_dir, mc.cores = num_cores)
         #tmp <- 1

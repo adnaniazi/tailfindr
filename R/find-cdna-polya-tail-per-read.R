@@ -8,6 +8,7 @@
 #' @examples
 #' find_cdna_polya_tail_per_read('path/to/fast5/file')
 find_cdna_polya_tail_per_read <- function(file_path,
+                                          poly_a_adaptor="GAAGATAGAGCGACAGGCAAGT",
                                           save_plots=FALSE,
                                           show_plots=FALSE,
                                           save_dir='~'){
@@ -182,7 +183,7 @@ find_cdna_polya_tail_per_read <- function(file_path,
             tail_adaptor <- paste('Tail adaptor absent; aln score: NA; adaptor seq: NA')
             has_valid_poly_a_tail <- FALSE
         } else {
-            ta_hvpat <- align_cdna_polya_adaptor(read_data$event_data, pri_poly_a_end)
+            ta_hvpat <- align_cdna_polya_adaptor(read_data$event_data, pri_poly_a_end, poly_a_adaptor)
             tail_adaptor <- ta_hvpat[1]
             has_valid_poly_a_tail <- ta_hvpat[2]
         }

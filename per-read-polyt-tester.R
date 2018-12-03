@@ -1,7 +1,7 @@
 rm(list=ls())
 #file_path <- '/Home/ii/adnann/code/tailfinder/data-raw/cdna-polyt-reads/1.fast5'
 #file_path <- '/export/valenfs/data/processed_data/MinION/20180516_1429_polya_cdna_shield_run1/basecalled_data/workspace/pass/0/sars_HP_Z240_Tower_Workstation_20180516_FAH88184_MN21607_sequencing_run_shield1_97778_read_120_ch_160_strand.fast5'
-folder_path <- '/export/valenfs/data/processed_data/MinION/20180918_max_cdna_256_polya/demultiplexed_gfp_spikeins/poly_t_reads_100_percent_match_threshold/fished_out_reads/_100bp_reads/pass/0/'
+folder_path <- '~/mnt/kjempetuja/export/valenfs/data/processed_data/MinION/20180918_max_cdna_256_polya/demultiplexed_gfp_spikeins/poly_t_reads_100_percent_match_threshold/fished_out_reads/_100bp_reads/pass/0/'
 #folder_path <- '/export/valenfs/data/processed_data/MinION/20180516_1429_polya_cdna_shield_run1/demultiplexed_gfp_spikeins/poly_t_reads_100_percent_match_threshold/fished_out_reads/_10bp_reads/pass/0/'
 
 file_path <- list.files(path=folder_path, full.names = TRUE)
