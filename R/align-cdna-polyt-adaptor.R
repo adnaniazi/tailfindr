@@ -1,4 +1,4 @@
-align_cdna_polyt_adaptor <- function(event_data, pri_poly_t_start, poly_t_adaptor="ACTTGCCTGTCGCTCTATCTTC"){
+align_cdna_polyt_adaptor <- function(event_data, pri_poly_t_start, poly_a_adaptor="GAAGATAGAGCGACAGGCAAGT"){
     # get the row index of the end point of primary poly(A) tail
     row_index <- which.min(abs(event_data$start - pri_poly_t_start))
 
@@ -24,6 +24,8 @@ align_cdna_polyt_adaptor <- function(event_data, pri_poly_t_start, poly_t_adapto
     if (num_bases == adaptor_length+1) {
         fastq_bases <- substr(fastq_bases, 1, adaptor_length)
     }
+
+    poly_t_adaptor <-  Biostrings::reverseComplement(poly_a_adaptor)
 
     submat <- Biostrings::nucleotideSubstitutionMatrix(match = 1,
                                                        mismatch = -1,
