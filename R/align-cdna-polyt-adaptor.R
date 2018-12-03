@@ -25,8 +25,6 @@ align_cdna_polyt_adaptor <- function(event_data, pri_poly_t_start, poly_t_adapto
         fastq_bases <- substr(fastq_bases, 1, adaptor_length)
     }
 
-    poly_t_adaptor <- Biostrings::complement(DNAString(poly_t_adaptor))
-
     submat <- Biostrings::nucleotideSubstitutionMatrix(match = 1,
                                                        mismatch = -1,
                                                        baseOnly = TRUE)
