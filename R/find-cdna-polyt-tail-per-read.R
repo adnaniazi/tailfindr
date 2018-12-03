@@ -162,8 +162,9 @@ find_cdna_polyt_tail_per_read <- function(file_path,
             has_valid_poly_t_tail <- FALSE
         } else {
             ta_hvptt <- align_cdna_polyt_adaptor(read_data$event_data, pri_poly_t_start, poly_a_adaptor)
-            tail_adaptor <- ta_hvptt[1]
-            has_valid_poly_t_tail <- ta_hvptt[2]
+            tail_adaptor_seq <- ta_hvptt$tail_adaptor_seq
+            tail_adaptor_aln_score <- ta_hvptt$tail_adaptor_aln_score
+            has_valid_poly_t_tail <- ta_hvptt$has_valid_poly_t_tail
         }
 
     } else {
@@ -285,7 +286,8 @@ find_cdna_polyt_tail_per_read <- function(file_path,
 
                  sampling_rate = sampling_rate,
                  cdna_poly_t_read_type = cdna_poly_t_read_type,
-                 tail_adaptor = tail_adaptor,
+                 tail_adaptor_seq = tail_adaptor_seq,
+                 tail_adaptor_aln_score = tail_adaptor_aln_score,
                  has_valid_poly_t_tail = has_valid_poly_t_tail,
                  samples_per_nt = read_data$samples_per_nt,
                  file_path = file_path)

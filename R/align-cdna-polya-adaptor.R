@@ -31,19 +31,20 @@ align_cdna_polya_adaptor <- function(event_data, pri_poly_a_end, poly_a_adaptor=
     submat <- Biostrings::nucleotideSubstitutionMatrix(match = 1,
                                                        mismatch = -1,
                                                        baseOnly = TRUE)
-    aln_score <- Biostrings::pairwiseAlignment(pattern=fastq_bases,
-                                               subject=poly_a_adaptor,
-                                               substitutionMatrix = submat,
-                                               type='local',
-                                               scoreOnly = TRUE)
+    tail_adaptor_aln_score <- Biostrings::pairwiseAlignment(pattern=fastq_bases,
+                                                            subject=poly_a_adaptor,
+                                                            substitutionMatrix = submat,
+                                                            type='local',
+                                                            scoreOnly = TRUE)
 
     # if 6 or more bases match, then we found a good poly(A)tail
-    if (aln_score > 5){
-        tail_adaptor <- paste('Tail poly_a_adaptor found; aln score: ', aln_score, '; poly_a_adaptor seq: ', fastq_bases, sep='')
+    tail_adaptor_seq <- fastq_bases
+    if (tail_adaptor_aln_score > 7){
         has_valid_poly_a_tail <- TRUE
     } else {
-        tail_adaptor <- paste('Tail poly_a_adaptor absent; aln score: ', aln_score, '; poly_a_adaptor seq: ', fastq_bases, sep='')
         has_valid_poly_a_tail <- FALSE
     }
-    return(c(tail_adaptor, has_valid_poly_a_tail))
+    return(list(tail_adaptor_seq = tail_adaptor_seq,
+                tail_adaptor_aln_score = tail_adaptor_aln_score,
+                has_valid_poly_a_tail = has_valid_poly_a_tail))
 }
