@@ -37,8 +37,68 @@ extract_read_data_hdf5r <- function(read_path){
     } else {
         moves_sample_wise_vector <- c(rep(event_data$move*0.25+1.5, each=event_data$length[1]),
                                       rep( NA, length(raw_data) - (utils::tail(event_data$start, n=1)+event_data$length[1])))
-
     }
+
+    # create event length data for tail normalization
+    l <- event_data$length[1]
+    num_events <- length(event_data$start)
+    event_length_vector_1 <-  rep(NA, num_events)
+    event_length_vector_2 <-  rep(NA, num_events)
+    index <- num_events
+    length_count <- 1
+    divide_by <- 1
+
+    # handle the first row of the event data
+    if (event_data$move[1]==1) {
+        event_length_vector_1[1] <- 1
+    } else {
+        event_length_vector_1[index] <- 0.5
+        event_length_vector_2[index] <- 0.5
+    }
+    for(i in (num_events):2) {
+        if (event_data$move[i]==2 & event_data$move[i-1]==0) {
+            # record the index
+            index <- i
+            length_count <- 1
+            divide_by <- 2
+        } else if (event_data$move[i]==1 & event_data$move[i-1]==0) {
+            index <- i
+            length_count <- 1
+            divide_by <- 1
+        } else if (event_data$move[i]==0 & (event_data$move[i-1]==1 | event_data$move[i-1]==2)) {
+            length_count <- length_count + 1
+            # put the previous record
+            if (divide_by == 1) {
+                event_length_vector_1[index] = length_count
+            } else {
+                event_length_vector_1[index] = length_count/2
+                event_length_vector_2[index] = length_count/2
+            }
+        } else if ((event_data$move[i]==2 & event_data$move[i-1]==1) | (event_data$move[i]==2 & event_data$move[i-1]==2)) {
+            event_length_vector_1[i] <- 0.5
+            event_length_vector_2[i] <- 0.5
+        } else if ((event_data$move[i]==1 & event_data$move[i-1]==1) | (event_data$move[i]==1 & event_data$move[i-1]==2))  {
+            event_length_vector_1[i] <- 1
+        } else if  (event_data$move[i]==0 & event_data$move[i-1]==0) {
+            length_count <- length_count + 1
+        }
+    }
+
+    # multiply moves by length of the event (15 for RNA, 5 for DNA)
+    event_length_vector_1 <- event_length_vector_1 * l
+    event_length_vector_2 <- event_length_vector_2 * l
+
+    event_data <- dplyr::select(event_data, start, length, move, model_state)
+    event_data <- cbind(event_data, event_length_vector_1, event_length_vector_2)
+
+    # combine the two vectors
+    event_length_vector <- c(event_length_vector_1, event_length_vector_2)
+
+    # reomve NAs
+    event_length_vector <- event_length_vector[!is.na(event_length_vector)]
+
+    # median
+    samples_per_nt <- median(event_length_vector)
 
     # drop useless columns in event data
     event_data <- dplyr::select(event_data, start, move, model_state)
@@ -51,7 +111,8 @@ extract_read_data_hdf5r <- function(read_path){
                      read_number = read_number,
                      channel_number = channel_number,
                      start_time = start_time,
-                     sampling_rate = sampling_rate)
+                     sampling_rate = sampling_rate,
+                     samples_per_nt = samples_per_nt)
     f5_obj$close_all()
     return(read_data)
 }
