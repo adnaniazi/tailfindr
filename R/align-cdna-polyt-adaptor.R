@@ -45,5 +45,5 @@ align_cdna_polyt_adaptor <- function(event_data, pri_poly_t_start, poly_a_adapto
     }
     return(list(tail_adaptor_seq = tail_adaptor_seq,
                 tail_adaptor_aln_score = tail_adaptor_aln_score,
-                has_valid_poly_t_tail = tail_adaptor_aln_score))
+                has_valid_poly_t_tail = has_valid_poly_t_tail))
 }
