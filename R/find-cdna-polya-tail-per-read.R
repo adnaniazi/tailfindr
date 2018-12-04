@@ -13,18 +13,16 @@ find_cdna_polya_tail_per_read <- function(file_path,
                                           show_plots=FALSE,
                                           save_dir='~'){
 
-    # Empirical parameters
-    POLY_A_CNDA_THRESHOLD <- 0.31
-    POLY_A_CNDA_SPIKE_THRESHOLD <- 2.0
-    POLY_A_CDNA_MOVING_WINDOW_SIZE <- 120
-
     # read the FAST5 data
     read_data <- extract_read_data_hdf5r(file_path)
     sampling_rate <- read_data$sampling_rate
 
     # Empirical parameters
-    # Allow for 40 nt gap only (previously set to 1200 samples)
-    POLY_A_CDNA_SEC_POLY_A_MAX_GAP <- read_data$samples_per_nt * 40
+    POLY_A_CNDA_THRESHOLD <- 0.31
+    POLY_A_CNDA_SPIKE_THRESHOLD <- 2.0
+    POLY_A_CDNA_MOVING_WINDOW_SIZE <- 120
+    POLY_A_CDNA_SEC_POLY_A_MAX_GAP <- 1200
+    POLY_A_CDNA_SEC_POLY_A_MIN_SIZE <- read_data$samples_per_nt * 10
 
     # Z-normalize the data
     norm_data <- z_normalize(read_data$raw_data)
@@ -120,7 +118,8 @@ find_cdna_polya_tail_per_read <- function(file_path,
         if (len_rle > 4) {
             # if we have a small gap then we a have the first secondary poly-a tail
             # file: 0.fast5
-            if ((rle_lengths[(len_rle-2)] < POLY_A_CDNA_SEC_POLY_A_MAX_GAP)&&
+            if ((rle_lengths[(len_rle-2)] < POLY_A_CDNA_SEC_POLY_A_MAX_GAP) &&
+                (rle_lengths[(len_rle-3)] > POLY_A_CDNA_SEC_POLY_A_MIN_SIZE) &&
                 rle_values[(len_rle-3)] && !rle_values[(len_rle-4)]){
                 sec1_poly_a_start <- rle_indices[(len_rle-4)]
                 sec1_poly_a_end <- rle_indices[(len_rle-3)]
@@ -141,6 +140,7 @@ find_cdna_polya_tail_per_read <- function(file_path,
                     # if we have a small gap then we a have the first secondary poly-a tail
                     # file: 0.fast5
                     if ((rle_lengths[(len_rle-4)] < POLY_A_CDNA_SEC_POLY_A_MAX_GAP)&&
+                        (rle_lengths[(len_rle-5)] > POLY_A_CDNA_SEC_POLY_A_MIN_SIZE) &&
                         rle_values[(len_rle-5)] && !rle_values[(len_rle-6)]){
                         sec2_poly_a_start <- rle_indices[(len_rle-6)]
                         sec2_poly_a_end <- rle_indices[(len_rle-5)]

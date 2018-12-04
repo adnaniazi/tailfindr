@@ -13,18 +13,17 @@ find_cdna_polyt_tail_per_read <- function(file_path,
                                           show_plots=FALSE,
                                           save_dir='~'){
 
-    # Empirical parameters
-    POLY_T_CNDA_THRESHOLD <- 0.20
-    POLY_T_CNDA_SPIKE_THRESHOLD <- 2.0
-    POLY_T_CDNA_MOVING_WINDOW_SIZE <- 120
-
     # Read the FAST5 data
     read_data <- extract_read_data_hdf5r(file_path)
     sampling_rate <- read_data$sampling_rate
 
     # Empirical parameters
-    # Allow for 40 nt gap only
-    POLY_T_CDNA_SEC_POLY_T_MAX_GAP <- read_data$samples_per_nt * 40
+    POLY_T_CNDA_THRESHOLD <- 0.20
+    POLY_T_CNDA_SPIKE_THRESHOLD <- 2.0
+    POLY_T_CDNA_MOVING_WINDOW_SIZE <- 120
+    POLY_T_CDNA_SEC_POLY_T_MAX_GAP <- 1200
+    POLY_T_CDNA_SEC_POLY_T_MIN_SIZE <- read_data$samples_per_nt * 10
+
 
     # Z-normalize the data
     norm_data <- z_normalize(read_data$raw_data)
@@ -121,6 +120,7 @@ find_cdna_polyt_tail_per_read <- function(file_path,
 
         # find the first secondary tail
         if (len_rle >= 5 && !rle_values[rle_start+2] && rle_values[rle_start+3] &&
+            rle_lengths[rle_start+3] > POLY_T_CDNA_SEC_POLY_T_MIN_SIZE &&
             rle_lengths[rle_start+2] < POLY_T_CDNA_SEC_POLY_T_MAX_GAP) {
             gap1_start <- pri_poly_t_end + 1
             gap1_end <- rle_indices[rle_start+2] - 1
@@ -138,6 +138,7 @@ find_cdna_polyt_tail_per_read <- function(file_path,
 
             # find the second secondary tail
             if (len_rle >= 7 && !rle_values[rle_start] && rle_values[rle_start+1] &&
+                rle_lengths[rle_start+5] > POLY_T_CDNA_SEC_POLY_T_MIN_SIZE &&
                 rle_lengths[rle_start+4] < POLY_T_CDNA_SEC_POLY_T_MAX_GAP) {
                 gap2_start <- sec1_poly_t_end + 1
                 gap2_end <- rle_indices[rle_start+4] - 1
