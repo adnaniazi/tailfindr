@@ -16,12 +16,15 @@ find_cdna_polya_tail_per_read <- function(file_path,
     # Empirical parameters
     POLY_A_CNDA_THRESHOLD <- 0.31
     POLY_A_CNDA_SPIKE_THRESHOLD <- 2.0
-    POLY_A_CDNA_SEC_POLY_A_MAX_GAP <- 1200
     POLY_A_CDNA_MOVING_WINDOW_SIZE <- 120
 
     # read the FAST5 data
     read_data <- extract_read_data_hdf5r(file_path)
     sampling_rate <- read_data$sampling_rate
+
+    # Empirical parameters
+    # Allow for 40 nt gap only (previously set to 1200 samples)
+    POLY_A_CDNA_SEC_POLY_A_MAX_GAP <- read_data$samples_per_nt * 40
 
     # Z-normalize the data
     norm_data <- z_normalize(read_data$raw_data)

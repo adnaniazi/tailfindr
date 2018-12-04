@@ -30,7 +30,7 @@ find_cdna_polyt_tails_foreach <- function(fast5_files_list,
 
     message('\t- Starting a parallel cluster...\r')
     # Initiate cluster
-    cl <- parallel::makeCluster(num_cores, outfile='')
+    cl <- parallel::makeCluster(num_cores)
     doSNOW::registerDoSNOW(cl)
     `%dopar%` <- foreach::`%dopar%`
 
@@ -55,7 +55,6 @@ find_cdna_polyt_tails_foreach <- function(fast5_files_list,
                                           save_dir=save_dir)
         },
         error=function(e){
-            print(e)
             ls <- list(read_id=NA,
                        pri_poly_t_start=NA,
                        pri_poly_t_end=NA,
