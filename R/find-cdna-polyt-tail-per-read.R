@@ -175,6 +175,9 @@ find_cdna_polyt_tail_per_read <- function(file_path,
     # Calculate the length of non-poly-T region
     # This information can be used to find the dwell time per basepair
     if (!is.na(non_poly_t_seq_start)) {
+        if (is.na(non_poly_t_seq_end)) {
+            non_poly_t_seq_end <- length(norm_data)
+        }
         moves_in_non_poly_t_region <- extract_moves_in_interval(read_data$event_data, non_poly_t_seq_start, non_poly_t_seq_end)
     }
 

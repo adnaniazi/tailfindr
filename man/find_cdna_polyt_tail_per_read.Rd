@@ -4,7 +4,8 @@
 \alias{find_cdna_polyt_tail_per_read}
 \title{Find Poly(T) tail in a single cDNA read. The read must be a poly(A) read.}
 \usage{
-find_cdna_polyt_tail_per_read(file_path, save_plots = FALSE,
+find_cdna_polyt_tail_per_read(file_path,
+  poly_a_adaptor = "GAAGATAGAGCGACAGGCAAGT", save_plots = FALSE,
   show_plots = FALSE, save_dir = "~")
 }
 \arguments{

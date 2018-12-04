@@ -7,5 +7,6 @@ folder_path <- '~/mnt/kjempetuja/export/valenfs/data/processed_data/MinION/20180
 file_path <- list.files(path=folder_path, full.names = TRUE)
 
 #file_path <- '/Users/adnaniazi/Documents/phd/code/tailfinder/data-raw/cdna-polyt-reads/52.fast5'
-a <- find_cdna_polyt_tail_per_read(file_path[50], save_plots=FALSE, show_plots=TRUE, save_dir='~')
+file_path <- '/Users/adnaniazi/mnt/kjempetuja/export/valenfs/data/processed_data/MinION/20181122_dna_pcr_spikeins/basecalled_data/workspace/pass/0/sars_HP_Z240_Tower_Workstation_20181122_FAK23880_MN21607_sequencing_run_all_82961_read_100_ch_208_strand.fast5'
+a <- find_cdna_polyt_tail_per_read(file_path, save_plots=FALSE, show_plots=TRUE, save_dir='~')
 

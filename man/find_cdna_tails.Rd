@@ -4,7 +4,8 @@
 \alias{find_cdna_tails}
 \title{Title}
 \usage{
-find_cdna_tails(fast5_dir, alignment_bam_file, tails = "both", save_dir,
+find_cdna_tails(fast5_dir, alignment_bam_file, tails = "both",
+  poly_a_adaptor = "GAAGATAGAGCGACAGGCAAGT", save_dir,
   poly_a_csv_file_name, poly_t_csv_file_name, save_plots = FALSE,
   num_cores = 1)
 }

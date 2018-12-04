@@ -4,7 +4,8 @@
 \alias{find_cdna_polya_tails_foreach}
 \title{Find Poly(A) tails in FAST5 reads}
 \usage{
-find_cdna_polya_tails_foreach(fast5_files_list, save_dir, csv_file_name,
+find_cdna_polya_tails_foreach(fast5_files_list,
+  poly_a_adaptor = "GAAGATAGAGCGACAGGCAAGT", save_dir, csv_file_name,
   save_plots = FALSE, show_plots = FALSE, num_cores = 1)
 }
 \arguments{
