@@ -22,7 +22,7 @@ find_cdna_polyt_tail_per_read <- function(file_path,
     POLY_T_CNDA_SPIKE_THRESHOLD <- 2.0
     POLY_T_CDNA_MOVING_WINDOW_SIZE <- 120
     POLY_T_CDNA_SEC_POLY_T_MAX_GAP <- 1200
-    POLY_T_CDNA_SEC_POLY_T_MIN_SIZE <- read_data$samples_per_nt * 10
+    POLY_T_CDNA_SEC_POLY_T_MIN_SIZE <- read_data$samples_per_nt * 15
 
 
     # Z-normalize the data
