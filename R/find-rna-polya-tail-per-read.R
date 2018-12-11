@@ -143,7 +143,6 @@ find_rna_polya_tail_per_read <- function(file_path,
         }
 
         if (save_plots) {
-            dir.create(file.path(save_dir, 'plots', fsep = .Platform$file.sep))
             filename_png <- paste(filename,'.png', sep='')
             filename_html <- paste(filename,'.html', sep='')
             save_path_png <- file.path(save_dir, 'plots', filename_png, fsep = .Platform$file.sep)
