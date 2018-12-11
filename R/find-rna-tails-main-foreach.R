@@ -12,14 +12,14 @@
 #' @export
 #'
 #' @examples
-find_rna_tails_foreach <- function(fast5_dir,
-                                   save_dir,
-                                   poly_a_csv_file_name,
-                                   save_plots=FALSE,
-                                   show_plots=FALSE,
-                                   plot_debug=FALSE,
-                                   plotting_library='ggplot2',
-                                   num_cores=1){
+find_rna_tails <- function(fast5_dir,
+                           save_dir,
+                           poly_a_csv_file_name,
+                           save_plots=FALSE,
+                           show_plots=FALSE,
+                           plot_debug=FALSE,
+                           plotting_library='ggplot2',
+                           num_cores=1){
 
     poly_a_csv_file <- file.path(save_dir, poly_a_csv_file_name)
 
@@ -37,7 +37,6 @@ find_rna_tails_foreach <- function(fast5_dir,
                                                 plotting_library=plotting_library,
                                                 num_cores=num_cores)
 
-    # include mapping information in the results
     polya_tails <- unique(polya_tails)
     data.table::fwrite(polya_tails, poly_a_csv_file)
     message('Poly(A) tail metadata has been saved in the following file:')
