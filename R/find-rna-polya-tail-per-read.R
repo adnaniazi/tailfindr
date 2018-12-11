@@ -20,7 +20,7 @@ find_rna_polya_tail_per_read <- function(file_path,
     POLY_A_RNA_ADAPTOR_TROUGH_SIZE_THRESHOLD <- 2200
 
     # Read the FAST5 data
-    read_data <- extract_read_data_hdf5r(file_path)
+    read_data <- extract_read_data_hdf5r(file_path, plot_debug=plot_debug)
     sampling_rate <- read_data$sampling_rate
 
     # Z-normalize the data
@@ -102,8 +102,7 @@ find_rna_polya_tail_per_read <- function(file_path,
                 p <- p + ggplot2::geom_line(ggplot2::aes(y = moves)) +
                 ggplot2::geom_hline(yintercept=POLY_A_RNA_THRESHOLD, color = "black") +
                 ggplot2::geom_line(ggplot2::aes(y = slope, color = "red")) +
-                ggplot2::geom_hline(yintercept=-POLY_A_RNA_THRESHOLD, color = "black") +
-                ggplot2::scale_x_continuous(limits = c(1, ceiling(length(smoothed_data_1)/1)))
+                ggplot2::geom_hline(yintercept=-POLY_A_RNA_THRESHOLD, color = "black")
             }
             if (!is.na(precise_polya_boundries$start)) {
                 p <- p + ggplot2::geom_line(ggplot2::aes(y = c(rep(NA, times=precise_polya_boundries$start-1),

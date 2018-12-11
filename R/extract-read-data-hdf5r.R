@@ -40,7 +40,7 @@ extract_read_data_hdf5r <- function(read_path, plot_debug=FALSE){
                                           rep( NA, length(raw_data) - (utils::tail(event_data$start, n=1)+event_data$length[1])))
         }
     } else {
-        moves_sample_wise_vector <- NA
+        moves_sample_wise_vector <- rep(NA, length(raw_data))
     }
 
     # create event length data for tail normalization
