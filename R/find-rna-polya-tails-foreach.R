@@ -15,12 +15,16 @@
 #'
 #' @examples
 find_rna_polya_tails_foreach <- function(fast5_files_list,
-                                         save_dir,
+                                         save_dir=NA,
                                          save_plots = FALSE,
                                          show_plots = FALSE,
                                          num_cores = 1,
                                          plotting_library = 'ggplot2',
                                          plot_debug = FALSE){
+
+    if (!is.na(save_dir)) {
+        dir.create(file.path(save_dir, 'plots', fsep = .Platform$file.sep))
+    }
 
     message('\t- Starting a parallel cluster...\r')
     # Initiate cluster
