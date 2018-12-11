@@ -29,6 +29,7 @@ for (i in 1:length(fast5_files_list)){
 
     ad_10bp <- 'ATCTCTTGCCGTCGCCACC'
     ad_30bp <- 'AGCATTGTAAGTCGCCACC'
+    ad_40bp <- 'AGCATTGTAAGTCGCCACC'
     ad_60bp <- 'TAGCCACCAAGTCGCCACC'
     ad_100bp <- 'GAGATTGATGGTCGCCACC'
     ad_150bp <- 'ATAGTCATGGGTCGCCACC'
