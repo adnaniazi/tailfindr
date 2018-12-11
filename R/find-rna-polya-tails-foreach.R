@@ -16,11 +16,11 @@
 #' @examples
 find_rna_polya_tails_foreach <- function(fast5_files_list,
                                          save_dir,
-                                         save_plots=FALSE,
-                                         show_plots=FALSE,
-                                         num_cores=1,
-                                         plotting_library='ggplot2',
-                                         plot_debug=FALSE){
+                                         save_plots = FALSE,
+                                         show_plots = FALSE,
+                                         num_cores = 1,
+                                         plotting_library = 'ggplot2',
+                                         plot_debug = FALSE){
 
     message('\t- Starting a parallel cluster...\r')
     # Initiate cluster
@@ -44,32 +44,26 @@ find_rna_polya_tails_foreach <- function(fast5_files_list,
                                  .options.multicore = mcoptions) %dopar% {
                                      tryCatch({
                                          find_rna_polya_tail_per_read(file_path,
-                                                                       show_plots=show_plots,
-                                                                       save_plots=save_plots,
-                                                                       save_dir=save_dir,
-                                                                       plotting_library=plotting_library,
-                                                                       plot_debug=plot_debug)
+                                                                       show_plots = show_plots,
+                                                                       save_plots = save_plots,
+                                                                       save_dir = save_dir,
+                                                                       plotting_library = plotting_library,
+                                                                       plot_debug = plot_debug)
                                      },
                                      error=function(e){
                                          ls <- list(read_id = NA,
-                                                    poly_a_start = NA,
-                                                    poly_a_end = NA,
-                                                    poly_a_fastq = NA,
-                                                    poly_a_length_in_nucleotides_1 = NA,
-                                                    poly_a_length_in_nucleotides_2 = NA,
-
-                                                    non_poly_a_seq_start = NA,
-                                                    non_poly_a_seq_end = NA,
-                                                    moves_in_non_poly_a_region = NA,
-
-                                                    sampling_rate = NA,
-                                                    file_path=file_path)
+                                                    polya_start = NA,
+                                                    polya_end = NA,
+                                                    tail_length_nt = NA,
+                                                    samples_per_nt = NA,
+                                                    polya_fastq = NA,
+                                                    file_path = file_path)
                                      })
                                  }
     close(pb)
     parallel::stopCluster(cl)
 
-    data_list <- data.frame(data_list)
-    data_list$read_id <- as.character(data_list$read_id)
+    data_list <- data.frame(data_list, stringsAsFactors = FALSE)
+    row.names(data_list) <- NULL
     return(data_list)
 }

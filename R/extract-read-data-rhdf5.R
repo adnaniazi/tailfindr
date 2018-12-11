@@ -10,7 +10,7 @@
 #' @examples
 #' extract_read_data_rhdf5('path/to/fast5/file')
 
-extract_read_data_rhdf5 <- function(read_path){
+extract_read_data_rhdf5 <- function(read_path, plot_debug=FALSE){
     # extract raw data
     f5_tree <- rhdf5::h5ls(read_path)
     raw_reads <- f5_tree[(which(f5_tree == "/Raw/Reads") + 1), 1]
@@ -28,16 +28,19 @@ extract_read_data_rhdf5 <- function(read_path){
     # extract events data
     tmp_path <- rhdf5::h5ls(read_path)[which(rhdf5::h5ls(read_path) == "/Analyses/Basecall_1D_000/BaseCalled_template")[1], 1]
     event_data <- rhdf5::h5read(read_path, tmp_path)$Events
+    if (plot_debug) {
+        # make a vector of moves interpolated for every sample i.e., make a sample-wise or per-sample vector of moves
+        if (event_data$start[1] !=0) {
+            moves_sample_wise_vector <- c(rep(NA, event_data$start[1]-1),
+                                          rep(event_data$move*0.25+1.5, each=event_data$length[1]),
+                                          rep( NA, length(raw_data) - (utils::tail(event_data$start, n=1)+event_data$length[1]-1)))
+        } else {
+            moves_sample_wise_vector <- c(rep(event_data$move*0.25+1.5, each=event_data$length[1]),
+                                          rep( NA, length(raw_data) - (utils::tail(event_data$start, n=1)+event_data$length[1])))
 
-    # make a vector of moves interpolated for every sample i.e., make a sample-wise or per-sample vector of moves
-    if (event_data$start[1] !=0) {
-        moves_sample_wise_vector <- c(rep(NA, event_data$start[1]-1),
-                                      rep(event_data$move*0.25+1.5, each=event_data$length[1]),
-                                      rep( NA, length(raw_data) - (utils::tail(event_data$start, n=1)+event_data$length[1]-1)))
+        }
     } else {
-        moves_sample_wise_vector <- c(rep(event_data$move*0.25+1.5, each=event_data$length[1]),
-                                      rep( NA, length(raw_data) - (utils::tail(event_data$start, n=1)+event_data$length[1])))
-
+        moves_sample_wise_vector <- NA
     }
 
     # create event length data for tail normalization

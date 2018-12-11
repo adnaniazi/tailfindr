@@ -13,7 +13,6 @@ find_rna_polya_tail_per_read <- function(file_path,
                                          save_dir='~',
                                          plotting_library='rbokeh',
                                          plot_debug=FALSE) {
-    print(file_path)
     # Empirical parameters
     POLY_A_RNA_THRESHOLD <- 0.3
     POLY_A_RNA_SPIKE_THRESHOLD <- 3.0
@@ -44,7 +43,9 @@ find_rna_polya_tail_per_read <- function(file_path,
     intersections <- smoothed_data > POLY_A_RNA_THRESHOLD
     rle_intersections <- rle(intersections)
 
-    # Smoothen RLE intersecitons to remove the fucking W pattern formed by the two overlapping windows
+    # Smoothen RLE intersecitons to remove the annoying W pattern formed by the
+    # merging the two smoothened signals that have a relative shift with each
+    # other.
     rle_intersections <- smoothen_rle_intersections_rna(rle_intersections)
     rle_lengths <- rle_intersections$lengths
     rle_values <- rle_intersections$values
@@ -65,32 +66,15 @@ find_rna_polya_tail_per_read <- function(file_path,
     read_length <- length(read_data$raw_data)
 
     # Find moves in post-poly(A) region
-    moves_in_non_poly_a_region <-  NA
-    non_poly_a_seq_start <- NA
-    non_poly_a_seq_end <- NA
     poly_a_fastq <- NA
-    poly_a_length_in_nucleotides_1 <- NA
-    poly_a_length_in_nucleotides_2 <- NA
+    tail_length_nt <- NA
 
     if (!is.na(precise_polya_boundries$start)) {
         poly_a_fastq <- extract_fastq_in_interval(read_data$event_data,
                                                   precise_polya_boundries$start,
                                                   precise_polya_boundries$end)
-        non_poly_a_seq_start <- precise_polya_boundries$end + 1
-        non_poly_a_seq_end <- read_length
-
-        moves_in_non_poly_a_region <- extract_moves_in_interval(read_data$event_data,
-                                                                non_poly_a_seq_start,
-                                                                non_poly_a_seq_end)
-
-        poly_a_length_in_nucleotides_1 <- ((precise_polya_boundries$end - precise_polya_boundries$start) * moves_in_non_poly_a_region) / (non_poly_a_seq_end - non_poly_a_seq_start)
-
-        non_polya_length <- find_non_polya_region_length_without_homopolymers(non_poly_a_seq_start,
-                                                                              non_poly_a_seq_end,
-                                                                              read_data$moves_sample_wise_vector,
-                                                                              homopolymer_threshold = 50)
-
-        poly_a_length_in_nucleotides_2 <- ((precise_polya_boundries$end - precise_polya_boundries$start) * moves_in_non_poly_a_region) / non_polya_length
+        tail_length_nt <- (precise_polya_boundries$end -
+                           precise_polya_boundries$start) / read_data$samples_per_nt
     }
 
     if (show_plots || save_plots) {
@@ -178,19 +162,13 @@ find_rna_polya_tail_per_read <- function(file_path,
         }
     }
 
-    data <- list(read_id=read_data$read_id,
-                 poly_a_start=precise_polya_boundries$start,
-                 poly_a_end=precise_polya_boundries$end,
-                 poly_a_fastq=poly_a_fastq,
-                 poly_a_length_in_nucleotides_1=poly_a_length_in_nucleotides_1,
-                 poly_a_length_in_nucleotides_2=poly_a_length_in_nucleotides_2,
-
-                 non_poly_a_seq_start = non_poly_a_seq_start,
-                 non_poly_a_seq_end = non_poly_a_seq_end,
-                 moves_in_non_poly_a_region = moves_in_non_poly_a_region,
-
-                 sampling_rate=sampling_rate,
-                 file_path=file_path)
+    data <- list(read_id = read_data$read_id,
+                 polya_start = precise_polya_boundries$start,
+                 polya_end = precise_polya_boundries$end,
+                 tail_length_nt = tail_length_nt,
+                 samples_per_nt = read_data$samples_per_nt,
+                 polya_fastq = poly_a_fastq,
+                 file_path = file_path)
     return(data)
 }
 
