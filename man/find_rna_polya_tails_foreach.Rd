@@ -4,7 +4,7 @@
 \alias{find_rna_polya_tails_foreach}
 \title{Title}
 \usage{
-find_rna_polya_tails_foreach(fast5_files_list, save_dir,
+find_rna_polya_tails_foreach(fast5_files_list, save_dir = NA,
   save_plots = FALSE, show_plots = FALSE, num_cores = 1,
   plotting_library = "ggplot2", plot_debug = FALSE)
 }
