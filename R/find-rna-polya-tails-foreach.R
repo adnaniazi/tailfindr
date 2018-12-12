@@ -28,7 +28,7 @@ find_rna_polya_tails_foreach <- function(fast5_files_list,
 
     message('\t- Starting a parallel cluster...\r')
     # Initiate cluster
-    cl <- parallel::makeCluster(num_cores)
+    cl <- parallel::makeCluster(num_cores, outfile='')
     doSNOW::registerDoSNOW(cl)
     `%dopar%` <- foreach::`%dopar%`
     `%do%` <- foreach::`%do%`
@@ -55,6 +55,7 @@ find_rna_polya_tails_foreach <- function(fast5_files_list,
                                                                        plot_debug = plot_debug)
                                      },
                                      error=function(e){
+                                         print(e)
                                          ls <- list(read_id = NA,
                                                     polya_start = NA,
                                                     polya_end = NA,
