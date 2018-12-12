@@ -6,6 +6,7 @@
 #' @param read_path Full path of a FAST5 read
 #'
 #' @return A list of relevant data extracted from the FAST5 file
+#' @export
 #'
 #' @examples
 #' extract_read_data_hdf5r('path/to/fast5/file')
@@ -28,6 +29,12 @@ extract_read_data_hdf5r <- function(read_path, plot_debug=FALSE){
     duration <- f5_obj[[raw_read_path]]$attr_open('duration')$read()
     bct <- 'Analyses/Basecall_1D_000/BaseCalled_template'
     event_data <- f5_obj[[bct]]$open('Events')$read()
+
+    # Fastq
+    fastq <- f5_obj[[bct]]$open('Fastq')$read()
+    # get only the fastq sequnce (ignoring the quality information)
+    fastq <-strsplit(fastq, split = "\n")
+    fastq <- fastq[[1]][2]
 
     if (plot_debug) {
     # make a vector of moves interpolated for every sample i.e., make a sample-wise or per-sample vector of moves
@@ -109,6 +116,7 @@ extract_read_data_hdf5r <- function(read_path, plot_debug=FALSE){
 
     read_data = list(raw_data = raw_data,
                      event_data = event_data,
+                     fastq=fastq,
                      moves_sample_wise_vector = moves_sample_wise_vector,
                      fast5_event_length = event_data$length[1],
                      read_id = read_id,

@@ -28,6 +28,11 @@ extract_read_data_rhdf5 <- function(read_path, plot_debug=FALSE){
     # extract events data
     tmp_path <- rhdf5::h5ls(read_path)[which(rhdf5::h5ls(read_path) == "/Analyses/Basecall_1D_000/BaseCalled_template")[1], 1]
     event_data <- rhdf5::h5read(read_path, tmp_path)$Events
+
+    # TODO
+    # logic for extract fastq
+    fastq <- NA
+
     if (plot_debug) {
         # make a vector of moves interpolated for every sample i.e., make a sample-wise or per-sample vector of moves
         if (event_data$start[1] !=0) {
@@ -109,6 +114,7 @@ extract_read_data_rhdf5 <- function(read_path, plot_debug=FALSE){
 
     read_data = list(raw_data = raw_data,
                      event_data = event_data,
+                     fastq=fastq,
                      moves_sample_wise_vector = moves_sample_wise_vector,
                      fast5_event_length = event_data$length[1],
                      read_id = read_id,
