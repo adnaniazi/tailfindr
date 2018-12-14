@@ -13,7 +13,7 @@ folder_path <- '~/mnt/kjempetuja/export/valenfs/data/processed_data/MinION/20180
 #                                   plot_debug=T)
 
 
-a <- find_rna_polya_tail_per_read('/export/valenfs/data/processed_data/MinION/sars_HP_Z240_Tower_Workstation_20180912_FAJ15086_MN21607_sequencing_run_1209_92041_read_4_ch_65_strand.fast5',
+a <- find_rna_polya_tail_per_read('/export/valenfs/data/processed_data/MinION/Max/20171005_Max_m1A_m6A/RNA/basecalled/20180912_256cell_spikeins/workspace/pass/0/sars_HP_Z240_Tower_Workstation_20180912_FAJ15086_MN21607_sequencing_run_1209_92041_read_168_ch_121_strand.fast5',
                                   save_plots=FALSE,
                                   show_plots=T,
                                   save_dir='~/mnt/kjempetuja/export/valenfs/data/processed_data/MinION/20180515_1725_polya_direct_rna_shield',

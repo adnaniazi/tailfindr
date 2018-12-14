@@ -4,10 +4,10 @@
 \alias{dna_tailtype_finder}
 \title{Title}
 \usage{
-dna_tailtype_finder(file_path)
+dna_tailtype_finder(file_path, do_plots)
 }
 \arguments{
-\item{file_path}{}
+\item{do_plots}{}
 }
 \description{
 Title

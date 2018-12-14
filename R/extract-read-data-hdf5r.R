@@ -4,13 +4,14 @@
 #' raw reads that haven't been basecalled by Albacore.
 #'
 #' @param read_path Full path of a FAST5 read
+#' @param do_plots
 #'
 #' @return A list of relevant data extracted from the FAST5 file
 #' @export
 #'
 #' @examples
 #' extract_read_data_hdf5r('path/to/fast5/file')
-extract_read_data_hdf5r <- function(read_path, plot_debug=FALSE){
+extract_read_data_hdf5r <- function(read_path, do_plots=FALSE){
     # extract raw data
     f5_obj <- hdf5r::H5File$new(read_path)
     f5_tree <- f5_obj$ls(recursive=TRUE)
@@ -36,7 +37,7 @@ extract_read_data_hdf5r <- function(read_path, plot_debug=FALSE){
     fastq <-strsplit(fastq, split = "\n")
     fastq <- fastq[[1]][2]
 
-    if (plot_debug) {
+    if (do_plots) {
     # make a vector of moves interpolated for every sample i.e., make a sample-wise or per-sample vector of moves
         if (event_data$start[1] !=0) {
             moves_sample_wise_vector <- c(rep(NA, event_data$start[1]-1),

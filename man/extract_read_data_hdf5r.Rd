@@ -4,10 +4,12 @@
 \alias{extract_read_data_hdf5r}
 \title{Extract data from ONT Fast5 file}
 \usage{
-extract_read_data_hdf5r(read_path, plot_debug = FALSE)
+extract_read_data_hdf5r(read_path, do_plots = FALSE)
 }
 \arguments{
 \item{read_path}{Full path of a FAST5 read}
+
+\item{do_plots}{}
 }
 \value{
 A list of relevant data extracted from the FAST5 file
