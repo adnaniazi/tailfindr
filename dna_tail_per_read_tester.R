@@ -11,13 +11,14 @@ fast5_files_list_polyt <- list.files(path=polyt_folder,
                                      full.names=TRUE)
 save_plots=FALSE
 show_plots=TRUE
-plot_debug=TRUE
+plot_debug=FALSE
 save_dir='~'
-plotting_library='rbokeh'
+plotting_library='ggplot2'
 
-find_dna_tail_per_read(fast5_files_list_polyt[121],
+find_dna_tail_per_read(fast5_files_list_polyt[512],
                        save_plots=save_plots,
                        show_plots=show_plots,
                        plot_debug=plot_debug,
                        save_dir=save_dir,
                        plotting_library=plotting_library)
+

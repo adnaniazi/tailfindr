@@ -1,13 +1,13 @@
 #' Title
 #'
 #' @param file_path
-#' @param do_plots
+#' @param plot_debug
 #'
 #' @return
 #' @export
 #'
 #' @examples
-dna_tailtype_finder <- function(file_path, do_plots=FALSE) {
+dna_tailtype_finder <- function(file_path, data='cdna', plot_debug=FALSE) {
 
     match = 1
     mismatch = -1
@@ -18,18 +18,20 @@ dna_tailtype_finder <- function(file_path, do_plots=FALSE) {
                                                        mismatch = mismatch,
                                                        baseOnly = TRUE)
 
-    read_data <- extract_read_data_hdf5r(file_path, do_plots=do_plots)
+    read_data <- extract_read_data_hdf5r(file_path, plot_debug=plot_debug)
+    event_data <- read_data$event_data
     fastq <- read_data$fastq
 
     fa <- Biostrings::DNAString('GGCGTCTGCTTGGGTGTTTAACCTTTTTTTTTTAATGTACTTCGTTCAGTTACGTATTGCT')
     ea <- Biostrings::DNAString('GCAATACGTAACTGAACGAAGT')
     # CDNA
-    fp <- Biostrings::DNAString('TTTCTGTTGGTGCTGATATTGCTGCCATTACGGCCGGG')
-    ep <- Biostrings::DNAString('GAAGATAGAGCGACAGGCAAGT')
-
-    # PCR DNA
-    #fp <- Biostrings::DNAString('ATTTAGGTGACACTATAGCGCTCCATGCAAACCTGTC')
-    #ep <- Biostrings::DNAString('CGTTGCCGCCCGGACTC')
+    if (data == 'cdna') {
+        fp <- Biostrings::DNAString('TTTCTGTTGGTGCTGATATTGCTGCCATTACGGCCGGG')
+        ep <- Biostrings::DNAString('GAAGATAGAGCGACAGGCAAGT')
+    } else if  (data == 'pcr-dna') {
+        fp <- Biostrings::DNAString('ATTTAGGTGACACTATAGCGCTCCATGCAAACCTGTC')
+        ep <- Biostrings::DNAString('CGTTGCCGCCCGGACTC')
+    }
 
     rc_fp <- Biostrings::reverseComplement(fp)
     rc_ep <- Biostrings::reverseComplement(ep)
@@ -55,6 +57,8 @@ dna_tailtype_finder <- function(file_path, do_plots=FALSE) {
     nas_rc_ep <- as_rc_ep@score/rc_ep@length
     nas_ep <- NA # for max remove later
     nas_rc_fp <- NA # for max reomve later
+    has_precise_boundary <- FALSE
+    bases_to_match <- 3
 
     # check the front primer and rev comp end primer score to decide
     # between polyA and polyT reads.
@@ -83,8 +87,20 @@ dna_tailtype_finder <- function(file_path, do_plots=FALSE) {
                                                    scoreOnly=FALSE,
                                                    gapOpening=gapOpening,
                                                    gapExtension=gapExtension)
+
+            # check if we have captured the end of the tail perfectly
+            # by finding out if we captured the bases adjacent to the tails
+            if (substr(as_ep@subject,
+                       start=1,
+                       stop=bases_to_match) == substr(ep,
+                                                        start=1,
+                                                        stop=bases_to_match)) {
+                has_precise_boundary <- TRUE
+            }
+
             # for max remove later
             nas_rc_fp <- as_rc_fp@score/rc_fp@length
+
         } else {
             polya_end_fastq <- NA
             polya_rough_end <- NA
@@ -101,6 +117,17 @@ dna_tailtype_finder <- function(file_path, do_plots=FALSE) {
         polya_end_fastq <- NA
         polya_rough_end <- NA
 
+        # check if we have captured the end of the tail perfectly
+        # by finding out if we captured the bases adjacent to the tails
+        if (substr(as_rc_ep@subject,
+                   start=nchar(as.character(as_rc_ep@subject))-bases_to_match+1,
+                   stop=nchar(as.character(as_rc_ep@subject))) == substr(rc_ep,
+                                                                         start=rc_ep@length-bases_to_match+1,
+                                                                         stop=rc_ep@length)) {
+            has_precise_boundary <- TRUE
+        }
+
+
     # if the above two checks fail then it is an invalid read
     } else {
         read_type <- 'invalid'
@@ -109,6 +136,7 @@ dna_tailtype_finder <- function(file_path, do_plots=FALSE) {
         polyt_rough_start <- NA
         polya_end_fastq <- NA
         polya_rough_end <- NA
+        has_precise_boundary <- NA
     }
 
     df <- data.frame(read_data$raw_data)
@@ -132,6 +160,7 @@ dna_tailtype_finder <- function(file_path, do_plots=FALSE) {
                 polyt_start_fastq=polyt_start_fastq,
                 polya_end=polya_rough_end,
                 polyt_start=polyt_rough_start,
+                has_precise_boundary=has_precise_boundary,
                 nas_fp=nas_fp,
                 nas_rc_ep=nas_rc_ep,
                 nas_ep=nas_ep,
