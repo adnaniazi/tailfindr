@@ -8,11 +8,11 @@
 #' @examples
 #' find_rna_polya_tail_per_read('path/to/fast5/file')
 find_rna_polya_tail_per_read <- function(file_path,
-                                         save_plots=FALSE,
-                                         show_plots=FALSE,
-                                         save_dir='~',
-                                         plotting_library='rbokeh',
-                                         plot_debug=FALSE) {
+                                         save_plots = FALSE,
+                                         show_plots = FALSE,
+                                         save_dir = '~',
+                                         plotting_library = 'rbokeh',
+                                         plot_debug = FALSE) {
     # Empirical parameters
     POLY_A_RNA_THRESHOLD <- 0.3
     POLY_A_RNA_SPIKE_THRESHOLD <- 3.0
@@ -34,8 +34,12 @@ find_rna_polya_tail_per_read <- function(file_path,
                                       spike_threshold=POLY_A_RNA_SPIKE_THRESHOLD)
 
     # Smoothen the data
-    smoothed_data_1 <- left_to_right_sliding_window_cdna_polya('mean', truncated_data, POLY_A_RNA_MOVING_WINDOW_SIZE, 1)
-    smoothed_data_2 <- right_to_left_sliding_window_cdna_polya('mean', truncated_data, POLY_A_RNA_MOVING_WINDOW_SIZE, 1)
+    smoothed_data_1 <- left_to_right_sliding_window_cdna_polya('mean',
+                                                               truncated_data,
+                                                               POLY_A_RNA_MOVING_WINDOW_SIZE, 1)
+    smoothed_data_2 <- right_to_left_sliding_window_cdna_polya('mean',
+                                                               truncated_data,
+                                                               POLY_A_RNA_MOVING_WINDOW_SIZE, 1)
     smoothed_data_3 <- pmax(smoothed_data_1, smoothed_data_2)
     smoothed_data <- smoothed_data_3
 
@@ -65,78 +69,90 @@ find_rna_polya_tail_per_read <- function(file_path,
     len_rle <- length(rle_values)
     read_length <- length(read_data$raw_data)
 
-    # Find moves in post-poly(A) region
+    # Find moves in the poly(A) region
     poly_a_fastq <- NA
-    tail_length_nt <- NA
-
-    if (!is.na(precise_polya_boundries$start)) {
+    tail_length <- NA
+    tail_start <- NA
+    tail_end <- NA
+    if (!is.na(precise_polya_boundries$start) & !is.na(precise_polya_boundries$end)) {
         poly_a_fastq <- extract_fastq_in_interval(read_data$event_data,
                                                   precise_polya_boundries$start,
                                                   precise_polya_boundries$end)
-        tail_length_nt <- (precise_polya_boundries$end -
-                           precise_polya_boundries$start) / read_data$samples_per_nt
+        tail_start <- precise_polya_boundries$start
+        tail_end <- precise_polya_boundries$end
+        tail_length <- (tail_end - tail_start) / read_data$samples_per_nt
     }
 
-    if (show_plots || save_plots) {
+    if (show_plots | save_plots) {
         filename <- basename(file_path)
+
+        plot_title <- paste('Poly(A) tail  |  ',
+                            'Tail length[nt]: ', round(tail_length, 2), '  |  ',
+                            'Tail start: ', tail_start, '  |  ',
+                            'Tail end: ', tail_end, '  |  ',
+                            'Tail duration[Sa]: ', tail_end-tail_start, '  |  ',
+                            'Samples per nt: ', read_data$samples_per_nt,
+                            sep='')
 
         df = data.frame(x=c(1:length(read_data$raw_data)),
                         truncated_data=truncated_data,
-                        smoothed_data_1=smoothed_data_1,
-                        smoothed_data_2=smoothed_data_2,
                         smoothed_data_3=smoothed_data_3,
-                        moves=read_data$moves_sample_wise_vector,
+                        moves=read_data$moves_sample_wise_vector + 1,
                         mean_data=precise_polya_boundries$mean_data,
                         slope=precise_polya_boundries$slope)
+
         # add a poly(A) tail to the dataframe if it exists
-        if (!is.na(precise_polya_boundries$start)) {
-            df['poly_a_tail'] <- c(rep(NA, times=precise_polya_boundries$start-1),
-                                   truncated_data[precise_polya_boundries$start:precise_polya_boundries$end],
-                                   rep(NA, times=(read_length-precise_polya_boundries$end)))
+        if (!is.na(tail_start) & !is.na(tail_end)) {
+            df['poly_a_tail'] <- c(rep(NA, times=tail_start-1),
+                                   truncated_data[tail_start:tail_end],
+                                   rep(NA, times=(read_length-tail_end)))
         }
 
         if (plotting_library == 'ggplot2') {
-            p <- ggplot2::ggplot(data=df, ggplot2::aes(x = x)) +
-                ggplot2::geom_line(ggplot2::aes(y = truncated_data), color='blue')
+            p <- ggplot2::ggplot(data=df, ggplot2::aes(x = x))
             if (plot_debug) {
-                p <- p + ggplot2::geom_line(ggplot2::aes(y = moves)) +
-                ggplot2::geom_hline(yintercept=POLY_A_RNA_THRESHOLD, color = "black") +
-                ggplot2::geom_line(ggplot2::aes(y = slope, color = "red")) +
-                ggplot2::geom_hline(yintercept=-POLY_A_RNA_THRESHOLD, color = "black")
+                p <- p + ggplot2::geom_line(ggplot2::aes(y = truncated_data), color='#4040a1') +
+                ggplot2::geom_line(ggplot2::aes(y = moves), color = '#b2b2b2') +
+                ggplot2::geom_hline(yintercept = POLY_A_RNA_THRESHOLD, color = "#00B0DF") +
+                ggplot2::geom_line(ggplot2::aes(y = slope, color = "#BF1268")) +
+                ggplot2::geom_hline(yintercept = -POLY_A_RNA_THRESHOLD, color = "#FF94CD")
+            } else {
+                p <- p + ggplot2::geom_line(ggplot2::aes(y = truncated_data), color='#8E8E8E')
             }
-            if (!is.na(precise_polya_boundries$start)) {
-                p <- p + ggplot2::geom_line(ggplot2::aes(y = c(rep(NA, times=precise_polya_boundries$start-1),
-                                                               truncated_data[precise_polya_boundries$start:precise_polya_boundries$end],
-                                                               rep(NA, times=(read_length-precise_polya_boundries$end)))), color='red')
+
+            if (!is.na(tail_start) & !is.na(tail_end)) {
+                p <- p + ggplot2::geom_line(ggplot2::aes(y = c(rep(NA, times = tail_start-1),
+                                                               truncated_data[tail_start:tail_end],
+                                                               rep(NA, times = (read_length-tail_end)))), color='#BF1268')
             }
             if (plot_debug){
-                p <- p + ggplot2::geom_line(ggplot2::aes(y = smoothed_data_3), color='orange') +
-                ggplot2::geom_line(ggplot2::aes(y = mean_data, color = "green"))
+                p <- p + ggplot2::geom_line(ggplot2::aes(y = smoothed_data_3), color='#060B54') +
+                ggplot2::geom_line(ggplot2::aes(y = mean_data, color = "#F79A14"))
             }
-            p <- p + ggplot2::ggtitle(filename) +
+            p <- p + ggplot2::ggtitle(plot_title) +
                 ggplot2::xlab('Sample index') +
-                ggplot2::ylab('Z-normalized data values')
+                ggplot2::ylab('z-normalized data')
         }
 
         if (plotting_library == 'rbokeh') {
-            p <- rbokeh::figure(data=df, width=1000, height=600, title=filename)
-            p <- rbokeh::ly_lines(p, truncated_data, color='blue', legend = "Normalized windsorized data")
+            p <- rbokeh::figure(data=df, width=1000, height=600, title=plot_title)
+            p <- rbokeh::ly_lines(p, truncated_data, color='#4040a1', legend = "Normalized windsorized data")
             if (plot_debug) {
-                p <- rbokeh::ly_lines(p, slope, color='red', width=3, legend = "Slope")
-                p <- rbokeh::ly_lines(p, mean_data, color='green', width=3, legend = "Mean of potential poly(A) region")
-                p <- rbokeh::ly_lines(p, moves, color='black', width=1, legend = "Moves")
-                p <- rbokeh::ly_lines(p, smoothed_data_3, color='orange', width=3, legend = "Smoothed data")
-                p <- rbokeh::ly_abline(p, h=POLY_A_RNA_THRESHOLD, color = 'black', type = 2, width=2, legend = "Poly(A) threshold")
-                p <- rbokeh::ly_abline(p, h=-POLY_A_RNA_THRESHOLD, color = 'black',type = 2,  width=2, legend = "Poly(A) threshold")
+                p <- rbokeh::ly_lines(p, slope, color='#BF1268', width=3, legend = "Slope")
+                p <- rbokeh::ly_lines(p, mean_data, color='#F79A14', width = 3, legend = "Mean of potential poly(A) region")
+                p <- rbokeh::ly_lines(p, moves, color='#b2b2b2', width=1, legend = "Moves")
+                p <- rbokeh::ly_lines(p, smoothed_data_3, color='#060B54', width=3, legend = "Smoothed data")
+                p <- rbokeh::ly_abline(p, h=POLY_A_RNA_THRESHOLD, color = '#00B0DF', type = 3, width=2, legend = "Slope upper bound")
+                p <- rbokeh::ly_abline(p, h=-POLY_A_RNA_THRESHOLD, color = '#FF94CD', type = 3,  width=2, legend = "Slope lower bound")
                 if (!is.na(precise_polya_boundries$start)) {
-                    p <- rbokeh::ly_abline(p, v=precise_polya_boundries$start, color = 'orange', type = 2, width=2, legend = "Poly(A) start")
-                    p <- rbokeh::ly_abline(p, v=precise_polya_boundries$end, color = 'red', type = 2, width=2, legend = "Poly(A) end")
+                    p <- rbokeh::ly_abline(p, v=precise_polya_boundries$start, color = 'orange', type = 2, width = 2, legend = "Poly(A) start")
+                    p <- rbokeh::ly_abline(p, v=precise_polya_boundries$end, color = 'red', type = 2, width = 2, legend = "Poly(A) end")
                 }
             } else {
                 p <- rbokeh::ly_lines(p, poly_a_tail, color = 'red', legend = "Poly(A) tail")
             }
             p <- rbokeh::x_axis(p, label='Sample index')
-            p <- rbokeh::y_axis(p, label='Z-normalized data values')
+            p <- rbokeh::y_axis(p, label='z-normalized data')
             p <- rbokeh::tool_pan(p, dimensions = "width")
             p <- rbokeh::tool_wheel_zoom(p, dimensions = "width")
         }
@@ -163,7 +179,7 @@ find_rna_polya_tail_per_read <- function(file_path,
     data <- list(read_id = read_data$read_id,
                  polya_start = precise_polya_boundries$start,
                  polya_end = precise_polya_boundries$end,
-                 tail_length_nt = tail_length_nt,
+                 tail_length = tail_length,
                  samples_per_nt = read_data$samples_per_nt,
                  polya_fastq = poly_a_fastq,
                  file_path = file_path)
