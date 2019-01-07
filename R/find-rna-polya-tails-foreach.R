@@ -22,7 +22,7 @@ find_rna_polya_tails_foreach <- function(fast5_files_list,
                                          plotting_library = 'ggplot2',
                                          plot_debug = FALSE){
 
-    if (!is.na(save_dir)) {
+    if (!is.na(file.path(save_dir, 'plots', fsep = .Platform$file.sep))) {
         dir.create(file.path(save_dir, 'plots', fsep = .Platform$file.sep))
     }
 
@@ -59,7 +59,7 @@ find_rna_polya_tails_foreach <- function(fast5_files_list,
                                          ls <- list(read_id = NA,
                                                     polya_start = NA,
                                                     polya_end = NA,
-                                                    tail_length_nt = NA,
+                                                    tail_length = NA,
                                                     samples_per_nt = NA,
                                                     polya_fastq = NA,
                                                     file_path = file_path)

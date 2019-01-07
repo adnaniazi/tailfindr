@@ -4,12 +4,12 @@
 \alias{find_dna_tail_per_read}
 \title{Title}
 \usage{
-find_dna_tail_per_read(file_path, save_plots = FALSE,
+find_dna_tail_per_read(file_path, data = "cdna", save_plots = FALSE,
   show_plots = FALSE, plot_debug = FALSE, save_dir = "~",
   plotting_library = "rbokeh")
 }
 \arguments{
-\item{plot_debug}{}
+\item{data}{}
 }
 \description{
 Title

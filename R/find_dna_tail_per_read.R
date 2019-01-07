@@ -13,12 +13,12 @@
 #'
 #' @examples
 find_dna_tail_per_read <- function(file_path,
-                                   data='cdna',
-                                   save_plots=FALSE,
-                                   show_plots=FALSE,
-                                   plot_debug=FALSE,
-                                   save_dir='~',
-                                   plotting_library='rbokeh'){
+                                   data = 'cdna',
+                                   save_plots = FALSE,
+                                   show_plots = FALSE,
+                                   plot_debug = FALSE,
+                                   save_dir = '~',
+                                   plotting_library = 'rbokeh'){
 
     do_plots <- ifelse(save_plots | show_plots, TRUE, FALSE)
 
@@ -42,7 +42,8 @@ find_dna_tail_per_read <- function(file_path,
                     tail_end = NA,
                     samples_per_nt = samples_per_nt,
                     tail_length = NA,
-                    file_path = file_path))
+                    file_path = file_path,
+                    has_precise_boundary = has_precise_boundary))
     }
 
     # Empirical parameters
@@ -173,7 +174,8 @@ find_dna_tail_per_read <- function(file_path,
                     tail_end = NA,
                     samples_per_nt = samples_per_nt,
                     tail_length = NA,
-                    file_path = file_path))
+                    file_path = file_path,
+                    has_precise_boundary = has_precise_boundary))
     }
 
     if (has_precise_boundary){
