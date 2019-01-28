@@ -4,10 +4,12 @@
 \alias{dna_tailtype_finder}
 \title{Title}
 \usage{
-dna_tailtype_finder(file_path, data = "cdna", plot_debug = FALSE)
+dna_tailtype_finder(file_path = NA, data = "cdna",
+  read_id_fast5_file = NA, plot_debug = F, multifast5 = F,
+  basecalled_with_flipflop = F, ...)
 }
 \arguments{
-\item{data}{}
+\item{...}{}
 }
 \description{
 Title

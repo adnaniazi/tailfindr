@@ -13,7 +13,7 @@
 #' extract_read_data_hdf5r('path/to/fast5/file')
 extract_read_data_hdf5r <- function(read_path, plot_debug=FALSE){
     # extract raw data
-    f5_obj <- hdf5r::H5File$new(read_path)
+    f5_obj <- hdf5r::H5File$new(read_path, mode='r')
     f5_tree <- f5_obj$ls(recursive=TRUE)
     f5_tree <- f5_tree$name
     raw_read_path <- f5_tree[which(f5_tree == 'Raw/Reads') + 2]

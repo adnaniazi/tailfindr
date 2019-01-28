@@ -7,23 +7,40 @@
 #' @param plotting_library
 #' @param plot_debug
 #' @param data
+#' @param multifast5
+#' @param basecalled_with_flipflop
+#' @param ...
+#' @param read_id_fast5_file
 #'
 #' @return
 #' @export
 #'
 #' @examples
-find_dna_tail_per_read <- function(file_path,
-                                   data = 'cdna',
-                                   save_plots = FALSE,
-                                   show_plots = FALSE,
-                                   plot_debug = FALSE,
-                                   save_dir = '~',
-                                   plotting_library = 'rbokeh'){
+find_dna_tail_per_read <- function(file_path=NA,
+                                   read_id_fast5_file=NA,
+                                   data='cdna',
+                                   save_plots=F,
+                                   show_plots=F,
+                                   plot_debug=F,
+                                   save_dir=NA,
+                                   plotting_library='rbokeh',
+                                   multifast5=F,
+                                   basecalled_with_flipflop=F,
+                                   ...){
 
     do_plots <- ifelse(save_plots | show_plots, TRUE, FALSE)
 
     # first read the data and find the tailtype
-    data_list <- dna_tailtype_finder(file_path, plot_debug, data=data)
+    if (!multifast5 & !basecalled_with_flipflop) {
+        data_list <- dna_tailtype_finder(file_path, plot_debug, data=data)
+    } else {
+        data_list <- dna_tailtype_finder(plot_debug=plot_debug,
+                                         data=data,
+                                         multifast5=T,
+                                         basecalled_with_flipflop=T,
+                                         read_id_fast5_file=read_id_fast5_file)
+        file_path <- read_id_fast5_file$fast5_file
+    }
 
     read_data <- data_list$read_data
     event_data <- read_data$event_data
@@ -47,12 +64,12 @@ find_dna_tail_per_read <- function(file_path,
     }
 
     # Empirical parameters
-    POLY_T_CNDA_THRESHOLD <- 0.20
-    POLY_A_CNDA_THRESHOLD <- 0.31
+    #POLY_T_CNDA_THRESHOLD <- 0.20
+    #POLY_A_CNDA_THRESHOLD <- 0.31
     SPIKE_THRESHOLD <- 2.0
     MOVING_WINDOW_SIZE <- 30
     MAX_GAP_BETWEEN_TAILS <- 1200
-    SEC_TAIL_MIN_SIZE <- read_data$samples_per_nt * 15
+    #SEC_TAIL_MIN_SIZE <- read_data$samples_per_nt * 15
     SLOPE_THRESHOLD <- 0.20
 
     # Z-normalize the data
@@ -229,8 +246,11 @@ find_dna_tail_per_read <- function(file_path,
                     moves=read_data$moves_sample_wise_vector-3.0,
                     mean_data=mean_data,
                     slope=slope)
-
-    filename <- basename(file_path)
+    if (multifast5){
+        filename <- read_data$read_id
+    } else {
+        filename <- basename(file_path)
+    }
 
     if (!plot_debug) {
         if (read_type == 'polyA') {
@@ -347,3 +367,5 @@ find_dna_tail_per_read <- function(file_path,
                 file_path = file_path,
                 has_precise_boundary = has_precise_boundary))
 }
+
+
