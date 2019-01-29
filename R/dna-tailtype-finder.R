@@ -1,23 +1,32 @@
-#' Title
+#' Finds if a given DNA read is poly(A) read or poly(T) reads.
 #'
-#' @param file_path
-#' @param data
-#' @param plot_debug
-#' @param multifast5
-#' @param basecalled_with_flipflop
-#' @param read_id_fast5_file
-#' @param ...
+#' This function reads the data from the fast5 file, and then alings primers to the read to discover if
+#' it is a poly(A) or poly(T) read. For poly(A) reads, the
+#' function further tests if the read is a complete read, and
+#' not truncated prematurely. The function also find the rough end site of the poly(A) tail, and the rough start site of the poly(T) tail.
+#'
+#' @param file_path a character string[NA]. Full path of the read whose type is to be determined.
+#' Use it if the read is basecalled with Albacore and is of one-read-per-fast5 type.
+#' @param data a character string ['cdna']. Specify if the read is 'cdna' or 'pcr-dna'
+#' @param plot_debug a logical [FALSE]. Specifies whether to compute data needed for plotting debug
+#' information in the tail plots. If set to TRUE then the performance will be slow.
+#' @param multifast5 a logical [FALSE]. Specify if the read is a multifast5 read
+#' @param basecalled_with_flipflop a logical [FALSE]. Specify if the read has been basecalled with flip flop algorithm
+#' instead of albacore
+#' @param read_id_fast5_file a list [NA]. Only relevant if basecalled_with_flipflop is set to TRUE. In such a case, provide named list
+#' with read_id containing the ID of the read to process from the multifast5 file, and fast5_file containing the full path of the
+#' multifast5 file.
+#' @param ... Any other optional parameters
 #'
 #' @return
-#' @export
 #'
 #' @examples
 dna_tailtype_finder <- function(file_path=NA,
                                 data='cdna',
-                                read_id_fast5_file=NA,
                                 plot_debug=F,
                                 multifast5=F,
                                 basecalled_with_flipflop=F,
+                                read_id_fast5_file=NA,
                                 ...) {
 
     match <- 1
@@ -53,7 +62,7 @@ dna_tailtype_finder <- function(file_path=NA,
 
     # RECIPE:
     # 1. Tail is poly(A) if nas_fp > nas_ep > 0.6 --> check if its not prematurely terminated read
-    #                                                 by checking for rc_ep at the end of the of the read                                               
+    #                                                 by checking for rc_ep at the end of the of the read
     # 2. Tail is poly(T) if nas_ep > nas_fp > 0.6
     # 3. Invalid otherwise
     as_fp <- Biostrings::pairwiseAlignment(pattern=fp,
@@ -95,7 +104,7 @@ dna_tailtype_finder <- function(file_path=NA,
                                                   gapExtension=gapExtension)
         nas_rc_ep <- as_rc_ep@score/rc_ep@length
         tail_is_valid <- ifelse(nas_rc_ep > 0.6, T, F)
-        
+
         # If it is a valid polyA tail, then find the rough starting site of the tail
         if (tail_is_valid) {
             polya_end_fastq <- as_rc_ep@subject@range@start + nchar(fastq)-50

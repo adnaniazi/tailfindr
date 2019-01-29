@@ -82,8 +82,8 @@ extract_read_data_hdf5r_flipflop <- function(read_path, plot_debug=FALSE){
     # reomve NAs
     event_length_vector <- event_length_vector[!is.na(event_length_vector)]
 
-    # median
-    samples_per_nt <- median(event_length_vector)
+    # Normalizer for flip-flop based data
+    samples_per_nt <- mean(event_length_vector[event_length_vector <= quantile(event_length_vector, 0.95)])
 
     read_data = list(raw_data = raw_data,
                      event_data = event_data,

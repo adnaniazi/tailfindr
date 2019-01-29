@@ -3,38 +3,42 @@
 #' Extracts read data from basecalled FAST5 files. The function can't work on
 #' raw reads that haven't been basecalled by Albacore.
 #'
+#' @param plot_debug
 #' @param read_path Full path of a FAST5 read
 #'
 #' @return A list of relevant data extracted from the FAST5 file
+#' @export
 #'
 #' @examples
-#' extract_read_data_rhdf5('path/to/fast5/file')
-
-extract_read_data_rhdf5 <- function(read_path, plot_debug=FALSE){
+#' extract_read_data_hdf5r('path/to/fast5/file')
+extract_read_data_hdf5r <- function(read_path, plot_debug=FALSE){
     # extract raw data
-    f5_tree <- rhdf5::h5ls(read_path)
-    raw_reads <- f5_tree[(which(f5_tree == "/Raw/Reads") + 1), 1]
-    raw_data <- rhdf5::h5read(read_path, raw_reads)$Signal
-    ra <- rhdf5::h5readAttributes(read_path, raw_reads)
-    ugk <- rhdf5::h5readAttributes(read_path, 'UniqueGlobalKey/channel_id/')
+    f5_obj <- hdf5r::H5File$new(read_path, mode='r')
+    f5_tree <- f5_obj$ls(recursive=TRUE)
+    f5_tree <- f5_tree$name
+    raw_read_path <- f5_tree[which(f5_tree == 'Raw/Reads') + 2]
+    raw_data <- f5_obj[[raw_read_path]]$read()
+    ugk <- 'UniqueGlobalKey/channel_id'
 
-    read_id <- ra$read_id
-    read_number <- ra$read_number
-    start_time <- ra$start_time
+    channel_number <- strtoi(f5_obj[[ugk]]$attr_open('channel_number')$read())
+    sampling_rate <- strtoi(f5_obj[[ugk]]$attr_open('sampling_rate')$read())
 
-    channel_number <- ugk$channel_number
-    sampling_rate <- ugk$sampling_rate
+    raw_read_path <- f5_tree[which(f5_tree == 'Raw/Reads') + 1]
+    read_id <- f5_obj[[raw_read_path]]$attr_open('read_id')$read()
+    read_number <- f5_obj[[raw_read_path]]$attr_open('read_number')$read()
+    start_time <- f5_obj[[raw_read_path]]$attr_open('start_time')$read()
+    duration <- f5_obj[[raw_read_path]]$attr_open('duration')$read()
+    bct <- 'Analyses/Basecall_1D_000/BaseCalled_template'
+    event_data <- f5_obj[[bct]]$open('Events')$read()
 
-    # extract events data
-    tmp_path <- rhdf5::h5ls(read_path)[which(rhdf5::h5ls(read_path) == "/Analyses/Basecall_1D_000/BaseCalled_template")[1], 1]
-    event_data <- rhdf5::h5read(read_path, tmp_path)$Events
-
-    # TODO
-    # logic for extract fastq
-    fastq <- NA
+    # Fastq
+    fastq <- f5_obj[[bct]]$open('Fastq')$read()
+    # get only the fastq sequnce (ignoring the quality information)
+    fastq <-strsplit(fastq, split = "\n")
+    fastq <- fastq[[1]][2]
 
     if (plot_debug) {
-        # make a vector of moves interpolated for every sample i.e., make a sample-wise or per-sample vector of moves
+    # make a vector of moves interpolated for every sample i.e., make a sample-wise or per-sample vector of moves
         if (event_data$start[1] !=0) {
             moves_sample_wise_vector <- c(rep(NA, event_data$start[1]-1),
                                           rep(event_data$move*0.25+1.5, each=event_data$length[1]),
@@ -42,10 +46,9 @@ extract_read_data_rhdf5 <- function(read_path, plot_debug=FALSE){
         } else {
             moves_sample_wise_vector <- c(rep(event_data$move*0.25+1.5, each=event_data$length[1]),
                                           rep( NA, length(raw_data) - (utils::tail(event_data$start, n=1)+event_data$length[1])))
-
         }
     } else {
-        moves_sample_wise_vector <- NA
+        moves_sample_wise_vector <- rep(NA, length(raw_data))
     }
 
     # create event length data for tail normalization
@@ -106,8 +109,8 @@ extract_read_data_rhdf5 <- function(read_path, plot_debug=FALSE){
     # reomve NAs
     event_length_vector <- event_length_vector[!is.na(event_length_vector)]
 
-    # median
-    samples_per_nt <- median(event_length_vector)
+    # compute geometric mean of modfied Albacore events table to get the normalizer
+    samples_per_nt <- psych::geometric.mean(event_length_vector)
 
     # drop useless columns in event data
     event_data <- dplyr::select(event_data, start, move, model_state)
@@ -123,7 +126,6 @@ extract_read_data_rhdf5 <- function(read_path, plot_debug=FALSE){
                      start_time = start_time,
                      sampling_rate = sampling_rate,
                      samples_per_nt = samples_per_nt)
-    rhdf5::H5close()
+    f5_obj$close_all()
     return(read_data)
 }
-

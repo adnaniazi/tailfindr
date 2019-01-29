@@ -9,7 +9,8 @@
 #'
 #' @examples
 extract_read_data_hdf5r_flipflop_multifast5 <- function(read_id_fast5_file,
-                                                        plot_debug=F, ...) {
+                                                        plot_debug=F,
+                                                        ...) {
 
     f5_obj <- hdf5r::H5File$new(read_id_fast5_file$fast5_file, mode='r')
     read_id <- read_id_fast5_file$read_id
@@ -82,54 +83,11 @@ extract_read_data_hdf5r_flipflop_multifast5 <- function(read_id_fast5_file,
     event_length_vector <- event_length_vector * stride
     event_data <- cbind(event_data, event_length_vector)
 
-    # rem0ve NAs
-    # event_length_vector <- event_length_vector[!is.na(event_length_vector)]
+    # remove NAs
+    event_length_vector <- event_length_vector[!is.na(event_length_vector)]
 
-    # median
-    samples_per_nt <- median(event_length_vector, na.rm = T)
-
-    # ## JUST FOR FUN-DELETE LATER
-    # # event_length_vector <- sort(event_length_vector)
-    # # event_length_vector <- event_length_vector[1:ceiling(length(event_length_vector)*0.95)]
-    # # samples_per_nt <- mean(event_length_vector)
-    #
-    # # create event length data for tail normalization
-    # event_length_vector2 <- rep(NA, called_events)
-    # count <- 1
-    # samples_acc <- list()
-    # add_to_next_event <- 0
-    # for (i in seq(from=1, to=called_events-1, by=1)) {
-    #     if (event_data$move[i] == 1 & event_data$move[i+1] == 0) {
-    #         samples_acc[[count]] <- event_data$weights[i]
-    #         count <- count + 1
-    #     } else if (event_data$move[i] == 1 & event_data$move[i+1] == 1) {
-    #         event_length_vector2[i] <- stride + add_to_next_event
-    #         add_to_next_event <- 0
-    #         samples_acc <- list()
-    #         count <- 1
-    #     } else if (event_data$move[i] == 0 & event_data$move[i+1] == 1) {
-    #         # calculate the twentifith percentile of the weights for the event
-    #         #percentile <- quantile(as.numeric(samples_acc), 0.25)
-    #         #if (event_data$weights[i] < percentile & event_data$weights[i] < 0.3) {
-    #         if (event_data$weights[i] < mean(as.numeric(samples_acc))-0.1) {
-    #             add_to_next_event <- 1
-    #             event_length_vector2[i] <- length(samples_acc) * stride + 1
-    #         } else {
-    #             event_length_vector2[i] <- length(samples_acc) * stride + 2 + add_to_next_event
-    #             add_to_next_event <- 0
-    #         }
-    #         samples_acc <- list()
-    #         count <- 1
-    #     } else if (event_data$move[i] == 0 & event_data$move[i+1] == 0)  {
-    #         samples_acc[[count]] <- event_data$weights[i]
-    #         count <- count + 1
-    #     } else {
-    #         print('oops! something went wrong here!')
-    #     }
-    # }
-    # event_data <- cbind(event_data, event_length_vector2)
-    # samples_per_nt <- median(event_length_vector2, na.rm = T)
-    # ## JUST FOR FUN-DELETE LATER
+    # Normalizer for flip-flop based data
+    samples_per_nt <- mean(event_length_vector[event_length_vector <= quantile(event_length_vector, 0.95)])
 
     read_data = list(raw_data = raw_data,
                      event_data = event_data,

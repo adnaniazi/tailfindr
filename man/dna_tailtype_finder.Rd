@@ -2,15 +2,38 @@
 % Please edit documentation in R/dna-tailtype-finder.R
 \name{dna_tailtype_finder}
 \alias{dna_tailtype_finder}
-\title{Title}
+\title{Reads the data from the fast5 file, and additionally, finds if a given DNA read is poly(A) read or poly(T) reads.}
 \usage{
 dna_tailtype_finder(file_path = NA, data = "cdna",
   read_id_fast5_file = NA, plot_debug = F, multifast5 = F,
   basecalled_with_flipflop = F, ...)
 }
 \arguments{
-\item{...}{}
+\item{file_path}{a character string[NA]. Full path of the read whose type is to be determined.
+Use it if the read is basecalled with Albacore and is of one-read-per-fast5 type.}
+
+\item{data}{a character string ['cdna']. Specify if the read is 'cdna' or 'pcr-dna'}
+
+\item{read_id_fast5_file}{a list [NA]. Only relevant if basecalled_with_flipflop is set to TRUE. In such a case, provide named list
+with read_id containing the ID of the read to process from the multifast5 file, and fast5_file containing the full path of the
+multifast5 file.}
+
+\item{plot_debug}{a logical [FALSE]. Specifies whether to compute data needed for plotting debug
+information in the tail plots. If set to TRUE then the performance will be slow.}
+
+\item{multifast5}{a logical [FALSE]. Specify if the read is a multifast5 read}
+
+\item{basecalled_with_flipflop}{a logical [FALSE]. Specify if the read has been basecalled with flip flop algorithm
+instead of albacore}
+
+\item{...}{Any other optiona parameters}
+}
+\value{
+
 }
 \description{
-Title
+This function reads the data from the fast5 file, and then alings primers to the read to discover if
+it is a poly(A) or poly(T) read. For poly(A) reads, the
+function further tests if the read is a complete read, and
+not prematurely truncated. The function also find the rough end of the poly(A) tail and the rough start of the poly(T) tail.
 }
