@@ -1,6 +1,6 @@
 Package: tailfinder
 Type: Package
-Title: Find Poly(A) and Poly(T) Tail Length in Nanopore Reads
+Title: Finds Poly(A) and Poly(T) Tail Length in Nanopore Reads
 Version: 0.1.0
 Authors@R: c(
   person(given = "Adnan", family = "Niazi", email = "adnan.niazi@uib.no", role = c("aut", "cre", "cph")),
@@ -9,7 +9,7 @@ Authors@R: c(
   person(given = "Florian", family = "Muller", email = "florianisch.flo@googlemail.com ", role = c("ctb")),
   person(given = "Evind", family = "Valen", email = "eivind.valen@gmail.com", role = c("ths", "fnd")) )
 Maintainer: Adnan Niazi <adnan.niazi@uib.no>
-Description: A package to find poly(A)-tail length in Nanopore RNA and cNDA data. It can also be used to find poly(T)-tail length in cDNA data.
+Description: tailfinder is an alignment-free tool (i.e., no BAM/SAM files are needed) to find poly(A)/poly(T) tail lengths in 1D nanopore sequencing reads. It can handle both Albacore data and the new Flip-flop data. It also handle signle or multifast5 files. Currently it find poly(A) tail lengths 1D RNA nanopore reads, and both poly(A) and poly(T) lengths in 1D DNA nanopore reads.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

@@ -2,38 +2,52 @@
 % Please edit documentation in R/dna-tailtype-finder.R
 \name{dna_tailtype_finder}
 \alias{dna_tailtype_finder}
-\title{Reads the data from the fast5 file, and additionally, finds if a given DNA read is poly(A) read or poly(T) reads.}
+\title{Finds if a given DNA read is poly(A) read or poly(T) reads.}
 \usage{
-dna_tailtype_finder(file_path = NA, data = "cdna",
-  read_id_fast5_file = NA, plot_debug = F, multifast5 = F,
-  basecalled_with_flipflop = F, ...)
+dna_tailtype_finder(file_path = NA, data = "cdna", plot_debug = F,
+  multifast5 = F, basecalled_with_flipflop = F,
+  read_id_fast5_file = NA, ...)
 }
 \arguments{
-\item{file_path}{a character string[NA]. Full path of the read whose type is to be determined.
-Use it if the read is basecalled with Albacore and is of one-read-per-fast5 type.}
+\item{file_path}{a character string[NA]. Full path of the read whose type is
+to be determined. Use it if the read is basecalled with Albacore and is of
+one-read-per-fast5 type.}
 
-\item{data}{a character string ['cdna']. Specify if the read is 'cdna' or 'pcr-dna'}
+\item{data}{a character string ['cdna']. Specify if the read is 'cdna' or
+'pcr-dna'.}
 
-\item{read_id_fast5_file}{a list [NA]. Only relevant if basecalled_with_flipflop is set to TRUE. In such a case, provide named list
-with read_id containing the ID of the read to process from the multifast5 file, and fast5_file containing the full path of the
-multifast5 file.}
+\item{plot_debug}{a logical [FALSE]. Specifies whether to compute data needed
+ for plotting debug.
+information in the tail plots. If set to TRUE then the performance will be
+slow.}
 
-\item{plot_debug}{a logical [FALSE]. Specifies whether to compute data needed for plotting debug
-information in the tail plots. If set to TRUE then the performance will be slow.}
+\item{multifast5}{a logical [FALSE]. Specify if the read is a multifast5 read.}
 
-\item{multifast5}{a logical [FALSE]. Specify if the read is a multifast5 read}
+\item{basecalled_with_flipflop}{a logical [FALSE]. Specify if the read has
+been basecalled with flip flop algorithm instead of albacore.}
 
-\item{basecalled_with_flipflop}{a logical [FALSE]. Specify if the read has been basecalled with flip flop algorithm
-instead of albacore}
+\item{read_id_fast5_file}{a list [NA]. Only relevant if
+basecalled_with_flipflop is set to TRUE. In such a case, provide a list
+with read_id containing the ID of the read to process from the multifast5
+file, and fast5_file containing the full path of the multifast5 file.}
 
-\item{...}{Any other optiona parameters}
+\item{...}{Any other optional parameters. Only for future.}
 }
 \value{
-
+A list containing all the relevant information
 }
 \description{
-This function reads the data from the fast5 file, and then alings primers to the read to discover if
-it is a poly(A) or poly(T) read. For poly(A) reads, the
-function further tests if the read is a complete read, and
-not prematurely truncated. The function also find the rough end of the poly(A) tail and the rough start of the poly(T) tail.
+This function reads the data from the fast5 file, and then alings primers to
+the read to discover if it is a poly(A) or poly(T) read. For poly(A) reads,
+the function further tests if the read is a complete read, and not truncated
+prematurely. The function also find the rough end site of the poly(A) tail,
+ and the rough start site of the poly(T) tail.
+}
+\examples{
+# 1. If the data is multifast5 cDNA data basecalled with flip-flop algorithm
+dna_tailtype_finder(data='cdna', multifast5=T, basecalled_with_flipflop=T,
+read_id_fast5_file=list(read_id=read_id, fast5_file=full_path_of_fast5_file))
+# 2. If the data is multifast5 pcr-DNA data basecalled with flip-flop algorithm
+dna_tailtype_finder(data='pcr-dna', multifast5=T, basecalled_with_flipflop=T,
+read_id_fast5_file=list(read_id=read_id, fast5_file=full_path_of_fast5_file))
 }
