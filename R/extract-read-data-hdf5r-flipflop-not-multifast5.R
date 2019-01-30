@@ -11,7 +11,9 @@
 #'
 #' @examples
 #' extract_read_data_hdf5r('path/to/fast5/file')
-extract_read_data_hdf5r_flipflop <- function(read_path, plot_debug=FALSE){
+extract_read_data_hdf5r_guppy_single_fast5 <- function(read_path,
+                                                       plot_debug=FALSE,
+                                                       basecalled_with='guppy_standard_model'){
     # extract raw data
     f5_obj <- hdf5r::H5File$new(read_path, mode='r')
     f5_tree <- f5_obj$ls(recursive=TRUE)

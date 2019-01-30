@@ -32,13 +32,13 @@ find_dna_tail_per_read <- function(file_path=NA,
 
     # first read the data and find the tailtype
     if (!multifast5 & !basecalled_with_flipflop) {
-        data_list <- dna_tailtype_finder(file_path, plot_debug, data=data)
+        data_list <- find_dna_tailtype(file_path, plot_debug, data=data)
     } else {
-        data_list <- dna_tailtype_finder(plot_debug=plot_debug,
-                                         data=data,
-                                         multifast5=T,
-                                         basecalled_with_flipflop=T,
-                                         read_id_fast5_file=read_id_fast5_file)
+        data_list <- find_dna_tailtype(plot_debug=plot_debug,
+                                       data=data,
+                                       multifast5=T,
+                                       basecalled_with_flipflop=T,
+                                       read_id_fast5_file=read_id_fast5_file)
         file_path <- read_id_fast5_file$fast5_file
     }
 

@@ -1,8 +1,8 @@
-#' Finds if a given DNA read is poly(A) read or poly(T) reads.
+#' Finds if a DNA read is poly(A) read or poly(T) read.
 #'
-#' This function reads the data from the fast5 file, and then alings primers to
+#' This function reads the data from a fast5 file, and then alings primers to
 #' the read to discover if it is a poly(A) or poly(T) read. For poly(A) reads,
-#' the function further tests if the read is a complete read, and not truncated
+#' the function further tests if the read is a complete read -- and not truncated
 #' prematurely. The function also find the rough end site of the poly(A) tail,
 #'  and the rough start site of the poly(T) tail.
 #'
@@ -28,21 +28,27 @@
 #'
 #'
 #' @examples
-#' # 1. If the data is multifast5 cDNA data basecalled with flip-flop algorithm
-#' dna_tailtype_finder(data='cdna', multifast5=T, basecalled_with_flipflop=T, read_id_fast5_file=list(read_id=read_id, fast5_file=full_path_of_fast5_file))
+#' \dontrun{
+#'
+#' # 1. If the data is multifast5 cDNA (direct cDNA or amplified cDNA) data basecalled with flip-flop algorithm
+#' find_dna_tailtype(data='cdna', multifast5=T, basecalled_with_flipflop=T, read_id_fast5_file=list(read_id=read_id, fast5_file=full_path_of_fast5_file))
 
 #' # 2. If the data is multifast5 pcr-DNA data basecalled with flip-flop algorithm
-#' dna_tailtype_finder(data='pcr-dna', multifast5=T, basecalled_with_flipflop=T, read_id_fast5_file=list(read_id=read_id, fast5_file=full_path_of_fast5_file))
+#' find_dna_tailtype(data='pcr-dna', multifast5=T, basecalled_with_flipflop=T, read_id_fast5_file=list(read_id=read_id, fast5_file=full_path_of_fast5_file))
 
+#' # 3. If the data is cDNA (direct cDNA or amplified cDNA) data basecalled with albacore with single fast5 files as output
+#' find_dna_tailtype(file_path=full_file_path_of_the_read, data='cdna', multifast5=F, basecalled_with_flipflop=F)
+#' }
 
-dna_tailtype_finder <- function(file_path=NA,
-                                data='cdna',
-                                plot_debug=F,
-                                multifast5=F,
-                                basecalled_with_flipflop=F,
-                                read_id_fast5_file=NA,
-                                ...) {
+find_dna_tailtype <- function(file_path=NA,
+                              data='cdna',
+                              plot_debug=F,
+                              multifast5=F,
+                              basecalled_with_flipflop=F,
+                              read_id_fast5_file=NA,
+                              ...) {
 
+    # define substitution matrix parameter
     match <- 1
     mismatch <- -1
     type <-'local'
@@ -51,18 +57,23 @@ dna_tailtype_finder <- function(file_path=NA,
     submat <- Biostrings::nucleotideSubstitutionMatrix(match=match,
                                                        mismatch=mismatch,
                                                        baseOnly=T)
+    # extract read data
     if (!multifast5 & !basecalled_with_flipflop) {
         read_data <- extract_read_data_hdf5r(file_path, plot_debug)
     } else {
         read_data <- extract_read_data_hdf5r_flipflop_multifast5(read_id_fast5_file=read_id_fast5_file,
                                                                  plot_debug=plot_debug)
     }
+
+    # get event data table and the fastQ
     event_data <- read_data$event_data
     fastq <- read_data$fastq
 
-    fa <- Biostrings::DNAString('GGCGTCTGCTTGGGTGTTTAACCTTTTTTTTTTAATGTACTTCGTTCAGTTACGTATTGCT')
-    ea <- Biostrings::DNAString('GCAATACGTAACTGAACGAAGT')
+    # define the adaptor sequences
+    #fa <- Biostrings::DNAString('GGCGTCTGCTTGGGTGTTTAACCTTTTTTTTTTAATGTACTTCGTTCAGTTACGTATTGCT')
+    #ea <- Biostrings::DNAString('GCAATACGTAACTGAACGAAGT')
 
+    # define the primer sequences
     if (data == 'cdna') {
         fp <- Biostrings::DNAString('TTTCTGTTGGTGCTGATATTGCTGCCATTACGGCCGGG')
         ep <- Biostrings::DNAString('ACTTGCCTGTCGCTCTATCTTC')
