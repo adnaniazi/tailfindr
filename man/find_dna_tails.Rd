@@ -131,8 +131,8 @@ df <- find_dna_tails(fast5_dir = "/path/to/fast5/data",
                      save_plots = TRUE,
                      plotting_library = "ggplot2")
 
-# 6. Same scenario as 4, but we want to save the debug information as well
-# in the plots
+# 6. Same scenario as 4, but we now want to save the debug information as
+# well in the plots
 df <- find_dna_tails(fast5_dir = "/path/to/fast5/data",
                      data = "cdna",
                      save_dir = "/path/to/a/directory",

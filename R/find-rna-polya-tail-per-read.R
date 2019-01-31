@@ -1,13 +1,24 @@
 #' Find Poly(A) tail in a single RNA read.
 #'
 #' @param file_path Path of the FAST5 file
+#' @param read_id_fast5_file
+#' @param multifast5
+#' @param basecalled_with
+#' @param save_plots
+#' @param show_plots
+#' @param save_dir
+#' @param plotting_library
+#' @param plot_debug
 #'
 #' @return A list of Fast5 file data
 #' @export
 #'
 #' @examples
 #' find_rna_polya_tail_per_read('path/to/fast5/file')
-find_rna_polya_tail_per_read <- function(file_path,
+find_rna_polya_tail_per_read <- function(file_path = NA,
+                                         read_id_fast5_file = NA,
+                                         multifast5,
+                                         basecalled_with,
                                          save_plots = FALSE,
                                          show_plots = FALSE,
                                          save_dir = '~',
@@ -20,8 +31,17 @@ find_rna_polya_tail_per_read <- function(file_path,
     POLY_A_RNA_ADAPTOR_TROUGH_SIZE_THRESHOLD <- 2200
 
     # Read the FAST5 data
-    read_data <- extract_read_data_hdf5r(file_path, plot_debug=plot_debug)
-    sampling_rate <- read_data$sampling_rate
+    read_data <- extract_read_data(file_path,
+                                   read_id_fast5_file,
+                                   plot_debug,
+                                   basecalled_with,
+                                   multifast5,
+                                   model)
+    # first read the data and find the tailtype
+    if (multifast5) {
+        file_path <- read_id_fast5_file$fast5_file
+    }
+    read_id <- read_data$read_id
 
     # Z-normalize the data
     norm_data <- z_normalize(read_data$raw_data)
@@ -65,7 +85,8 @@ find_rna_polya_tail_per_read <- function(file_path,
     precise_polya_boundries <- find_rna_polya_precise_start_end(truncated_data,
                                                                 POLY_A_RNA_THRESHOLD,
                                                                 crude_polya_boundries,
-                                                                save_plots, show_plots)
+                                                                save_plots,
+                                                                show_plots)
     len_rle <- length(rle_values)
     read_length <- length(read_data$raw_data)
 
@@ -84,14 +105,17 @@ find_rna_polya_tail_per_read <- function(file_path,
     }
 
     if (show_plots | save_plots) {
-        filename <- basename(file_path)
-
+        if (multifast5){
+            filename <- read_id
+        } else {
+            filename <- basename(file_path)
+        }
         plot_title <- paste('Poly(A) tail  |  ',
                             'Tail length[nt]: ', round(tail_length, 2), '  |  ',
                             'Tail start: ', tail_start, '  |  ',
                             'Tail end: ', tail_end, '  |  ',
                             'Tail duration[Sa]: ', tail_end-tail_start, '  |  ',
-                            'Samples per nt: ', read_data$samples_per_nt,
+                            'Samples per nt: ', round(read_data$samples_per_nt, 2),
                             sep='')
 
         df = data.frame(x=c(1:length(read_data$raw_data)),
@@ -176,11 +200,11 @@ find_rna_polya_tail_per_read <- function(file_path,
         }
     }
 
-    data <- list(read_id = read_data$read_id,
-                 polya_start = precise_polya_boundries$start,
-                 polya_end = precise_polya_boundries$end,
-                 tail_length = tail_length,
+    data <- list(read_id = read_id,
+                 tail_start = precise_polya_boundries$start,
+                 tail_end = precise_polya_boundries$end,
                  samples_per_nt = read_data$samples_per_nt,
+                 tail_length = tail_length,
                  polya_fastq = poly_a_fastq,
                  file_path = file_path)
     return(data)

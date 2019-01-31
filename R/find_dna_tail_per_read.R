@@ -8,41 +8,42 @@
 #' @param plot_debug
 #' @param data
 #' @param multifast5
-#' @param basecalled_with_flipflop
-#' @param ...
 #' @param read_id_fast5_file
+#' @param basecalled_with
+#' @param model
 #'
 #' @return
 #' @export
 #'
 #' @examples
-find_dna_tail_per_read <- function(file_path=NA,
-                                   read_id_fast5_file=NA,
-                                   data='cdna',
-                                   save_plots=F,
-                                   show_plots=F,
-                                   plot_debug=F,
-                                   save_dir=NA,
-                                   plotting_library='rbokeh',
-                                   multifast5=F,
-                                   basecalled_with_flipflop=F,
-                                   ...){
+find_dna_tail_per_read <- function(file_path = NA,
+                                   read_id_fast5_file = NA,
+                                   data = 'cdna',
+                                   save_plots = F,
+                                   show_plots = F,
+                                   plot_debug = F,
+                                   save_dir = NA,
+                                   plotting_library = 'rbokeh',
+                                   multifast5 = F,
+                                   basecalled_with = 'albacore',
+                                   model = 'standard'){
 
     do_plots <- ifelse(save_plots | show_plots, TRUE, FALSE)
 
+    data_list <- find_dna_tailtype(file_path,
+                                   data,
+                                   plot_debug,
+                                   basecalled_with,
+                                   multifast5,
+                                   model,
+                                   read_id_fast5_file)
     # first read the data and find the tailtype
-    if (!multifast5 & !basecalled_with_flipflop) {
-        data_list <- find_dna_tailtype(file_path, plot_debug, data=data)
-    } else {
-        data_list <- find_dna_tailtype(plot_debug=plot_debug,
-                                       data=data,
-                                       multifast5=T,
-                                       basecalled_with_flipflop=T,
-                                       read_id_fast5_file=read_id_fast5_file)
+    if (multifast5) {
         file_path <- read_id_fast5_file$fast5_file
     }
 
     read_data <- data_list$read_data
+    read_id <- read_data$read_id
     event_data <- read_data$event_data
     read_type <- data_list$read_type
     tail_is_valid <- data_list$tail_is_valid
@@ -247,7 +248,7 @@ find_dna_tail_per_read <- function(file_path=NA,
                     mean_data=mean_data,
                     slope=slope)
     if (multifast5){
-        filename <- read_data$read_id
+        filename <- read_id
     } else {
         filename <- basename(file_path)
     }
@@ -271,7 +272,7 @@ find_dna_tail_per_read <- function(file_path=NA,
                             'Tail start: ', tail_start, '  |  ',
                             'Tail end: ', tail_end, '  |  ',
                             'Tail duration[Sa]: ', tail_end-tail_start, '  |  ',
-                            'Samples per nt: ', samples_per_nt,
+                            'Samples per nt: ', round(samples_per_nt, 2),
                             sep='')
     } else {
         plot_title <- paste('Poly(T) tail  |  ',
@@ -279,7 +280,7 @@ find_dna_tail_per_read <- function(file_path=NA,
                             'Tail start: ', tail_start, '  |  ',
                             'Tail end: ', tail_end, '  |  ',
                             'Tail duration[Sa]: ', tail_end-tail_start, '  |  ',
-                            'Samples per nt: ', samples_per_nt,
+                            'Samples per nt: ', round(samples_per_nt, 2),
                             sep='')
     }
     if (plotting_library == 'rbokeh') {

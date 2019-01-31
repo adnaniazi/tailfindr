@@ -13,38 +13,51 @@
 #' 'pcr-dna'.
 #' @param plot_debug a logical [FALSE]. Specifies whether to compute data needed
 #'  for plotting debug.
-#' information in the tail plots. If set to TRUE then the performance will be
-#' slow.
-#' @param multifast5 a logical [FALSE]. Specify if the read is a multifast5 read.
-#' @param basecalled_with_flipflop a logical [FALSE]. Specify if the read has
-#' been basecalled with flip flop algorithm instead of albacore.
-#' @param read_id_fast5_file a list [NA]. Only relevant if
-#' basecalled_with_flipflop is set to TRUE. In such a case, provide a list
-#' with read_id containing the ID of the read to process from the multifast5
-#' file, and fast5_file containing the full path of the multifast5 file.
-#' @param ... Any other optional parameters. Only for future.
-#'
-#' @return A list containing all the relevant information
-#'
-#'
+#' @param basecalled_with a character string. Specify if the data is from
+#''albacore' or 'guppy'
+#' @param multifast5 a logical. Set it to TRUE if the file to be processed
+#' is multifast5. Set it to FALSE if the file to be processed is a single fast5
+#' file
+#' @param model a string. Set to 'flipflop' if the basecalling model is flipflop.
+#' Set to 'standard' if the basecalling model is standard model.l
+#' @param read_id_fast5_file a list [NA]. A list of 'read_id' and 'fast5_file'
+#' path. Use this option when a read from a multifast5 file is to be read. In
+#' such a case, you should set file_path to NA, and set multifast5 flag to TRUE.
+#' @param ... An other parameter. For future expansion.
 #' @examples
 #' \dontrun{
 #'
 #' # 1. If the data is multifast5 cDNA (direct cDNA or amplified cDNA) data basecalled with flip-flop algorithm
-#' find_dna_tailtype(data='cdna', multifast5=T, basecalled_with_flipflop=T, read_id_fast5_file=list(read_id=read_id, fast5_file=full_path_of_fast5_file))
-
+#' find_dna_tailtype(data = 'cdna',
+#'                   multifast5 = T,
+#'                   basecalled_with = 'guppy',
+#'                   model = 'flipflop',
+#'                   read_id_fast5_file = list(read_id=read_id, fast5_file=full_path_of_fast5_file))
+#'
 #' # 2. If the data is multifast5 pcr-DNA data basecalled with flip-flop algorithm
-#' find_dna_tailtype(data='pcr-dna', multifast5=T, basecalled_with_flipflop=T, read_id_fast5_file=list(read_id=read_id, fast5_file=full_path_of_fast5_file))
-
+#' find_dna_tailtype(data = 'pcr-dna',
+#'                   multifast5=T,
+#'                   basecalled_with = 'guppy',
+#'                   model = 'flipflop',
+#'                   read_id_fast5_file = list(read_id=read_id, fast5_file=full_path_of_fast5_file))
+#'
 #' # 3. If the data is cDNA (direct cDNA or amplified cDNA) data basecalled with albacore with single fast5 files as output
-#' find_dna_tailtype(file_path=full_file_path_of_the_read, data='cdna', multifast5=F, basecalled_with_flipflop=F)
+#' find_dna_tailtype(file_path = full_file_path_of_the_read,
+#'                   data = 'cdna',
+#'                   multifast5 = F,
+#'                   basecalled_with = 'albacore',
+#'                   model = 'standard')
 #' }
+#'
+#' @return A list containing all the relevant information
+#'
 
-find_dna_tailtype <- function(file_path=NA,
-                              data='cdna',
-                              plot_debug=F,
-                              multifast5=F,
-                              basecalled_with_flipflop=F,
+find_dna_tailtype <- function(file_path = NA,
+                              data = 'cdna',
+                              plot_debug = F,
+                              basecalled_with,
+                              multifast5,
+                              model,
                               read_id_fast5_file=NA,
                               ...) {
 
@@ -54,16 +67,16 @@ find_dna_tailtype <- function(file_path=NA,
     type <-'local'
     gapOpening <- 0
     gapExtension <- 1
-    submat <- Biostrings::nucleotideSubstitutionMatrix(match=match,
-                                                       mismatch=mismatch,
-                                                       baseOnly=T)
+    submat <- Biostrings::nucleotideSubstitutionMatrix(match = match,
+                                                       mismatch = mismatch,
+                                                       baseOnly = TRUE)
     # extract read data
-    if (!multifast5 & !basecalled_with_flipflop) {
-        read_data <- extract_read_data_hdf5r(file_path, plot_debug)
-    } else {
-        read_data <- extract_read_data_hdf5r_flipflop_multifast5(read_id_fast5_file=read_id_fast5_file,
-                                                                 plot_debug=plot_debug)
-    }
+    read_data <- extract_read_data(file_path,
+                                   read_id_fast5_file,
+                                   plot_debug,
+                                   basecalled_with,
+                                   multifast5,
+                                   model)
 
     # get event data table and the fastQ
     event_data <- read_data$event_data
@@ -208,14 +221,15 @@ find_dna_tailtype <- function(file_path=NA,
     # print(p)
 
     # nchar(fastq)
-    return(list(read_data=read_data, # for max comment it out
-                read_type=read_type,
-                tail_is_valid=tail_is_valid,
-                polya_end_fastq=polya_end_fastq,
-                polyt_start_fastq=polyt_start_fastq,
-                polya_end=polya_rough_end,
-                polyt_start=polyt_rough_start,
-                has_precise_boundary=has_precise_boundary))
+    list(read_data = read_data, # for max comment it out
+         read_type = read_type,
+         tail_is_valid = tail_is_valid,
+         polya_end_fastq = polya_end_fastq,
+         polyt_start_fastq = polyt_start_fastq,
+         polya_end = polya_rough_end,
+         polyt_start = polyt_rough_start,
+         has_precise_boundary = has_precise_boundary
+         )
                 #nas_fp=nas_fp,
                 #nas_rc_ep=nas_rc_ep,
                 #nas_ep=nas_ep,
