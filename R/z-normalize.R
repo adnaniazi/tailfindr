@@ -6,7 +6,10 @@
 #'
 #' @return z_normalized_timeseries A z-normalized timeseries
 #' @examples
+#' \dontrun{
+#'
 #' z_normalize(c(1,2,3,4,5))
+#' }
 #'
 z_normalize <- function(timeseries) {
     ts_mean <- mean(timeseries)

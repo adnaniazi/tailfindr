@@ -97,10 +97,13 @@ find_dna_tail_per_read <- function(file_path = NA,
                                       spike_threshold=SPIKE_THRESHOLD)
 
     # Smoothen the data
-    smoothed_data_1 <- left_to_right_sliding_window_cdna_polyt('mean', truncated_data, MOVING_WINDOW_SIZE, 1)
-    smoothed_data_2 <- right_to_left_sliding_window_cdna_polyt('mean', truncated_data, MOVING_WINDOW_SIZE, 1)
-    smoothed_data_3 <- pmin(smoothed_data_1, smoothed_data_2)
-    smoothed_data <- smoothed_data_3
+    smoothed_data_lr <- left_to_right_sliding_window_dna('mean',
+                                                        truncated_data,
+                                                        MOVING_WINDOW_SIZE, 1)
+    smoothed_data_rl <- right_to_left_sliding_window_dna('mean',
+                                                        truncated_data,
+                                                        MOVING_WINDOW_SIZE, 1)
+    smoothed_data <- pmin(smoothed_data_lr, smoothed_data_rl)
 
     ### 1. find the slope between consecutive means with a small smoothing window
     window_size <- 10
@@ -152,7 +155,7 @@ find_dna_tail_per_read <- function(file_path = NA,
     quit_searching <- FALSE
     tail_end <- NA
     while (i < length(slope)){
-        if ((slope[i] < SLOPE_THRESHOLD) & (slope[i] > -SLOPE_THRESHOLD) & (smoothed_data_3[tail_start+i*window_size] < SLOPE_THRESHOLD+0.1)) {
+        if ((slope[i] < SLOPE_THRESHOLD) & (slope[i] > -SLOPE_THRESHOLD) & (smoothed_data[tail_start+i*window_size] < SLOPE_THRESHOLD+0.1)) {
             tail_end <- i
             i <- i + 1
         } else {
@@ -216,7 +219,7 @@ find_dna_tail_per_read <- function(file_path = NA,
     if (do_plots & read_type=='polyA'){
         norm_data <- rev(norm_data)
         truncated_data <- rev(truncated_data)
-        smoothed_data_3 <- rev(smoothed_data_3)
+        smoothed_data <- rev(smoothed_data)
         mean_data <- rev(mean_data)
         slope <- rev(slope)
     }
@@ -243,7 +246,7 @@ find_dna_tail_per_read <- function(file_path = NA,
     df = data.frame(x=c(1:length(read_data$raw_data)),
                     raw_data=raw_data,
                     truncated_data=truncated_data,
-                    smoothed_data_3=smoothed_data_3,
+                    smoothed_data=smoothed_data,
                     moves=read_data$moves_sample_wise_vector-3.0,
                     mean_data=mean_data,
                     slope=slope)
@@ -294,7 +297,7 @@ find_dna_tail_per_read <- function(file_path = NA,
             p <- rbokeh::ly_lines(p, slope, color='#BF1268', width=2, legend = "Slope of the signal in the search window")
             p <- rbokeh::ly_lines(p, mean_data, color='#F79A14', width=2, legend = "Mean of the signal in the search window")
             p <- rbokeh::ly_lines(p, moves, color='#b2b2b2', width=1, legend = "Moves")
-            p <- rbokeh::ly_lines(p, smoothed_data_3, color='#060B54', width=3, legend = "Smoothed signal")
+            p <- rbokeh::ly_lines(p, smoothed_data, color='#060B54', width=3, legend = "Smoothed signal")
             p <- rbokeh::ly_abline(p, h=SLOPE_THRESHOLD, color = '#00B0DF', type = 3, width=2, legend = "Slope upper bound")
             p <- rbokeh::ly_abline(p, h=-SLOPE_THRESHOLD, color = '#FF94CD', type = 3,  width=2, legend = "Slope lower bound")
             if (!is.na(tail_start)) {
@@ -323,7 +326,7 @@ find_dna_tail_per_read <- function(file_path = NA,
                 ggplot2::geom_hline(yintercept = SLOPE_THRESHOLD, color = '#00B0DF', linetype = 'dotted') +
                 ggplot2::geom_line(ggplot2::aes(y = slope, color = '#BF1268')) +
                 ggplot2::geom_hline(yintercept = -SLOPE_THRESHOLD, color = '#FF94CD', linetype = 'dotted') +
-                ggplot2::geom_line(ggplot2::aes(y = smoothed_data_3), color='#060B54') +
+                ggplot2::geom_line(ggplot2::aes(y = smoothed_data), color='#060B54') +
                 ggplot2::geom_line(ggplot2::aes(y = mean_data, color = '#F79A14')) +
                 ggplot2::ylab('z-normalized data values')
         } else {

@@ -20,6 +20,9 @@ distributed throughout the lenght of the read. This function truncates/clips
 these spikes to a specified threshold value
 }
 \examples{
+\dontrun{
+
 truncate_spikes(data, 2)
+}
 
 }

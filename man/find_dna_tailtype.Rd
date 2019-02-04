@@ -2,7 +2,7 @@
 % Please edit documentation in R/find-dna-tailtype.R
 \name{find_dna_tailtype}
 \alias{find_dna_tailtype}
-\title{Finds if a DNA read is poly(A) read or poly(T) read.}
+\title{Finds if a DNA read is poly(A) read or poly(T) read}
 \usage{
 find_dna_tailtype(file_path = NA, data = "cdna", plot_debug = F,
   basecalled_with, multifast5, model, read_id_fast5_file = NA, ...)

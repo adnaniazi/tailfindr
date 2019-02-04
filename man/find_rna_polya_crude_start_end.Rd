@@ -7,6 +7,9 @@
 find_rna_polya_crude_start_end(rle_lengths, rle_values, rle_indices,
   trough_threshold)
 }
+\arguments{
+\item{trough_threshold}{}
+}
 \value{
 
 }

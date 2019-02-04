@@ -10,7 +10,10 @@
 #' @return Same data as input but with spikes clipped
 #'
 #' @examples
+#' \dontrun{
+#'
 #' truncate_spikes(data, 2)
+#' }
 #'
 truncate_spikes <- function (data, spike_threshold){
     data[data > spike_threshold] = spike_threshold

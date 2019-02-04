@@ -78,13 +78,13 @@ extract_read_data <- function(file_path = NA,
 
     # make a vector of moves interpolated for every sample i.e., make a sample-wise or per-sample vector of moves
     if (plot_debug) {
-        if (start_sample != 0) {
-            moves_sample_wise_vector <- c(rep(NA, start_sample-1),
+        if (start != 0) {
+            moves_sample_wise_vector <- c(rep(NA, start-1),
                                           rep(event_data$move*0.25+1.5, each=stride),
-                                          rep(NA, length(raw_data) - start_sample - stride*called_events + 1))
+                                          rep(NA, length(raw_data) - start - stride*called_events + 1))
         } else {
             moves_sample_wise_vector <- c(rep(event_data$move*0.25+1.5, each=stride),
-                                          rep(NA, length(raw_data) - start_sample - stride*called_events + 1))
+                                          rep(NA, length(raw_data) - start - stride*called_events + 1))
         }
     } else {
         moves_sample_wise_vector <- rep(NA, length(raw_data))

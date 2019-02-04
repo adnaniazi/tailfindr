@@ -54,14 +54,13 @@ find_rna_polya_tail_per_read <- function(file_path = NA,
                                       spike_threshold=POLY_A_RNA_SPIKE_THRESHOLD)
 
     # Smoothen the data
-    smoothed_data_1 <- left_to_right_sliding_window_cdna_polya('mean',
-                                                               truncated_data,
-                                                               POLY_A_RNA_MOVING_WINDOW_SIZE, 1)
-    smoothed_data_2 <- right_to_left_sliding_window_cdna_polya('mean',
-                                                               truncated_data,
-                                                               POLY_A_RNA_MOVING_WINDOW_SIZE, 1)
-    smoothed_data_3 <- pmax(smoothed_data_1, smoothed_data_2)
-    smoothed_data <- smoothed_data_3
+    smoothed_data_lr <- left_to_right_sliding_window_rna('mean',
+                                                        truncated_data,
+                                                        POLY_A_RNA_MOVING_WINDOW_SIZE, 1)
+    smoothed_data_rl <- right_to_left_sliding_window_rna('mean',
+                                                        truncated_data,
+                                                        POLY_A_RNA_MOVING_WINDOW_SIZE, 1)
+    smoothed_data <- pmax(smoothed_data_lr, smoothed_data_rl)
 
     # Find intersections with the threshold
     intersections <- smoothed_data > POLY_A_RNA_THRESHOLD
@@ -96,9 +95,9 @@ find_rna_polya_tail_per_read <- function(file_path = NA,
     tail_start <- NA
     tail_end <- NA
     if (!is.na(precise_polya_boundries$start) & !is.na(precise_polya_boundries$end)) {
-        poly_a_fastq <- extract_fastq_in_interval(read_data$event_data,
-                                                  precise_polya_boundries$start,
-                                                  precise_polya_boundries$end)
+        poly_a_fastq <- extract_sequence_between_boundaries(read_data$event_data,
+                                                            precise_polya_boundries$start,
+                                                            precise_polya_boundries$end)
         tail_start <- precise_polya_boundries$start
         tail_end <- precise_polya_boundries$end
         tail_length <- (tail_end - tail_start) / read_data$samples_per_nt
@@ -120,7 +119,7 @@ find_rna_polya_tail_per_read <- function(file_path = NA,
 
         df = data.frame(x=c(1:length(read_data$raw_data)),
                         truncated_data=truncated_data,
-                        smoothed_data_3=smoothed_data_3,
+                        smoothed_data=smoothed_data,
                         moves=read_data$moves_sample_wise_vector + 1,
                         mean_data=precise_polya_boundries$mean_data,
                         slope=precise_polya_boundries$slope)
@@ -150,7 +149,7 @@ find_rna_polya_tail_per_read <- function(file_path = NA,
                                                                rep(NA, times = (read_length-tail_end)))), color='#BF1268')
             }
             if (plot_debug){
-                p <- p + ggplot2::geom_line(ggplot2::aes(y = smoothed_data_3), color='#060B54') +
+                p <- p + ggplot2::geom_line(ggplot2::aes(y = smoothed_data), color='#060B54') +
                 ggplot2::geom_line(ggplot2::aes(y = mean_data, color = "#F79A14"))
             }
             p <- p + ggplot2::ggtitle(plot_title) +
@@ -165,7 +164,7 @@ find_rna_polya_tail_per_read <- function(file_path = NA,
                 p <- rbokeh::ly_lines(p, slope, color='#BF1268', width=3, legend = "Slope")
                 p <- rbokeh::ly_lines(p, mean_data, color='#F79A14', width = 3, legend = "Mean of potential poly(A) region")
                 p <- rbokeh::ly_lines(p, moves, color='#b2b2b2', width=1, legend = "Moves")
-                p <- rbokeh::ly_lines(p, smoothed_data_3, color='#060B54', width=3, legend = "Smoothed data")
+                p <- rbokeh::ly_lines(p, smoothed_data, color='#060B54', width=3, legend = "Smoothed data")
                 p <- rbokeh::ly_abline(p, h=POLY_A_RNA_THRESHOLD, color = '#00B0DF', type = 3, width=2, legend = "Slope upper bound")
                 p <- rbokeh::ly_abline(p, h=-POLY_A_RNA_THRESHOLD, color = '#FF94CD', type = 3,  width=2, legend = "Slope lower bound")
                 if (!is.na(precise_polya_boundries$start)) {

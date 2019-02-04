@@ -1,4 +1,4 @@
-#' Finds if a DNA read is poly(A) read or poly(T) read.
+#' Finds if a DNA read is poly(A) read or poly(T) read
 #'
 #' This function reads the data from a fast5 file, and then alings primers to
 #' the read to discover if it is a poly(A) or poly(T) read. For poly(A) reads,
