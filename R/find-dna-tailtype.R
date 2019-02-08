@@ -9,8 +9,8 @@
 #' @param file_path a character string[NA]. Full path of the read whose type is
 #' to be determined. Use it if the read is basecalled with Albacore and is of
 #' one-read-per-fast5 type.
-#' @param data a character string ['cdna']. Specify if the read is 'cdna' or
-#' 'pcr-dna'.
+#' @param dna_datatype a character string ['cdna']. Specify if the read is 'cdna'
+#' or pcr-dna'.
 #' @param plot_debug a logical [FALSE]. Specifies whether to compute data needed
 #'  for plotting debug.
 #' @param basecalled_with a character string. Specify if the data is from
@@ -28,14 +28,14 @@
 #' \dontrun{
 #'
 #' # 1. If the data is multifast5 cDNA (direct cDNA or amplified cDNA) data basecalled with flip-flop algorithm
-#' find_dna_tailtype(data = 'cdna',
+#' find_dna_tailtype(dna_datatype = 'cdna',
 #'                   multifast5 = T,
 #'                   basecalled_with = 'guppy',
 #'                   model = 'flipflop',
 #'                   read_id_fast5_file = list(read_id=read_id, fast5_file=full_path_of_fast5_file))
 #'
 #' # 2. If the data is multifast5 pcr-DNA data basecalled with flip-flop algorithm
-#' find_dna_tailtype(data = 'pcr-dna',
+#' find_dna_tailtype(dna_datatype = 'pcr-dna',
 #'                   multifast5=T,
 #'                   basecalled_with = 'guppy',
 #'                   model = 'flipflop',
@@ -43,7 +43,7 @@
 #'
 #' # 3. If the data is cDNA (direct cDNA or amplified cDNA) data basecalled with albacore with single fast5 files as output
 #' find_dna_tailtype(file_path = full_file_path_of_the_read,
-#'                   data = 'cdna',
+#'                   dna_datatype = 'cdna',
 #'                   multifast5 = F,
 #'                   basecalled_with = 'albacore',
 #'                   model = 'standard')
@@ -53,7 +53,7 @@
 #'
 
 find_dna_tailtype <- function(file_path = NA,
-                              data = 'cdna',
+                              dna_datatype = 'cdna',
                               plot_debug = F,
                               basecalled_with,
                               multifast5,
@@ -61,15 +61,30 @@ find_dna_tailtype <- function(file_path = NA,
                               read_id_fast5_file=NA,
                               ...) {
 
-    # define substitution matrix parameter
-    match <- 1
-    mismatch <- -1
-    type <-'local'
-    gapOpening <- 0
-    gapExtension <- 1
-    submat <- Biostrings::nucleotideSubstitutionMatrix(match = match,
-                                                       mismatch = mismatch,
-                                                       baseOnly = TRUE)
+    # get the substitution matrix -- if passed from outside
+    if (length(list(...)) > 0) {
+        lst <- list(...)
+        if ("dna_opts" %in% names(lst)) {
+            dna_opts <- lst$dna_opts
+            match <- dna_opts$match
+            mismatch <- dna_opts$mismatch
+            type <- dna_opts$type
+            gapOpening <- dna_opts$gapOpening
+            gapExtension <- dna_opts$gapExtension
+            submat <- ...$submat
+        }
+    } else {
+        # otherwise make one
+        match <- 1
+        mismatch <- -1
+        type <-'local'
+        gapOpening <- 0
+        gapExtension <- 1
+        submat <- Biostrings::nucleotideSubstitutionMatrix(match = match,
+                                                           mismatch = mismatch,
+                                                           baseOnly = TRUE)
+    }
+
     # extract read data
     read_data <- extract_read_data(file_path,
                                    read_id_fast5_file,
@@ -87,10 +102,10 @@ find_dna_tailtype <- function(file_path = NA,
     #ea <- Biostrings::DNAString('GCAATACGTAACTGAACGAAGT')
 
     # define the primer sequences
-    if (data == 'cdna') {
+    if (dna_datatype == 'cdna') {
         fp <- Biostrings::DNAString('TTTCTGTTGGTGCTGATATTGCTGCCATTACGGCCGGG')
         ep <- Biostrings::DNAString('ACTTGCCTGTCGCTCTATCTTC')
-    } else if  (data == 'pcr-dna') {
+    } else if (dna_datatype == 'pcr-dna') {
         fp <- Biostrings::DNAString('ATTTAGGTGACACTATAGCGCTCCATGCAAACCTGTC')
         ep <- Biostrings::DNAString('GAGTCCGGGCGGCGC')
     }

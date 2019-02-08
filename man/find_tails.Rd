@@ -2,72 +2,76 @@
 % Please edit documentation in R/find-tails.R
 \name{find_tails}
 \alias{find_tails}
-\title{Finds poly(A) and poly(T) tails in 1D DNA reads}
+\title{Finds tail lengths in RNA and DNA reads}
 \usage{
 find_tails(fast5_dir, save_dir, csv_filename = "tails.csv",
   num_cores = 1, save_plots = FALSE, plot_debug_traces = FALSE,
   plotting_library = "rbokeh", ...)
 }
 \arguments{
-\item{fast5_dir}{a character string. Full path of the directory to search the
+\item{fast5_dir}{character string. Full path of the directory to search the
 fast5 files in. The direcotry is searched recursively.}
 
-\item{save_dir}{a character string. Full path of the directory where the CSV
+\item{save_dir}{character string. Full path of the directory where the CSV
 file containing the tail lengths should be stored. If save_plots is set to
 \code{TRUE}, then plots showing the poly(A)/(T) tails are stored within the
 \code{plots} directory within the \code{save_dir}. This \code{plots}
 directory is created automatically.}
 
-\item{csv_filename}{a character string [\code{"tails.csv"}]. Filename of the
+\item{csv_filename}{character string [\code{"tails.csv"}]. Filename of the
 CSV file in which to store the tail length data}
 
-\item{num_cores}{a numeric [1]. Num of phyiscal cores to use in processing
+\item{num_cores}{numeric [1]. Num of phyiscal cores to use in processing
 the data. If you have 4 physical cores in the computer that you are using
 tailfinder on, then use 3 for \code{num_cores}. Always use 1 less than the
 number of cores at your disposal.}
 
-\item{save_plots}{a logical [\code{FALSE}]. If set to \code{TRUE}, a plots
+\item{save_plots}{logical [\code{FALSE}]. If set to \code{TRUE}, a plots
 directory will be created within the save_dir, and plots showing poly(A) and
 poly(T) tails on the raw squiggle will be saved in this \code{plots}
 directory. Creating plots and saving them to the disk is a slow process. So
-we recommend that you keep this option set to FALSE. If you still want to
-create plot, we recommend that you run tailfinder on a subset of reads with
-\code{save_plots} set to \code{TRUE}}
+we recommend that you keep this option set to \code{FALSE}. If you still want
+to create plots, we recommend that you run tailfinder on a subset of reads
+with \code{save_plots} set to \code{TRUE}. Plots are automatically named by
+concatenating read ID with the name of the Fast5 file containing this read;
+the read ID and fast5 file name are separated by two underscores (__).}
 
-\item{plot_debug_traces}{a logical [\code{FALSE}]. If set to \code{TRUE},
+\item{plot_debug_traces}{logical [\code{FALSE}]. If set to \code{TRUE},
 then we will plot debugging information in the plots as well, such as the
 mean signal, the slope signal, the thresholds, the smoothened signal, etc.
 We use this option internally to debug our algorithm. This option works only
-if \code{save_plots} is also set to \code{TRUE}.}
+if \code{save_plots} option is also set to \code{TRUE}.}
 
-\item{plotting_library}{a character string [\code{"rbokeh"}]. \code{rbokeh}
+\item{plotting_library}{character string [\code{"rbokeh"}]. \code{rbokeh}
 is the default plotting library that we will use if \code{save_plots} is set
-to \code{TRUE}. The plots will be saved as \code{<read_id>.html} files in
+to \code{TRUE}. The plots will be saved as HTML files in
 the \code{/save_dir/plots} directory. You can open these HTLM files in any
 web-browser and interactively view the plots showing the tail region in the
 raw squiggle. If this option is set to \code{'ggplot2'}, then the polts will
 be saved as \code{.png} files.}
 
-\item{...}{Any optional paramters; currently, reserved for internal use only.
-By default, DNA reads are assumed to be from direct cDNA or amplified cDNA
-libraries. However, if the data is from a PCR DNA library, then an additional
-parameter named \code{data} should be passed with its value set to
-\code{'pcr-dna'}. This will ensure that the algorithm uses the right adaptor
-sequences for the PCR DNA protocol.}
+\item{...}{list. A list of optional parameters. This is currently, reserved
+for internal use only. By default, DNA reads are assumed to be from a direct
+cDNA or an amplified cDNA library. However, if the data is from a PCR DNA
+library, then an additional parameter named \code{dna_datatype} should be
+passed with its value set to \code{'pcr-dna'}. This will ensure that the
+algorithm uses the correct adaptor sequences for the PCR DNA protocol.}
 }
 \value{
 A data tibble is returned containing all the information
 about the tails found. Always save this returned tibble in a variable (see
 examples below), otherwise the very long tibble will be printed to the
-console, which will hang up your rsession.
+console, which may hang up your R session.
 }
 \description{
-This is the main function to find poly(A) and poly(T) lengths in Oxford
-Nanopore's 1D DNA reads. The function can handle reads that have been
-basecalled using the standard model or the flip-flop model. Furthermore,
-it can also handle multifast5 files as well. The function saves a CSV file
-containing all the tail information, and also returns a tibble containing
-the same information for further processing by the end-user.
+This function finds poly(A) tail length in RNA reads, and both poly(A)
+and poly(T) tail lengths in DNA reads. The function can handle reads that
+have been basecalled using the standard model or the flip-flop model.
+Furthermore, it can also single and multi-fast5 files generated from all
+versions of Albacore or Guppy. The function saves a CSV file containing all
+the tail information, and also returns a tibble containing the same
+information for further processing by the end-user. Currently, the algorithm
+works only on 1D reads.
 }
 \examples{
 \dontrun{

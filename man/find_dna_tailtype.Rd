@@ -4,16 +4,17 @@
 \alias{find_dna_tailtype}
 \title{Finds if a DNA read is poly(A) read or poly(T) read}
 \usage{
-find_dna_tailtype(file_path = NA, data = "cdna", plot_debug = F,
-  basecalled_with, multifast5, model, read_id_fast5_file = NA, ...)
+find_dna_tailtype(file_path = NA, dna_datatype = "cdna",
+  plot_debug = F, basecalled_with, multifast5, model,
+  read_id_fast5_file = NA, ...)
 }
 \arguments{
 \item{file_path}{a character string[NA]. Full path of the read whose type is
 to be determined. Use it if the read is basecalled with Albacore and is of
 one-read-per-fast5 type.}
 
-\item{data}{a character string ['cdna']. Specify if the read is 'cdna' or
-'pcr-dna'.}
+\item{dna_datatype}{a character string ['cdna']. Specify if the read is 'cdna'
+or pcr-dna'.}
 
 \item{plot_debug}{a logical [FALSE]. Specifies whether to compute data needed
 for plotting debug.}
@@ -48,14 +49,14 @@ prematurely. The function also find the rough end site of the poly(A) tail,
 \dontrun{
 
 # 1. If the data is multifast5 cDNA (direct cDNA or amplified cDNA) data basecalled with flip-flop algorithm
-find_dna_tailtype(data = 'cdna',
+find_dna_tailtype(dna_datatype = 'cdna',
                   multifast5 = T,
                   basecalled_with = 'guppy',
                   model = 'flipflop',
                   read_id_fast5_file = list(read_id=read_id, fast5_file=full_path_of_fast5_file))
 
 # 2. If the data is multifast5 pcr-DNA data basecalled with flip-flop algorithm
-find_dna_tailtype(data = 'pcr-dna',
+find_dna_tailtype(dna_datatype = 'pcr-dna',
                   multifast5=T,
                   basecalled_with = 'guppy',
                   model = 'flipflop',
@@ -63,7 +64,7 @@ find_dna_tailtype(data = 'pcr-dna',
 
 # 3. If the data is cDNA (direct cDNA or amplified cDNA) data basecalled with albacore with single fast5 files as output
 find_dna_tailtype(file_path = full_file_path_of_the_read,
-                  data = 'cdna',
+                  dna_datatype = 'cdna',
                   multifast5 = F,
                   basecalled_with = 'albacore',
                   model = 'standard')

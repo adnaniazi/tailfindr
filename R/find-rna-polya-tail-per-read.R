@@ -19,6 +19,7 @@ find_rna_polya_tail_per_read <- function(file_path = NA,
                                          read_id_fast5_file = NA,
                                          multifast5,
                                          basecalled_with,
+                                         model,
                                          save_plots = FALSE,
                                          show_plots = FALSE,
                                          save_dir = '~',
@@ -104,11 +105,7 @@ find_rna_polya_tail_per_read <- function(file_path = NA,
     }
 
     if (show_plots | save_plots) {
-        if (multifast5){
-            filename <- read_id
-        } else {
-            filename <- basename(file_path)
-        }
+        filename <- paste(read_id, '__', basename(file_path), sep = '')
         plot_title <- paste('Poly(A) tail  |  ',
                             'Tail length[nt]: ', round(tail_length, 2), '  |  ',
                             'Tail start: ', tail_start, '  |  ',

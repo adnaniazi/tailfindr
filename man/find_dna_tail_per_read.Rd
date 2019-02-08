@@ -5,12 +5,13 @@
 \title{Title}
 \usage{
 find_dna_tail_per_read(file_path = NA, read_id_fast5_file = NA,
-  data = "cdna", save_plots = F, show_plots = F, plot_debug = F,
-  save_dir = NA, plotting_library = "rbokeh", multifast5 = F,
-  basecalled_with = "albacore", model = "standard")
+  dna_datatype = "cdna", save_plots = F, show_plots = F,
+  plot_debug = F, save_dir = NA, plotting_library = "rbokeh",
+  multifast5 = F, basecalled_with = "albacore", model = "standard",
+  ...)
 }
 \arguments{
-\item{model}{}
+\item{...}{}
 }
 \description{
 Title

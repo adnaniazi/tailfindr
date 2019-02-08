@@ -59,22 +59,42 @@ extract_read_data <- function(file_path = NA,
     }
 
     # get the data
-    event_data <- f5_obj[[event_data_fastq_path]]$open('Events')$read()
-    if (!('length' %in% colnames(event_data))) {
-        stride <- f5_obj[[basecall_1d_template_path]]$attr_open('block_stride')$read()
-    } else {
-        stride <- event_data$length[1]
-    }
-
     raw_data <- f5_obj[[raw_signal_path]]$read()
     read_id <- f5_obj[[read_id_path]]$attr_open('read_id')$read()
     fastq <- f5_obj[[event_data_fastq_path]]$open('Fastq')$read()
     start <- f5_obj[[segmentation_path]]$attr_open('first_sample_template')$read()
     called_events <- f5_obj[[basecall_1d_template_path]]$attr_open('called_events')$read()
 
+    # get the event data, if present -- or make it, if not present
+    make_event_data = FALSE
+    if ('Events' %in% names(f5_obj[[event_data_fastq_path]])){
+        event_data <- f5_obj[[event_data_fastq_path]]$open('Events')$read()
+        if (!('length' %in% colnames(event_data))) {
+            stride <- f5_obj[[basecall_1d_template_path]]$attr_open('block_stride')$read()
+        } else {
+            stride <- event_data$length[1]
+        }
+    } else {
+        move <- f5_obj[[event_data_fastq_path]]$open('Move')$read()
+        stride <- f5_obj[[basecall_1d_template_path]]$attr_open('block_stride')$read()
+        make_event_data = TRUE
+    }
+
     # extract just the fastq removing quality scores
     fastq <-strsplit(fastq, split = "\n")
     fastq <- fastq[[1]][2]
+
+    # if event_data wasn't present, make it now
+    if (make_event_data) {
+        event_data <- data.frame(move = move,
+                                 move_cumsum = cumsum(move),
+                                 fastq_bases=fastq, stringsAsFactors = F)
+        event_data <- dplyr::mutate(event_data,
+                                    model_state = substr(fastq_bases,
+                                                         start=move_cumsum,
+                                                         stop=move_cumsum))
+        event_data <- dplyr::select(event_data, model_state, move)
+    }
 
     # make a vector of moves interpolated for every sample i.e., make a sample-wise or per-sample vector of moves
     if (plot_debug) {
@@ -84,7 +104,7 @@ extract_read_data <- function(file_path = NA,
                                           rep(NA, length(raw_data) - start - stride*called_events + 1))
         } else {
             moves_sample_wise_vector <- c(rep(event_data$move*0.25+1.5, each=stride),
-                                          rep(NA, length(raw_data) - start - stride*called_events + 1))
+                                          rep(NA, length(raw_data) - start - stride*called_events))
         }
     } else {
         moves_sample_wise_vector <- rep(NA, length(raw_data))
@@ -111,7 +131,7 @@ extract_read_data <- function(file_path = NA,
         # Normalizer for flip-flop based data
         samples_per_nt <- mean(event_length_vector[event_length_vector <= quantile(event_length_vector, 0.95)])
         # add the start column to the event table for legacy purposes
-        start_col <-seq(from=start_sample, to=(start_sample + (nrow(event_data)-1)*stride), by=stride)
+        start_col <-seq(from=start, to=(start + (nrow(event_data)-1)*stride), by=stride)
         event_data <- dplyr::mutate(event_data, start=start_col)
     } else if (model == 'standard') {
         # create event length data for tail normalization
