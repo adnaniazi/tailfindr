@@ -37,7 +37,8 @@ find_rna_polya_tail_per_read <- function(file_path = NA,
                                    plot_debug,
                                    basecalled_with,
                                    multifast5,
-                                   model)
+                                   model,
+                                   plotting_library)
     # first read the data and find the tailtype
     if (multifast5) {
         file_path <- read_id_fast5_file$fast5_file

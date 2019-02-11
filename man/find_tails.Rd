@@ -2,7 +2,7 @@
 % Please edit documentation in R/find-tails.R
 \name{find_tails}
 \alias{find_tails}
-\title{Finds tail lengths in RNA and DNA reads}
+\title{Finds poly(A)/(T) tail lengths in Oxford Nanopore RNA and DNA reads}
 \usage{
 find_tails(fast5_dir, save_dir, csv_filename = "tails.csv",
   num_cores = 1, save_plots = FALSE, plot_debug_traces = FALSE,
@@ -10,75 +10,71 @@ find_tails(fast5_dir, save_dir, csv_filename = "tails.csv",
 }
 \arguments{
 \item{fast5_dir}{character string. Full path of the directory to search the
-fast5 files in. The direcotry is searched recursively.}
+basecalled fast5 files in. The Fast5 files can be single or multi-fast5 file.
+The directory is searched recursively.}
 
 \item{save_dir}{character string. Full path of the directory where the CSV
-file containing the tail lengths should be stored. If save_plots is set to
-\code{TRUE}, then plots showing the poly(A)/(T) tails are stored within the
-\code{plots} directory within the \code{save_dir}. This \code{plots}
-directory is created automatically.}
+file containing the tail-length information should be stored. If save_plots
+is set to \code{TRUE}, then a \code{plots} directory is also created within
+the \code{save_dir}.}
 
 \item{csv_filename}{character string [\code{"tails.csv"}]. Filename of the
 CSV file in which to store the tail length data}
 
-\item{num_cores}{numeric [1]. Num of phyiscal cores to use in processing
-the data. If you have 4 physical cores in the computer that you are using
-tailfinder on, then use 3 for \code{num_cores}. Always use 1 less than the
-number of cores at your disposal.}
+\item{num_cores}{numeric [1]. Num of physical cores to use in processing
+the data. Always use 1 less than the number of cores at your disposal.}
 
 \item{save_plots}{logical [\code{FALSE}]. If set to \code{TRUE}, a plots
 directory will be created within the save_dir, and plots showing poly(A) and
-poly(T) tails on the raw squiggle will be saved in this \code{plots}
-directory. Creating plots and saving them to the disk is a slow process. So
-we recommend that you keep this option set to \code{FALSE}. If you still want
-to create plots, we recommend that you run tailfinder on a subset of reads
-with \code{save_plots} set to \code{TRUE}. Plots are automatically named by
-concatenating read ID with the name of the Fast5 file containing this read;
-the read ID and fast5 file name are separated by two underscores (__).}
+poly(T) tails in the raw squiggle will be saved in this \code{plots}
+directory. Creating plots and saving them to the disk is a slow process. We
+recommend that you keep this option set to \code{FALSE}. If you still want
+to create plots, we recommend that you run tailfindr on a subset of reads.
+Plots are automatically named by concatenating read ID with the name of the
+Fast5 file containing this read; the read ID and fast5 file name are
+separated by two underscores (__).}
 
-\item{plot_debug_traces}{logical [\code{FALSE}]. If set to \code{TRUE},
-then we will plot debugging information in the plots as well, such as the
-mean signal, the slope signal, the thresholds, the smoothened signal, etc.
-We use this option internally to debug our algorithm. This option works only
-if \code{save_plots} option is also set to \code{TRUE}.}
+\item{plot_debug_traces}{logical [\code{FALSE}]. This option works only
+if \code{save_plots} option is also set to \code{TRUE}.If set to \code{TRUE},
+debugging information is plotted in the plots as well. This includes mean
+signal, slope signal,thresholds, smoothened signal, etc. We use this option
+internally to debug our algorithm.}
 
 \item{plotting_library}{character string [\code{"rbokeh"}]. \code{rbokeh}
-is the default plotting library that we will use if \code{save_plots} is set
-to \code{TRUE}. The plots will be saved as HTML files in
-the \code{/save_dir/plots} directory. You can open these HTLM files in any
+is the default plotting library used if \code{save_plots} is set to
+\code{TRUE}. The plots will be saved as HTML files in the
+\code{/save_dir/plots} directory. You can open these HTLM files in any
 web-browser and interactively view the plots showing the tail region in the
 raw squiggle. If this option is set to \code{'ggplot2'}, then the polts will
-be saved as \code{.png} files.}
+be saved as static \code{.png} files.}
 
 \item{...}{list. A list of optional parameters. This is currently, reserved
-for internal use only. By default, DNA reads are assumed to be from a direct
-cDNA or an amplified cDNA library. However, if the data is from a PCR DNA
-library, then an additional parameter named \code{dna_datatype} should be
-passed with its value set to \code{'pcr-dna'}. This will ensure that the
-algorithm uses the correct adaptor sequences for the PCR DNA protocol.}
+for internal use only.}
 }
 \value{
-A data tibble is returned containing all the information
-about the tails found. Always save this returned tibble in a variable (see
-examples below), otherwise the very long tibble will be printed to the
+A data tibble containing tail information organzied by
+the read ID is returned. Always save this returned tibble in a variable (see
+examples below), otherwise the long tibble will be printed to the
 console, which may hang up your R session.
+
+A CSV file containing the same information is also saved on disk in the
+\code{save_dir}.
 }
 \description{
-This function finds poly(A) tail length in RNA reads, and both poly(A)
-and poly(T) tail lengths in DNA reads. The function can handle reads that
-have been basecalled using the standard model or the flip-flop model.
-Furthermore, it can also single and multi-fast5 files generated from all
-versions of Albacore or Guppy. The function saves a CSV file containing all
-the tail information, and also returns a tibble containing the same
-information for further processing by the end-user. Currently, the algorithm
-works only on 1D reads.
+This function estimates poly(A) tail length in RNA reads, and both poly(A)
+and poly(T) tail lengths in DNA reads. It can operate on reads base called
+with any version of Albacore and Guppy using either the standard or the
+recent 'flip-flop' model. The function outputs a CSV file containing poly(A)
+tail information organised by the read ID; it also returns the same
+information as a tibble for further processing by the end-user. Currently,
+the algorithm works only on ONT 1D reads.
 }
 \examples{
 \dontrun{
 
-library(tailfinder)
+library(tailfindr)
 
-# 1. Suppose you have 11 cores at your disposal, then you should run tailfinder
+# 1. Suppose you have 11 cores at your disposal, then you should run tailfindr
 # on your data as following:
 df <- find_tails(fast5_dir = '/path/to/fast5/folder/',
                  save_dir = '/path/to/a/folder/where/results/are/to/be/stored/',
@@ -87,7 +83,7 @@ df <- find_tails(fast5_dir = '/path/to/fast5/folder/',
 
 # 2. If you also want to save the plots showing the tail on the raw
 # squiggle using ggplot2 (plots will be save as .png files),
-# then you should run tailfinder as following:
+# then you should run tailfindr as following:
 df <- find_tails(fast5_dir = '/path/to/fast5/folder/',
                  save_dir = '/path/to/a/folder/where/results/are/to/be/stored/',
                  csv_filename = 'tails.csv',
@@ -96,7 +92,7 @@ df <- find_tails(fast5_dir = '/path/to/fast5/folder/',
                  plotting_library = 'ggplot2')
 
 # 3. If you want to save interactive HTML plots using rbokeh,
-# then you should run tailfinder as following:
+# then you should run tailfindr as following:
 df <- find_tails(fast5_dir = '/path/to/fast5/folder/',
                  save_dir = '/path/to/a/folder/where/results/are/to/be/stored/',
                  csv_filename = 'tails.csv',
@@ -104,7 +100,7 @@ df <- find_tails(fast5_dir = '/path/to/fast5/folder/',
                  save_plots = TRUE,
                  plotting_library = 'rbokeh')
 
-# 4. If you also want to plot debug traces, then you should run tailfinder as
+# 4. If you also want to plot debug traces, then you should run tailfindr as
 # below:
 df <- find_tails(fast5_dir = '/path/to/fast5/folder/',
                  save_dir = '/path/to/a/folder/where/results/are/to/be/stored/',
@@ -115,7 +111,7 @@ df <- find_tails(fast5_dir = '/path/to/fast5/folder/',
                  plotting_library = 'rbokeh')
 
 # N.B.: Making and saving plots is a computationally slow process.
-# Only generate plots by running tailfinder on a small subset of your reads.
+# Only generate plots by running tailfindr on a small subset of your reads.
 }
 
 }

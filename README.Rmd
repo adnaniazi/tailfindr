@@ -94,10 +94,10 @@ df <- find_tails(fast5_dir = '/path/to/fast5/folder/',
 INPUT=/raw/fast5/files/path/
 OUTPUT=/output/folder/path/
 guppy_basecaller \
-    -c dna_r9.4.1_450bps_flipflop.cfg \
-    -i $INPUT \
-    -s $OUTPUT \
-    -r \
+    --config dna_r9.4.1_450bps_flipflop.cfg \
+    --input $INPUT \
+    --save_path $OUTPUT \
+    --recursive \
     --fast5_out \
     --hp_correct 1 \
     --disable_pings 1 \

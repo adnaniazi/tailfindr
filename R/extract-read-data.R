@@ -25,6 +25,8 @@
 #' @param model a string. Set to 'flipflop' if the basecalling model is flipflop.
 #' Set to 'standard' if the basecalling model is standard model.
 #'
+#' @param plotting_library
+#'
 #' @return
 #' @export
 #'
@@ -34,7 +36,8 @@ extract_read_data <- function(file_path = NA,
                               plot_debug = F,
                               basecalled_with,
                               multifast5,
-                              model) {
+                              model,
+                              plotting_library) {
 
     if (!multifast5) {
         f5_obj <- hdf5r::H5File$new(file_path, mode='r')
@@ -97,7 +100,7 @@ extract_read_data <- function(file_path = NA,
     }
 
     # make a vector of moves interpolated for every sample i.e., make a sample-wise or per-sample vector of moves
-    if (plot_debug) {
+    if (plot_debug & plotting_library == 'ggplot2') {
         if (start != 0) {
             moves_sample_wise_vector <- c(rep(NA, start-1),
                                           rep(event_data$move*0.25+1.5, each=stride),
@@ -108,6 +111,36 @@ extract_read_data <- function(file_path = NA,
         }
     } else {
         moves_sample_wise_vector <- rep(NA, length(raw_data))
+    }
+
+    if (plot_debug & plotting_library == 'rbokeh'){
+        df <- tibble::tibble(move=event_data$move,
+                             start=event_data$start,
+                             non_zero_move=NA,
+                             move_2=NA,
+                             move_3=NA,
+                             start_2=NA,
+                             start_3=NA)
+        # find the non-zero moves
+        df$non_zero_move <- ifelse(df$move > 0, T, F)
+        # add an extra start column to add sample index just before a non-zero move
+        df$start_2 <- ifelse(df$non_zero_move==T, df$start-0.001, NA)
+        # add an extra moves column containing original moves shifted by one
+        df$move_2 <- c(0, df$move[1:NROW(df$move)-1])
+        # add NAs to useless moves in the extra moves column
+        df$move_2 <- ifelse(!(is.na(df$start_2)), df$move_2, NA)
+        df$start_3 <- ifelse(!(is.na(df$start_2)), df$start_2 + stride, NA)
+        # now interleave the moves and starts
+        df1 <- dplyr::select(df, start, move)
+        df2 <- dplyr::select(df, start_2, move_2)
+        df2 <- dplyr::rename(df2, start=start_2, move=move_2)
+        df3 <- dplyr::select(df, start_3, move)
+        df3 <- dplyr::rename(df3, start=start_3)
+        debug_moves_df <- gdata::interleave(df2, df1, df3)
+        # select only the complete cases
+        debug_moves_df <- debug_moves_df[complete.cases(debug_moves_df), ]
+    } else {
+        debug_moves_df <- NA
     }
 
     # compute event length vector
@@ -198,5 +231,6 @@ extract_read_data <- function(file_path = NA,
          fastq = fastq,
          start = start,
          stride = stride,
-         samples_per_nt = samples_per_nt)
+         samples_per_nt = samples_per_nt,
+         debug_moves_df = debug_moves_df)
 }

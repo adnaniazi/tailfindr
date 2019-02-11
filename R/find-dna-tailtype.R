@@ -20,6 +20,9 @@
 #' file
 #' @param model a string. Set to 'flipflop' if the basecalling model is flipflop.
 #' Set to 'standard' if the basecalling model is standard model.l
+#'
+#' @param plotting_library
+#'
 #' @param read_id_fast5_file a list [NA]. A list of 'read_id' and 'fast5_file'
 #' path. Use this option when a read from a multifast5 file is to be read. In
 #' such a case, you should set file_path to NA, and set multifast5 flag to TRUE.
@@ -58,7 +61,8 @@ find_dna_tailtype <- function(file_path = NA,
                               basecalled_with,
                               multifast5,
                               model,
-                              read_id_fast5_file=NA,
+                              read_id_fast5_file = NA,
+                              plotting_library,
                               ...) {
 
     # get the substitution matrix -- if passed from outside
@@ -91,7 +95,8 @@ find_dna_tailtype <- function(file_path = NA,
                                    plot_debug,
                                    basecalled_with,
                                    multifast5,
-                                   model)
+                                   model,
+                                   plotting_library)
 
     # get event data table and the fastQ
     event_data <- read_data$event_data

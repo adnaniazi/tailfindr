@@ -39,6 +39,7 @@ find_dna_tail_per_read <- function(file_path = NA,
                                    basecalled_with = basecalled_with,
                                    multifast5 = multifast5,
                                    model= model,
+                                   plotting_library = plotting_library,
                                    read_id_fast5_file = read_id_fast5_file,
                                    ...)
 
@@ -160,7 +161,8 @@ find_dna_tail_per_read <- function(file_path = NA,
     quit_searching <- FALSE
     tail_end <- NA
     while (i < length(slope)){
-        if ((slope[i] < SLOPE_THRESHOLD) & (slope[i] > -SLOPE_THRESHOLD) & (smoothed_data[tail_start+i*window_size] < SLOPE_THRESHOLD+0.1)) {
+        if ((slope[i] < SLOPE_THRESHOLD) & (slope[i] > -SLOPE_THRESHOLD) &
+            (smoothed_data[tail_start+i*window_size] < SLOPE_THRESHOLD+0.1)) {
             tail_end <- i
             i <- i + 1
         } else {
@@ -319,8 +321,8 @@ find_dna_tail_per_read <- function(file_path = NA,
         p <- rbokeh::x_axis(p, label='Sample index')
         p <- rbokeh::tool_pan(p, dimensions = "width")
         p <- rbokeh::tool_wheel_zoom(p, dimensions = "width")
-    } else { # plotting_library == 'ggplot2'
 
+    } else { # plotting_library == 'ggplot2'
         if (plot_debug) {
             p <- ggplot2::ggplot(data=df, ggplot2::aes(x = x)) +
                 ggplot2::geom_line(ggplot2::aes(y = truncated_data), color = '#4040a1')+

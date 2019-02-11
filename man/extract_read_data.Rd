@@ -5,7 +5,7 @@
 \title{Extract the read data from a fast5 file}
 \usage{
 extract_read_data(file_path = NA, read_id_fast5_file = NA,
-  plot_debug = F, basecalled_with, multifast5, model)
+  plot_debug = F, basecalled_with, multifast5, model, plotting_library)
 }
 \arguments{
 \item{file_path}{a character string [NA]. Path of the single fast5 file.
@@ -29,6 +29,8 @@ file}
 
 \item{model}{a string. Set to 'flipflop' if the basecalling model is flipflop.
 Set to 'standard' if the basecalling model is standard model.}
+
+\item{plotting_library}{}
 }
 \description{
 This function can deal with both multifast5 files and single fast5 files.

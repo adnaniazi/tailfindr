@@ -6,7 +6,7 @@
 \usage{
 find_dna_tailtype(file_path = NA, dna_datatype = "cdna",
   plot_debug = F, basecalled_with, multifast5, model,
-  read_id_fast5_file = NA, ...)
+  read_id_fast5_file = NA, plotting_library, ...)
 }
 \arguments{
 \item{file_path}{a character string[NA]. Full path of the read whose type is
@@ -32,6 +32,8 @@ Set to 'standard' if the basecalling model is standard model.l}
 \item{read_id_fast5_file}{a list [NA]. A list of 'read_id' and 'fast5_file'
 path. Use this option when a read from a multifast5 file is to be read. In
 such a case, you should set file_path to NA, and set multifast5 flag to TRUE.}
+
+\item{plotting_library}{}
 
 \item{...}{An other parameter. For future expansion.}
 }
