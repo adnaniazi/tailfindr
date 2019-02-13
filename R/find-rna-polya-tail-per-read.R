@@ -40,6 +40,11 @@ find_rna_polya_tail_per_read <- function(file_path = NA,
                                    multifast5,
                                    model,
                                    plotting_library)
+
+    event_data <- read_data$event_data
+    raw_data <- read_data$raw_data
+    stride <- read_data$stride
+
     # first read the data and find the tailtype
     if (multifast5) {
         file_path <- read_id_fast5_file$fast5_file
@@ -47,7 +52,7 @@ find_rna_polya_tail_per_read <- function(file_path = NA,
     read_id <- read_data$read_id
 
     # Z-normalize the data
-    norm_data <- z_normalize(read_data$raw_data)
+    norm_data <- z_normalize(raw_data)
 
     # Recitfy the data (flip anything that is below zero)
     rectified_data <- norm_data
