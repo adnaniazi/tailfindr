@@ -57,6 +57,7 @@ find_dna_tail_per_read <- function(file_path = NA,
     polyt_start <- data_list$polyt_start
     samples_per_nt <- read_data$samples_per_nt
     has_precise_boundary <- data_list$has_precise_boundary
+    stride <- read_data$stride
 
     if (!tail_is_valid) {
         return(list(read_id = read_data$read_id,
@@ -250,120 +251,180 @@ find_dna_tail_per_read <- function(file_path = NA,
     # calculate the tail length
     tail_length = (tail_end - tail_start)/read_data$samples_per_nt
 
-    df = data.frame(x=c(1:length(read_data$raw_data)),
-                    raw_data=raw_data,
-                    truncated_data=truncated_data,
-                    smoothed_data=smoothed_data,
-                    moves=read_data$moves_sample_wise_vector-3.0,
-                    mean_data=mean_data,
-                    slope=slope)
+    if (save_plots | show_plots) {
+        df = data.frame(x=c(0:(length(read_data$raw_data)-1)),
+                        raw_data=raw_data,
+                        truncated_data=truncated_data,
+                        smoothed_data=smoothed_data,
+                        moves=read_data$moves_sample_wise_vector-3.0,
+                        mean_data=mean_data,
+                        slope=slope)
 
-    filename <- paste(read_id, '__', basename(file_path), sep = '')
+        filename <- paste(read_id, '__', basename(file_path), sep = '')
 
-    if (!plot_debug) {
         if (read_type == 'polyA') {
-            df['polya_tail'] <- c(rep(NA, times=tail_start-1),
-                                   raw_data[tail_start:tail_end],
-                                   rep(NA, times=(read_length-tail_end)))
-        } else {
-            df['polyt_tail'] <- c(rep(NA, times=tail_start-1),
-                                   raw_data[tail_start:tail_end],
-                                   rep(NA, times=(read_length-tail_end)))
-        }
-    }
-
-
-    if (read_type=='polyA'){
-        plot_title <- paste('Poly(A) tail  |  ',
-                            'Tail length[nt]: ', round(tail_length, 2), '  |  ',
-                            'Tail start: ', tail_start, '  |  ',
-                            'Tail end: ', tail_end, '  |  ',
-                            'Tail duration[Sa]: ', tail_end-tail_start, '  |  ',
-                            'Samples per nt: ', round(samples_per_nt, 2),
-                            sep='')
-    } else {
-        plot_title <- paste('Poly(T) tail  |  ',
-                            'Tail length[nt]: ', round(tail_length, 2), '  |  ',
-                            'Tail start: ', tail_start, '  |  ',
-                            'Tail end: ', tail_end, '  |  ',
-                            'Tail duration[Sa]: ', tail_end-tail_start, '  |  ',
-                            'Samples per nt: ', round(samples_per_nt, 2),
-                            sep='')
-    }
-    if (plotting_library == 'rbokeh') {
-        if (read_type=='polyA'){
-            p <- rbokeh::figure(data=df, width=1000, height=600, legend_location="top_left", title=plot_title)
-        } else {
-            p <- rbokeh::figure(data=df, width=1000, height=600, legend_location="top_right", title=plot_title)
-        }
-        if (plot_debug) {
-            p <- rbokeh::ly_lines(p, truncated_data, width=1.5, color='#4040a1', legend = "Normalized windsorized signal")
-            p <- rbokeh::ly_lines(p, slope, color='#BF1268', width=2, legend = "Slope of the signal in the search window")
-            p <- rbokeh::ly_lines(p, mean_data, color='#F79A14', width=2, legend = "Mean of the signal in the search window")
-            p <- rbokeh::ly_lines(p, moves, color='#b2b2b2', width=1, legend = "Moves")
-            p <- rbokeh::ly_lines(p, smoothed_data, color='#060B54', width=3, legend = "Smoothed signal")
-            p <- rbokeh::ly_abline(p, h=SLOPE_THRESHOLD, color = '#00B0DF', type = 3, width=2, legend = "Slope upper bound")
-            p <- rbokeh::ly_abline(p, h=-SLOPE_THRESHOLD, color = '#FF94CD', type = 3,  width=2, legend = "Slope lower bound")
-            if (!is.na(tail_start)) {
-                p <- rbokeh::ly_abline(p, v=tail_start, color = 'orange', type = 2, width=2, legend = "Tail start")
-                p <- rbokeh::ly_abline(p, v=tail_end, color = 'red', type = 2, width=2, legend = "Tail end")
+            if (!is.na(tail_start) & (!is.na(tail_end))) {
+                df['polya_tail'] <- c(rep(NA, times=tail_start-1),
+                                      raw_data[tail_start:tail_end],
+                                      rep(NA, times=(read_length-tail_end)))
             }
-            p <- rbokeh::y_axis(p, label='z-normalized data values')
+            plot_title <- paste('Poly(A) tail  |  ',
+                                'Tail length[nt]: ', round(tail_length, 2), '  |  ',
+                                'Tail start: ', tail_start, '  |  ',
+                                'Tail end: ', tail_end, '  |  ',
+                                'Tail duration[Sa]: ', tail_end-tail_start, '  |  ',
+                                'Samples per nt: ', round(samples_per_nt, 2),
+                                sep='')
         } else {
-            p <- rbokeh::ly_lines(p, raw_data, width=1.5, color='#b2b2b2', legend = "Raw data")
-            if (read_type=='polyT') {
-                p <- rbokeh::ly_lines(p, polyt_tail, color = '#BF1268', legend = "Poly(T) tail")
+            if (!is.na(tail_start) & (!is.na(tail_end))) {
+                df['polyt_tail'] <- c(rep(NA, times=tail_start-1),
+                                      raw_data[tail_start:tail_end],
+                                      rep(NA, times=(read_length-tail_end)))
+            }
+            plot_title <- paste('Poly(T) tail  |  ',
+                                'Tail length[nt]: ', round(tail_length, 2), '  |  ',
+                                'Tail start: ', tail_start, '  |  ',
+                                'Tail end: ', tail_end, '  |  ',
+                                'Tail duration[Sa]: ', tail_end-tail_start, '  |  ',
+                                'Samples per nt: ', round(samples_per_nt, 2),
+                                sep='')
+        }
+
+        if (plotting_library == 'rbokeh') {
+            if (read_type=='polyA'){
+                # p1 polyA/T
+                # p2 debug traces
+                # p3 moves
+                p1 <- rbokeh::figure(data=df,
+                                     width=1000, height=200,
+                                     legend_location="top_left")
+                p3 <- rbokeh::figure(data=data.frame(x=event_data$start,
+                                                     y=event_data$move/2),
+                                     width=1000, height=100,
+                                     legend_location="top_left", ygrid = F)
+                if (plot_debug)
+                    p2 <- rbokeh::figure(data=df, width=1000, height=400,
+                                         legend_location="top_left")
+
             } else {
-                p <- rbokeh::ly_lines(p, polya_tail, color = '#BF1268', legend = "Poly(A) tail")
+                p1 <- rbokeh::figure(data=df,
+                                     width=1000, height=200,
+                                     legend_location="top_right")
+                p3 <- rbokeh::figure(data=data.frame(x=event_data$start,
+                                                     y=event_data$move/2),
+                                     width=1000, height=100,
+                                     legend_location="top_right", ygrid = F)
+                if (plot_debug)
+                    p2 <- rbokeh::figure(data=df, width=1000, height=400,
+                                         legend_location="top_right")
             }
-            p <- rbokeh::y_axis(p, label='pA')
-        }
-        p <- rbokeh::x_axis(p, label='Sample index')
-        p <- rbokeh::tool_pan(p, dimensions = "width")
-        p <- rbokeh::tool_wheel_zoom(p, dimensions = "width")
 
-    } else { # plotting_library == 'ggplot2'
-        if (plot_debug) {
-            p <- ggplot2::ggplot(data=df, ggplot2::aes(x = x)) +
-                ggplot2::geom_line(ggplot2::aes(y = truncated_data), color = '#4040a1')+
-                ggplot2::geom_line(ggplot2::aes(y = moves), color = '#b2b2b2') +
-                ggplot2::geom_hline(yintercept = SLOPE_THRESHOLD, color = '#00B0DF', linetype = 'dotted') +
-                ggplot2::geom_line(ggplot2::aes(y = slope, color = '#BF1268')) +
-                ggplot2::geom_hline(yintercept = -SLOPE_THRESHOLD, color = '#FF94CD', linetype = 'dotted') +
-                ggplot2::geom_line(ggplot2::aes(y = smoothed_data), color='#060B54') +
-                ggplot2::geom_line(ggplot2::aes(y = mean_data, color = '#F79A14')) +
-                ggplot2::ylab('z-normalized data values')
-        } else {
-            p <- ggplot2::ggplot(data=df, ggplot2::aes(x = x)) +
-                ggplot2::geom_line(ggplot2::aes(y = raw_data), color = '#8E8E8E') +
-                ggplot2::ylab('pA')
+            # poly(A)/(T) plot
+            p1 <- rbokeh::ly_lines(p1, x=x, y=raw_data, width=1.5, color='#b2b2b2', legend = "Raw data")
+            if (!is.na(tail_start) & (!is.na(tail_end))) {
+                if (read_type=='polyT') {
+                    p1 <- rbokeh::ly_lines(p1, x=x, y=polyt_tail, color = '#ea3e13', legend = "Poly(T) tail")
+                } else {
+                    p1 <- rbokeh::ly_lines(p1, x=x, y=polya_tail, color = '#ea3e13', legend = "Poly(A) tail")
+                }
+            }
+
+            p1 <- rbokeh::y_axis(p1, label='pA', num_minor_ticks=2)
+            p1 <- rbokeh::x_axis(p1, label='Sample index')
+            p1 <- rbokeh::tool_pan(p1, dimensions = "width")
+            p1 <- rbokeh::tool_wheel_zoom(p1, dimensions = "width")
+
+            # plot containing all the debug traces
+            if (plot_debug) {
+                p2 <- rbokeh::ly_lines(p2, x=x, y=truncated_data, width=1.0, color='#b2b2b2', legend = "Normalized windsorized signal")
+                p2 <- rbokeh::ly_lines(p2, x=x, y=smoothed_data, color='#8c8a8a', width=1.5, legend = "Smoothed signal")
+                p2 <- rbokeh::ly_lines(p2, x=x, y=slope, color='#f3c963', width=2, legend = "Slope of the signal in the search window")
+                p2 <- rbokeh::ly_lines(p2, x=x, y=mean_data, color='#f58585', width=2, legend = "Mean of the signal in the search window")
+                #p2 <- rbokeh::ly_lines(p2, moves, color='#b2b2b2', width=1, legend = "Moves")
+                p2 <- rbokeh::ly_abline(p2, h=SLOPE_THRESHOLD, color = '#c581f5', type = 3, width=2, legend = "Slope upper bound")
+                p2 <- rbokeh::ly_abline(p2, h=-SLOPE_THRESHOLD, color = '#ff6e24', width=2, type = 3, legend = "Slope lower bound")
+                if (!is.na(tail_start) & (!is.na(tail_end))) {
+                    p2 <- rbokeh::ly_abline(p2, v=tail_start, color = '#4497b9', width=2, legend = "Tail start")
+                    p2 <- rbokeh::ly_abline(p2, v=tail_end, color = '#879833', width=2, legend = "Tail end")
+                }
+                p2 <- rbokeh::y_axis(p2, label='z-normalized data values', num_minor_ticks=4, desired_num_ticks = 5)
+                p2 <- rbokeh::x_axis(p2, label='Sample index')
+                p2 <- rbokeh::tool_pan(p2, dimensions = "width")
+                p2 <- rbokeh::tool_wheel_zoom(p2, dimensions = "width")
+            }
+
+            # plot containing the moves
+            p3 <- rbokeh::ly_crect(p3,
+                                   x=x,
+                                   y=y,
+                                   width=rep(0.01, nrow(event_data)),
+                                   height=event_data$move,
+                                   color='#529c82')
+            p3 <- rbokeh::y_axis(p3, label='', num_minor_ticks=0, desired_num_ticks = 3)
+            p3 <- rbokeh::x_axis(p3, label='Sample index')
+            p3 <- rbokeh::tool_pan(p3, dimensions = "width")
+            p3 <- rbokeh::tool_wheel_zoom(p3, dimensions = "width")
+            p3 <- rbokeh::tool_wheel_zoom(p3, dimensions = "height")
+
+            if (plot_debug){
+                lst <- list(p1, p2, p3)
+                names(lst) <- c(plot_title, 'Debugging Traces', 'Moves')
+                nrow <- 3
+            } else {
+                lst <- list(p1, p3)
+                names(lst) <- c(plot_title, 'Moves')
+                nrow <- 2
+            }
+            p <- rbokeh::grid_plot(lst, nrow = nrow, link_data = T, same_axes=c(T, F))
+
+        } else { # plotting_library == 'ggplot2'
+            if (plot_debug) {
+                p <- ggplot2::ggplot(data=df, ggplot2::aes(x = x)) +
+                    ggplot2::geom_line(ggplot2::aes(y = truncated_data), color = '#4040a1')+
+                    ggplot2::geom_line(ggplot2::aes(y = moves), color = '#b2b2b2') +
+                    ggplot2::geom_hline(yintercept = SLOPE_THRESHOLD, color = '#00B0DF', linetype = 'dotted') +
+                    ggplot2::geom_line(ggplot2::aes(y = slope, color = '#BF1268')) +
+                    ggplot2::geom_hline(yintercept = -SLOPE_THRESHOLD, color = '#FF94CD', linetype = 'dotted') +
+                    ggplot2::geom_line(ggplot2::aes(y = smoothed_data), color='#060B54') +
+                    ggplot2::geom_line(ggplot2::aes(y = mean_data, color = '#F79A14')) +
+                    ggplot2::ylab('z-normalized data values')
+            } else {
+                p <- ggplot2::ggplot(data=df, ggplot2::aes(x = x)) +
+                    ggplot2::geom_line(ggplot2::aes(y = raw_data), color = '#8E8E8E') +
+                    ggplot2::ylab('pA')
+            }
+            if (!is.na(tail_end)) {
+                p <- p + ggplot2::geom_line(ggplot2::aes(y = c(rep(NA, times=tail_start-1),
+                                                               raw_data[tail_start:tail_end],
+                                                               rep(NA, times=(read_length-tail_end)))), color='#BF1268')
+            }
+            p <- p + ggplot2::ggtitle(plot_title) +
+                ggplot2::xlab('Sample index')
         }
-        if (!is.na(tail_end)) {
-            p <- p + ggplot2::geom_line(ggplot2::aes(y = c(rep(NA, times=tail_start-1),
-                                                           raw_data[tail_start:tail_end],
-                                                           rep(NA, times=(read_length-tail_end)))), color='#BF1268')
+
+        if (show_plots) print(p)
+        if (save_plots) {
+            filename_png <- paste(filename,'.png', sep='')
+            filename_html <- paste(filename,'.html', sep='')
+            save_path_png <- file.path(save_dir, 'plots', filename_png, fsep = .Platform$file.sep)
+            save_path_html <- file.path(save_dir, 'plots', filename_html, fsep = .Platform$file.sep)
+            if (plotting_library == 'ggplot2') {
+                ggplot2::ggsave(save_path_png, plot = p, width = 300, height = 70, units = 'mm')
+            } else {
+                #rbokeh::widget2png(p, file = save_path_png)
+                rbokeh::rbokeh2html(p, file = save_path_html)
+            }
         }
-        p <- p + ggplot2::ggtitle(plot_title) +
-            ggplot2::xlab('Sample index')
     }
 
-    if (show_plots) {
-        print(p)
-    }
 
-    if (save_plots) {
-        filename_png <- paste(filename,'.png', sep='')
-        filename_html <- paste(filename,'.html', sep='')
-        save_path_png <- file.path(save_dir, 'plots', filename_png, fsep = .Platform$file.sep)
-        save_path_html <- file.path(save_dir, 'plots', filename_html, fsep = .Platform$file.sep)
-        if (plotting_library == 'ggplot2') {
-            ggplot2::ggsave(save_path_png, plot = p, width = 300, height = 70, units = 'mm')
-        }
-        else {
-            #rbokeh::widget2png(p, file = save_path_png)
-            rbokeh::rbokeh2html(p, file = save_path_html)
-        }
-    }
+
+
+
+
+
+
+
 
     return(list(read_id = read_data$read_id,
                 read_type = read_type,

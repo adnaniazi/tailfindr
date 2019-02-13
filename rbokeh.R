@@ -2,19 +2,21 @@ library(rbokeh)
 
 df <- data.frame(x=c(1, 1.999, 2, 2.999, 3, 3.999, 4, 4.999, 5, 5.999),
                  y=c(1, 1, 0, 0, 1, 1, 0, 0, 1, 1))
-p1 <- rbokeh::figure(data=df, width=1000, height=200, title='plot_title')
+p1 <- rbokeh::figure(data=df, width=1000, height=200, title='plot_title',
+                     tools = c("pan", "wheel_zoom", 'wheel_zoom', "box_zoom", "reset", "save", "help"))
 p1 <- rbokeh::ly_lines(p1, x, y, color='#BF1268', width=3, legend = "y")
 p1 <- rbokeh::tool_pan(p1, dimensions = "width")
 p1 <- rbokeh::tool_wheel_zoom(p1, dimensions = "width")
-
+print(p1)
 df2 <- data.frame(x=c(1, 2, 3, 4, 5),
                  y=c(1, 0, 1, 0,  1))
 p2 <- rbokeh::figure(data=df2, width=1000, height=200, title='plot_title')
 p2 <- rbokeh::ly_lines(p2, x, y, color='#BF1268', width=3, legend = "y")
 p2 <- rbokeh::tool_pan(p2, dimensions = "width")
 p2 <- rbokeh::tool_wheel_zoom(p2, dimensions = "width")
+print(p2)
+p <- rbokeh::grid_plot(list(bullshit=p1, p2=p2), nrow = 2, link_data = T, same_axes=T)
 
-p <- rbokeh::grid_plot(list(p1, p2), nrow = 2, link_data = T, same_axes=T)
 print(p)
 
 
@@ -69,3 +71,39 @@ print(p)
 
 
 
+
+
+
+
+library(rbokeh)
+df <- data.frame(x=c(2, 4, 6, 8, 10, 12, 14, 16, 18, 20),
+                 y=c(1, 0, 1, 0,  1, 0,  1,  1,  2, 1)/2)
+p1 <- rbokeh::figure(data=df, width=1000, height=200, title='plot_title')
+p1 <- rbokeh::ly_crect(p1,
+                      x=x,
+                      y=y,
+                      width=c(2,2,2,2,2,2,2,2,2,2)/2000,
+                      height=c(1, 0, 1, 0,  1, 0,  1,  1,  2, 1),
+                      color='red')
+#p <- rbokeh::ly_lines(p, x, y, color='#BF1268', width=3, legend = "y")
+p1 <- rbokeh::tool_pan(p1, dimensions = "width")
+p1 <- rbokeh::tool_wheel_zoom(p1, dimensions = "width")
+print(p1)
+
+
+df2 <- data.frame(x=c(2, 4, 6, 8, 10, 12, 14, 16, 18, 20),
+                 y=c(1, 0, 1, 0,  1, 0,  1,  1,  2, 1))
+p2 <- rbokeh::figure(data=df2, width=1000, height=200, title='plot_title')
+p2 <- rbokeh::figure(data=df2, width=1000, height=200, title='plot_title')
+p2 <- rbokeh::ly_lines(p2, x, y, color='#BF1268', width=3, legend = "y")
+p2 <- rbokeh::tool_pan(p2, dimensions = "width")
+p2 <- rbokeh::tool_wheel_zoom(p2, dimensions = "width")
+print(p2)
+
+title='bullshit sdfs | ertwetr 5656 :'
+lst <- list(p2, p1)
+names(lst) <- c(title, 'cunt')
+
+p <- rbokeh::grid_plot(lst, nrow = 2, link_data = T, same_axes=T)
+
+print(p)

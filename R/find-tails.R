@@ -181,12 +181,14 @@ find_tails <- function(fast5_dir,
     }
 
     # Create a sub-direcotry to save all the plots
-    plots_dir <- file.path(save_dir, 'plots', fsep = .Platform$file.sep)
-    if (save_plots & !dir.exists(file.path(plots_dir))){
-        cat(paste(clisymbols::symbol$bullet, ' Creating a sub-directory to save the plots in.\n', sep=''))
-        dir.create(plots_dir)
-        cat('  Done! All plots will be saved in the following direcotry:\n')
-        cat(paste('  ', file.path(save_dir, 'plots', fsep = .Platform$file.sep), '\n', sep = ''))
+    if (save_plots){
+        plots_dir <- file.path(save_dir, 'plots', fsep = .Platform$file.sep)
+        if (!dir.exists(file.path(plots_dir))) {
+            cat(paste(clisymbols::symbol$bullet, ' Creating a sub-directory to save the plots in.\n', sep=''))
+            dir.create(plots_dir)
+            cat('  Done! All plots will be saved in the following direcotry:\n')
+            cat(paste('  ', file.path(save_dir, 'plots', fsep = .Platform$file.sep), '\n', sep = ''))
+        }
     }
 
     # search for all the fast5 files in the user-specified directory

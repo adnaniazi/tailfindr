@@ -12,7 +12,9 @@ find_rna_polya_tail_per_read(file_path = NA, read_id_fast5_file = NA,
 \arguments{
 \item{file_path}{Path of the FAST5 file}
 
-\item{plot_debug}{}
+\item{model}{}
+
+\item{save_plots}{logical.}
 }
 \value{
 A list of Fast5 file data

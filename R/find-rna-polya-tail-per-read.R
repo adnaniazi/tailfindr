@@ -4,11 +4,12 @@
 #' @param read_id_fast5_file
 #' @param multifast5
 #' @param basecalled_with
-#' @param save_plots
+#' @param save_plots logical.
 #' @param show_plots
 #' @param save_dir
 #' @param plotting_library
 #' @param plot_debug
+#' @param model
 #'
 #' @return A list of Fast5 file data
 #' @export
@@ -115,7 +116,7 @@ find_rna_polya_tail_per_read <- function(file_path = NA,
                             'Samples per nt: ', round(read_data$samples_per_nt, 2),
                             sep='')
 
-        df = data.frame(x=c(1:length(read_data$raw_data)),
+        df = data.frame(x=c(0:(length(read_data$raw_data)-1)),
                         truncated_data=truncated_data,
                         smoothed_data=smoothed_data,
                         moves=read_data$moves_sample_wise_vector + 1,
@@ -156,26 +157,68 @@ find_rna_polya_tail_per_read <- function(file_path = NA,
         }
 
         if (plotting_library == 'rbokeh') {
-            p <- rbokeh::figure(data=df, width=1000, height=600, title=plot_title)
-            p <- rbokeh::ly_lines(p, truncated_data, color='#4040a1', legend = "Normalized windsorized data")
-            if (plot_debug) {
-                p <- rbokeh::ly_lines(p, slope, color='#BF1268', width=3, legend = "Slope")
-                p <- rbokeh::ly_lines(p, mean_data, color='#F79A14', width = 3, legend = "Mean of potential poly(A) region")
-                p <- rbokeh::ly_lines(p, moves, color='#b2b2b2', width=1, legend = "Moves")
-                p <- rbokeh::ly_lines(p, smoothed_data, color='#060B54', width=3, legend = "Smoothed data")
-                p <- rbokeh::ly_abline(p, h=POLY_A_RNA_THRESHOLD, color = '#00B0DF', type = 3, width=2, legend = "Slope upper bound")
-                p <- rbokeh::ly_abline(p, h=-POLY_A_RNA_THRESHOLD, color = '#FF94CD', type = 3,  width=2, legend = "Slope lower bound")
-                if (!is.na(precise_polya_boundries$start)) {
-                    p <- rbokeh::ly_abline(p, v=precise_polya_boundries$start, color = 'orange', type = 2, width = 2, legend = "Poly(A) start")
-                    p <- rbokeh::ly_abline(p, v=precise_polya_boundries$end, color = 'red', type = 2, width = 2, legend = "Poly(A) end")
-                }
-            } else {
-                p <- rbokeh::ly_lines(p, poly_a_tail, color = 'red', legend = "Poly(A) tail")
+            p1 <- rbokeh::figure(data=df,
+                                 width=1000, height=200,
+                                 legend_location="top_right")
+            p3 <- rbokeh::figure(data=data.frame(x=event_data$start,
+                                                 y=event_data$move/2),
+                                 width=1000, height=100,
+                                 legend_location="top_right", ygrid = F)
+            if (plot_debug)
+                p2 <- rbokeh::figure(data=df, width=1000, height=400,
+                                     legend_location="top_right")
+
+            p1 <- rbokeh::ly_lines(p1, x=x, y=raw_data, width=1.5, color='#b2b2b2', legend = "Raw data")
+            if (!is.na(tail_start) & (!is.na(tail_end))) {
+                p1 <- rbokeh::ly_lines(p1, x=x, y=polya_tail, color = '#ea3e13', legend = "Poly(A) tail")
             }
-            p <- rbokeh::x_axis(p, label='Sample index')
-            p <- rbokeh::y_axis(p, label='z-normalized data')
-            p <- rbokeh::tool_pan(p, dimensions = "width")
-            p <- rbokeh::tool_wheel_zoom(p, dimensions = "width")
+            p1 <- rbokeh::y_axis(p1, label='pA', num_minor_ticks=2)
+            p1 <- rbokeh::x_axis(p1, label='Sample index')
+            p1 <- rbokeh::tool_pan(p1, dimensions = "width")
+            p1 <- rbokeh::tool_wheel_zoom(p1, dimensions = "width")
+
+            # plot containing all the debug traces
+            if (plot_debug) {
+                p2 <- rbokeh::ly_lines(p2, x=x, y=truncated_data, width=1.0, color='#b2b2b2', legend = "Normalized windsorized signal")
+                p2 <- rbokeh::ly_lines(p2, x=x, y=smoothed_data, color='#8c8a8a', width=1.5, legend = "Smoothed signal")
+                p2 <- rbokeh::ly_lines(p2, x=x, y=slope, color='#f3c963', width=2, legend = "Slope of the signal in the search window")
+                p2 <- rbokeh::ly_lines(p2, x=x, y=mean_data, color='#f58585', width=2, legend = "Mean of the signal in the search window")
+                #p2 <- rbokeh::ly_lines(p2, moves, color='#b2b2b2', width=1, legend = "Moves")
+                p2 <- rbokeh::ly_abline(p2, h=POLY_A_RNA_THRESHOLD, color = '#c581f5', type = 3, width=2, legend = "Slope upper bound")
+                p2 <- rbokeh::ly_abline(p2, h=-POLY_A_RNA_THRESHOLD, color = '#ff6e24', width=2, type = 3, legend = "Slope lower bound")
+                if (!is.na(tail_start) & (!is.na(tail_end))) {
+                    p2 <- rbokeh::ly_abline(p2, v=tail_start, color = '#4497b9', width=2, legend = "Tail start")
+                    p2 <- rbokeh::ly_abline(p2, v=tail_end, color = '#879833', width=2, legend = "Tail end")
+                }
+                p2 <- rbokeh::y_axis(p2, label='z-normalized data values', num_minor_ticks=4, desired_num_ticks = 5)
+                p2 <- rbokeh::x_axis(p2, label='Sample index')
+                p2 <- rbokeh::tool_pan(p2, dimensions = "width")
+                p2 <- rbokeh::tool_wheel_zoom(p2, dimensions = "width")
+            }
+
+            # plot containing the moves
+            p3 <- rbokeh::ly_crect(p3,
+                                   x=x,
+                                   y=y,
+                                   width=rep(0.01, nrow(event_data)),
+                                   height=event_data$move,
+                                   color='#529c82')
+            p3 <- rbokeh::y_axis(p3, label='', num_minor_ticks=0, desired_num_ticks = 3)
+            p3 <- rbokeh::x_axis(p3, label='Sample index')
+            p3 <- rbokeh::tool_pan(p3, dimensions = "width")
+            p3 <- rbokeh::tool_wheel_zoom(p3, dimensions = "width")
+            p3 <- rbokeh::tool_wheel_zoom(p3, dimensions = "height")
+
+            if (plot_debug){
+                lst <- list(p1, p2, p3)
+                names(lst) <- c(plot_title, 'Debugging Traces', 'Moves')
+                nrow <- 3
+            } else {
+                lst <- list(p1, p3)
+                names(lst) <- c(plot_title, 'Moves')
+                nrow <- 2
+            }
+            p <- rbokeh::grid_plot(lst, nrow = nrow, link_data = T, same_axes=c(T, F))
         }
 
         if (save_plots) {
