@@ -8,7 +8,7 @@ tailfindr <a href=''><img src='man/figures/tailfindr-logo.png' align="right" hei
 Overview
 --------
 
-tailfindr is a R package for finding poly(A) tail lengths in Oxford Nanopore reads. It works for both RNA and DNA reads. In the case of DNA reads, it finds both poly(A)- and poly(T)-tail lengths. Currently, tailfindr can work only with 1D reads. It supports data that has been basecalled with Albacore or Guppy. Additionally, it supports the newer multi-fast5 format as well.
+tailfindr is a R package for estimating poly(A) tail lengths in Oxford Nanopore reads. It works for both RNA and DNA reads. In the case of DNA reads, it finds both poly(A)- and poly(T)-tail lengths. Currently, tailfindr can work only with 1D reads. It supports data that has been basecalled with Albacore or Guppy. Additionally, it also supports the newer multi-fast5 format.
 
 tailfindr has been developed at [Valen Lab](http://valenlab.com/) in [Computational Biology Unit](https://www.cbu.uib.no/) at the [University of Bergen](https://www.uib.no/), Norway.
 
@@ -27,19 +27,23 @@ tailfindr depends on the HDF5 library for reading Fast5 files. For OS X and Linu
 
 HDF5 1.8.14 has been pre-compiled for Windows and is available at <https://github.com/mannau/h5-libwin> — thus no manual installation is required.
 
-#### Step 2. Installing tailfindr package in R
+#### Step 2. Installing devtools
 
-The latest release version of **tailfindr** can be installed from any CRAN [Mirror](https://cran.r-project.org/mirrors.html) using the R command
+Currently, tailfindr is not listed on CRAN, so you need to install it using `devtools`. To install `devtools` use the following command:
 
 ``` r
-install.packages("tailfindr")
+install.packages("devtools")
 ```
 
-For the latest development version from Github you can use
+#### Step 3. Installing tailfindr
+
+Now you can install tailfindr using the command below:
 
 ``` r
 devtools::install_github("adnaniazi/tailfindr")
 ```
+
+Now you are ready to use tailfindr.
 
 Usage
 -----
@@ -84,17 +88,17 @@ The devil(s) in the details
 ---------------------------
 
 -   tailfindr currently works on data in the `/Analyses/Basecall_1D_000/BaseCalled_template/` path of the Fast5 file data hierarchy. It won't work on data present in, lets say, `/Analyses/Basecall_1D_001/BaseCalled_template/` path or `/Analyses/Basecall_1D_002/BaseCalled_template/` path; such paths are generated if you re-basecall already-basecalled data. To avoid this problem, use tailfindr on files that have been basecalled from the raw Fast5 files.
--   If you are using the flip flop model to basecall DNA data, then please ensure that the nanopore adaptors are not trimmed off while basecalling. This can be done by turning off `enabling_trimming` option in the basecalling script. The script below shows you how we have basecalled our reads using the flip-flop model
+-   If you are using the flip flop model to basecall DNA data, please ensure that the nanopore adaptors are not trimmed off while basecalling. This can be done by turning off `enabling_trimming` option in the basecalling script. The script below shows you how we have basecalled our reads using the flip-flop model
 
 ``` bash
 #!/bin/sh
 INPUT=/raw/fast5/files/path/
 OUTPUT=/output/folder/path/
 guppy_basecaller \
-    -c dna_r9.4.1_450bps_flipflop.cfg \
-    -i $INPUT \
-    -s $OUTPUT \
-    -r \
+    --config dna_r9.4.1_450bps_flipflop.cfg \
+    --input $INPUT \
+    --save_path $OUTPUT \
+    --recursive \
     --fast5_out \
     --hp_correct 1 \
     --disable_pings 1 \
@@ -103,7 +107,6 @@ guppy_basecaller \
     -t 12 
 ```
 
-Getting help
-------------
+-   If you are using the Guppy to basecall RNA data \#\# Getting help
 
 If you encounter a clear bug, please file a minimal reproducible example on [github](https://github.com/adnaniazi/tailfindr/issues). For questions and other discussion, email me at <adnan.niazi@uib.no>.
