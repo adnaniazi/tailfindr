@@ -1,6 +1,6 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-tailfindr <a href=''><img src='man/figures/tailfindr-logo.png' align="right" height="139" /></a>
+tailfindr <a href=''><img src='man/tailfindr-logo.png' align="right" height="139" /></a>
 ================================================================================================
 
 <!-- badges: start -->
