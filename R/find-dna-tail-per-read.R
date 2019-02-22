@@ -269,10 +269,10 @@ find_dna_tail_per_read <- function(file_path = NA,
                                       rep(NA, times=(read_length-tail_end)))
             }
             plot_title <- paste('Poly(A) tail  |  ',
-                                'Tail length[nt]: ', round(tail_length, 2), '  |  ',
+                                'Tail length [nt]: ', round(tail_length, 2), '  |  ',
                                 'Tail start: ', tail_start, '  |  ',
                                 'Tail end: ', tail_end, '  |  ',
-                                'Tail duration[Sa]: ', tail_end-tail_start, '  |  ',
+                                'Tail duration [Sa]: ', tail_end-tail_start, '  |  ',
                                 'Samples per nt: ', round(samples_per_nt, 2),
                                 sep='')
         } else {
@@ -282,10 +282,10 @@ find_dna_tail_per_read <- function(file_path = NA,
                                       rep(NA, times=(read_length-tail_end)))
             }
             plot_title <- paste('Poly(T) tail  |  ',
-                                'Tail length[nt]: ', round(tail_length, 2), '  |  ',
+                                'Tail length [nt]: ', round(tail_length, 2), '  |  ',
                                 'Tail start: ', tail_start, '  |  ',
                                 'Tail end: ', tail_end, '  |  ',
-                                'Tail duration[Sa]: ', tail_end-tail_start, '  |  ',
+                                'Tail duration [Sa]: ', tail_end-tail_start, '  |  ',
                                 'Samples per nt: ', round(samples_per_nt, 2),
                                 sep='')
         }
@@ -323,9 +323,9 @@ find_dna_tail_per_read <- function(file_path = NA,
             p1 <- rbokeh::ly_lines(p1, x=x, y=raw_data, width=1.5, color='#b2b2b2', legend = "Raw data")
             if (!is.na(tail_start) & (!is.na(tail_end))) {
                 if (read_type=='polyT') {
-                    p1 <- rbokeh::ly_lines(p1, x=x, y=polyt_tail, color = '#ea3e13', legend = "Poly(T) tail")
+                    p1 <- rbokeh::ly_lines(p1, x=x, y=polyt_tail, width=1.5, color = '#ea3e13', legend = "Poly(T) tail")
                 } else {
-                    p1 <- rbokeh::ly_lines(p1, x=x, y=polya_tail, color = '#ea3e13', legend = "Poly(A) tail")
+                    p1 <- rbokeh::ly_lines(p1, x=x, y=polya_tail, width=1.5, color = '#ea3e13', legend = "Poly(A) tail")
                 }
             }
 

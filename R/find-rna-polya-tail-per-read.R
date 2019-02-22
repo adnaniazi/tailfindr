@@ -114,10 +114,10 @@ find_rna_polya_tail_per_read <- function(file_path = NA,
     if (show_plots | save_plots) {
         filename <- paste(read_id, '__', basename(file_path), sep = '')
         plot_title <- paste('Poly(A) tail  |  ',
-                            'Tail length[nt]: ', round(tail_length, 2), '  |  ',
+                            'Tail length [nt]: ', round(tail_length, 2), '  |  ',
                             'Tail start: ', tail_start, '  |  ',
                             'Tail end: ', tail_end, '  |  ',
-                            'Tail duration[Sa]: ', tail_end-tail_start, '  |  ',
+                            'Tail duration [Sa]: ', tail_end-tail_start, '  |  ',
                             'Samples per nt: ', round(read_data$samples_per_nt, 2),
                             sep='')
 
@@ -130,9 +130,9 @@ find_rna_polya_tail_per_read <- function(file_path = NA,
 
         # add a poly(A) tail to the dataframe if it exists
         if (!is.na(tail_start) & !is.na(tail_end)) {
-            df['poly_a_tail'] <- c(rep(NA, times=tail_start-1),
-                                   truncated_data[tail_start:tail_end],
-                                   rep(NA, times=(read_length-tail_end)))
+            df['polya_tail'] <- c(rep(NA, times=tail_start-1),
+                                  raw_data[tail_start:tail_end],
+                                  rep(NA, times=(read_length-tail_end)))
         }
 
         if (plotting_library == 'ggplot2') {
@@ -175,7 +175,7 @@ find_rna_polya_tail_per_read <- function(file_path = NA,
 
             p1 <- rbokeh::ly_lines(p1, x=x, y=raw_data, width=1.5, color='#b2b2b2', legend = "Raw data")
             if (!is.na(tail_start) & (!is.na(tail_end))) {
-                p1 <- rbokeh::ly_lines(p1, x=x, y=polya_tail, color = '#ea3e13', legend = "Poly(A) tail")
+                p1 <- rbokeh::ly_lines(p1, x=x, y=polya_tail, width=1.5, color = '#ea3e13', legend = "Poly(A) tail")
             }
             p1 <- rbokeh::y_axis(p1, label='pA', num_minor_ticks=2)
             p1 <- rbokeh::x_axis(p1, label='Sample index')

@@ -133,11 +133,11 @@ find_dna_tailtype <- function(file_path = NA,
 
     as_ep <- Biostrings::pairwiseAlignment(pattern=ep,
                                            subject=Biostrings::DNAString(substr(fastq, start=1, stop=min(100, nchar(fastq)))),
-                                              substitutionMatrix=submat,
-                                              type=type,
-                                              scoreOnly=FALSE,
-                                              gapOpening=gapOpening,
-                                              gapExtension=gapExtension)
+                                           substitutionMatrix=submat,
+                                           type=type,
+                                           scoreOnly=FALSE,
+                                           gapOpening=gapOpening,
+                                           gapExtension=gapExtension)
 
 
     nas_fp <- as_fp@score/fp@length
@@ -165,7 +165,7 @@ find_dna_tailtype <- function(file_path = NA,
 
         # If it is a valid polyA tail, then find the rough starting site of the tail
         if (tail_is_valid) {
-            polya_end_fastq <- as_rc_ep@subject@range@start + nchar(fastq)-50
+            polya_end_fastq <- as_rc_ep@subject@range@start + nchar(fastq)- 50 - 1 - as_rc_ep@pattern@range@start
             polya_rough_end <- find_sample_index_for_fastq_base(read_data$event_data, polya_end_fastq, read_type)
             # for max remove later
             # as_rc_fp <- Biostrings::pairwiseAlignment(pattern=rc_fp,
@@ -178,11 +178,12 @@ find_dna_tailtype <- function(file_path = NA,
 
             # check if we have captured the end of the tail perfectly
             # by finding out if we captured the bases adjacent to the tails
-            if (substr(as_ep@subject,
-                       start=1,
-                       stop=bases_to_match) == substr(ep,
-                                                      start=1,
-                                                      stop=bases_to_match)) {
+            if ((substr(as_rc_ep@subject,
+                        start=1,
+                        stop=bases_to_match) == substr(rc_ep,
+                                                       start=1,
+                                                       stop=bases_to_match)) &
+                (as_rc_ep@pattern@range@start == 1)) {
                 has_precise_boundary <- TRUE
             }
 
@@ -196,7 +197,7 @@ find_dna_tailtype <- function(file_path = NA,
         polyt_start_fastq <- NA
         polyt_rough_start <- NA
 
-    # Check if it is a PolyT tail
+        # Check if it is a PolyT tail
     } else if (nas_fp < nas_ep & nas_ep > 0.6) {
         read_type <- 'polyT'
         tail_is_valid <- T
@@ -216,7 +217,7 @@ find_dna_tailtype <- function(file_path = NA,
         }
 
 
-    # if the above two checks fail then it is an invalid read
+        # if the above two checks fail then it is an invalid read
     } else {
         read_type <- 'invalid'
         tail_is_valid <- F
@@ -249,10 +250,10 @@ find_dna_tailtype <- function(file_path = NA,
          polya_end = polya_rough_end,
          polyt_start = polyt_rough_start,
          has_precise_boundary = has_precise_boundary
-         )
-                #nas_fp=nas_fp,
-                #nas_rc_ep=nas_rc_ep,
-                #nas_ep=nas_ep,
-                #nas_rc_fp=nas_rc_fp))
+    )
+    #nas_fp=nas_fp,
+    #nas_rc_ep=nas_rc_ep,
+    #nas_ep=nas_ep,
+    #nas_rc_fp=nas_rc_fp))
 }
 
