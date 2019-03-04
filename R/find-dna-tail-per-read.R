@@ -359,6 +359,9 @@ find_dna_tail_per_read <- function(file_path = NA,
                 p2 <- rbokeh::x_axis(p2, label='Sample index')
                 p2 <- rbokeh::tool_pan(p2, dimensions = "width")
                 p2 <- rbokeh::tool_wheel_zoom(p2, dimensions = "width")
+                if (read_type == 'polyA') {
+                    p2 <- rbokeh::y_axis(p2, position = "right")
+                }
             }
 
             # plot containing the moves
