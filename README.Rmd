@@ -38,7 +38,7 @@ tailfindr depends on the HDF5 library for reading Fast5 files. For OS X and Linu
 |**Debian-based systems (including Ubuntu)**| `sudo apt-get install libhdf5-dev` 
 |**Systems supporting yum and RPMs**        | `sudo yum install hdf5-devel`
 
-HDF5 1.8.14 has been pre-compiled for Windows and is available at https://github.com/mannau/h5-libwin &mdash; thus no manual installation is required.
+HDF5 1.8.14 has been pre-compiled for Windows and is available [here](https://github.com/mannau/h5-libwin) &mdash; thus no manual installation is required.
 
 ####Step 2. Installing devtools
 Currently, tailfindr is not listed on CRAN, so you need to install it using `devtools`. To install `devtools` use the following command:
@@ -108,11 +108,9 @@ guppy_basecaller \
     --fast5_out \
     --hp_correct 1 \
     --disable_pings 1 \
-    --enable_trimming 0 \
-    --runners 10 \
-    -t 12 
+    --enable_trimming 0 
 ```
-* If you are using the Guppy to basecall RNA data
+
 ## Getting help
 
 If you encounter a clear bug, please file a minimal reproducible example on [github](https://github.com/adnaniazi/tailfindr/issues). For questions and other discussion, email me at adnan.niazi@uib.no.
