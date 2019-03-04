@@ -1,4 +1,8 @@
-#' Title
+#' Finds raw data sample index corresponding to a base.
+#'
+#' Finds raw data sample index in the event data table corresponding to a FastQ
+#' base number. The closet possible matching sample is dependent on the type of
+#' the tail.
 #'
 #' @param event_data
 #' @param fastq_base_number

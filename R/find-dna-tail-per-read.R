@@ -1,23 +1,31 @@
-
-#' Title
+#' Find poly(A)/poly(T) tail in a single DNA read
 #'
-#' @param file_path
-#' @param read_id_fast5_file
-#' @param dna_datatype
-#' @param save_plots
-#' @param show_plots
-#' @param plot_debug
-#' @param save_dir
-#' @param plotting_library
-#' @param multifast5
-#' @param basecalled_with
-#' @param model
-#' @param ...
+#' This function finds poly(A) or poly(T) tail length in DNA reads.
+#'
+#' @param file_path a character string. Full path of the file that needs to be
+#' processed.
+#' @param read_id_fast5_file a list. If the read to be processed is in a multi-
+#' fast5 file, then a list containing \code{fast5_file} path and \code{read_id}
+#' should be provided, otherwise, it should be set to \code{NA}
+#' @param dna_datatype a character string. Either set to \code{'cdna'} or
+#' \code{'pcr-dna}
+#' @param save_plots a logical. Whether to save plots
+#' @param show_plots a logical. Whether to show plots in plots window in R-Studio
+#' @param plot_debug a logical. Whether to include debug traces in the plots
+#' @param save_dir a logical. Directory where plots should be saved
+#' @param plotting_library a character string. Whether to use \code{"rbokeh"} or
+#' \code{"ggplot2"} for plotting the plots
+#' @param multifast5 a logical. Whether the Fast5 file to be processed is a
+#' multifast5 file
+#' @param basecalled_with a character. Specify whether the data has been basecalled
+#' with the \code{"guppy"} or \code{"albacore"} software.
+#' @param modela a character. Specify whether the data has been basecalled using
+#' the \code{"standard"} or the \code{"flipflop"} model
+#' @param ... Any optional parameter. Reserved for future.
 #'
 #' @return
 #' @export
 #'
-#' @examples
 find_dna_tail_per_read <- function(file_path = NA,
                                    read_id_fast5_file = NA,
                                    dna_datatype = 'cdna',
