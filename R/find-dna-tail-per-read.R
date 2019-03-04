@@ -76,7 +76,7 @@ find_dna_tail_per_read <- function(file_path = NA,
     #POLY_A_CNDA_THRESHOLD <- 0.31
     SPIKE_THRESHOLD <- 2.0
     MOVING_WINDOW_SIZE <- 30
-    MAX_GAP_BETWEEN_TAILS <- 1200
+    MAX_GAP_BETWEEN_TAILS <- 120 * samples_per_nt
     #SEC_TAIL_MIN_SIZE <- read_data$samples_per_nt * 15
     SLOPE_THRESHOLD <- 0.20
 
@@ -169,7 +169,7 @@ find_dna_tail_per_read <- function(file_path = NA,
         } else {
             j <- i
             while (j < length(slope)) {
-                if (j > MAX_GAP_BETWEEN_TAILS/window_size) {
+                if (j > floor(MAX_GAP_BETWEEN_TAILS/window_size)) {
                     quit_searching <- TRUE
                     break
                 }

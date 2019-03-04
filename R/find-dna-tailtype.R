@@ -110,9 +110,11 @@ find_dna_tailtype <- function(file_path = NA,
     if (dna_datatype == 'cdna') {
         fp <- Biostrings::DNAString('TTTCTGTTGGTGCTGATATTGCTGCCATTACGGCCGGG')
         ep <- Biostrings::DNAString('ACTTGCCTGTCGCTCTATCTTC')
+        threshold <- 0.6
     } else if (dna_datatype == 'pcr-dna') {
         fp <- Biostrings::DNAString('ATTTAGGTGACACTATAGCGCTCCATGCAAACCTGTC')
         ep <- Biostrings::DNAString('GAGTCCGGGCGGCGC')
+        threshold <- 0.68
     }
 
     rc_fp <- Biostrings::reverseComplement(fp)
@@ -149,7 +151,7 @@ find_dna_tailtype <- function(file_path = NA,
 
     # check the front primer and rev comp end primer score to decide
     # between polyA and polyT reads.
-    if (nas_fp > nas_ep & nas_fp > 0.6){
+    if (nas_fp > nas_ep & nas_fp > threshold){
         read_type <- 'polyA'
         # check if there is the end primer at the end of the polyA read
         # adjacent to the polyA tail
@@ -161,7 +163,7 @@ find_dna_tailtype <- function(file_path = NA,
                                                   gapOpening=gapOpening,
                                                   gapExtension=gapExtension)
         nas_rc_ep <- as_rc_ep@score/rc_ep@length
-        tail_is_valid <- ifelse(nas_rc_ep > 0.6, T, F)
+        tail_is_valid <- ifelse(nas_rc_ep > threshold, TRUE, FALSE)
 
         # If it is a valid polyA tail, then find the rough starting site of the tail
         if (tail_is_valid) {
@@ -198,7 +200,7 @@ find_dna_tailtype <- function(file_path = NA,
         polyt_rough_start <- NA
 
         # Check if it is a PolyT tail
-    } else if (nas_fp < nas_ep & nas_ep > 0.6) {
+    } else if (nas_fp < nas_ep & nas_ep > threshold) {
         read_type <- 'polyT'
         tail_is_valid <- T
         polyt_start_fastq <- as_ep@subject@range@start + as_ep@subject@range@width
