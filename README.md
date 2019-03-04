@@ -60,7 +60,7 @@ df <- find_tails(fast5_dir = '/path/to/fast5/folder/',
                  num_cores = 10)
 ```
 
-Additionally, tailfindr allows you to save plots that show the tail location and length. You can save these plots as interactive .html files by using the `rbokeh` as `plotting_library`. You can zoom in on the tail region in the squiggle and see the exact location of the tail.
+Additionally, tailfindr allows you to save plots that show the tail location and length. You can save these plots as interactive `.html` files by using `rbokeh` as `plotting_library`. You can zoom in on the tail region in the squiggle and see the exact location of the tail.
 
 ``` r
 df <- find_tails(fast5_dir = '/path/to/fast5/folder/',
@@ -71,9 +71,9 @@ df <- find_tails(fast5_dir = '/path/to/fast5/folder/',
                  plotting_library = 'rbokeh)
 ```
 
-However, note that using this option can slow down the performace because generating these interactive plots is a slow process. We recommend that you generat plots only for a small subset of your reads.
+However, note that using this option can slow down the performace because generating these interactive plots is a slow process. We recommend that you generate these plots only for a small subset of your reads.
 
-A relatively faster way of generating the plots is to use `ggplot2` as the `plotting_library`. In this case, plots we will saved as .png files. Becuase these plots are statics, i.e. not-interactive, therefore, it might be difficult to see the tail in a long squiggle in these plots.
+A relatively faster way of generating the plots is to use `ggplot2` as the `plotting_library`. In this case, the plots are saved as .png files. Becuase these plots are statics, i.e. not-interactive, therefore, it might be difficult to see the tail in a long squiggle in these static plots.
 
 ``` r
 df <- find_tails(fast5_dir = '/path/to/fast5/folder/',
