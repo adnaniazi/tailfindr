@@ -21,7 +21,6 @@
 #'   \item \code{experiment_type: 'dna', 'rna'}
 #' }
 #'
-#' @export
 #' @examples
 #' \dontrun{
 #'
