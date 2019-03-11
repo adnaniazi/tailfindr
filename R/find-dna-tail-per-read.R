@@ -7,8 +7,8 @@
 #' @param read_id_fast5_file a list. If the read to be processed is in a multi-
 #' fast5 file, then a list containing \code{fast5_file} path and \code{read_id}
 #' should be provided, otherwise, it should be set to \code{NA}
-#' @param dna_datatype a character string. Either set to \code{'cdna'} or
-#' \code{'pcr-dna}
+#' @param dna_datatype a character string. Either set to \code{"cdna"} or
+#' \code{"pcr-dna"}
 #' @param save_plots a logical. Whether to save plots
 #' @param show_plots a logical. Whether to show plots in plots window in R-Studio
 #' @param plot_debug a logical. Whether to include debug traces in the plots
@@ -24,7 +24,6 @@
 #' @param ... Any optional parameter. Reserved for future.
 #'
 #' @return
-#' @export
 #'
 find_dna_tail_per_read <- function(file_path = NA,
                                    read_id_fast5_file = NA,
