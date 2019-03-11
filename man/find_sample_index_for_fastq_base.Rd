@@ -2,7 +2,7 @@
 % Please edit documentation in R/find_sample_index_for_fastq_base.R
 \name{find_sample_index_for_fastq_base}
 \alias{find_sample_index_for_fastq_base}
-\title{Title}
+\title{Finds raw data sample index corresponding to a base.}
 \usage{
 find_sample_index_for_fastq_base(event_data, fastq_base_number, read_type)
 }
@@ -13,5 +13,7 @@ find_sample_index_for_fastq_base(event_data, fastq_base_number, read_type)
 
 }
 \description{
-Title
+Finds raw data sample index in the event data table corresponding to a FastQ
+base number. The closet possible matching sample is dependent on the type of
+the tail.
 }

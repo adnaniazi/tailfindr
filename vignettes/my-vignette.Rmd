@@ -7,13 +7,15 @@ vignette: >
   %\VignetteIndexEntry{Vignette Title}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+fig_width: 6 
+fig_height: 2 
 ---
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
-)
+  )
 ```
 ## 1. What is tailfindr?
 tailfindr is a R package for estimating poly(A) tail lengths in Oxford Nanopore reads. It works for both RNA and DNA reads. In the case of DNA reads, it finds both poly(A)- and poly(T)-tail lengths. Currently, tailfindr can work only with 1D reads. It supports data that has been basecalled with Albacore or Guppy. Additionally, it also supports the newer multi-fast5 format.
@@ -68,6 +70,8 @@ df <- find_tails(fast5_dir = '/path/to/fast5/folder/',
                  save_plots = TRUE,
                  plotting_library = 'rbokeh)
 ```
+![Poly(T) read squiggle plot](https://github.com/adnaniazi/tailfindr/raw/master/man/figures/poly_t_without_debug.gif)
+
 However, note that using this option can slow down the performace because generating these interactive plots is a slow process. We recommend that you generat plots only for a small subset of your reads.
 
 A relatively faster way of generating the plots is to use `ggplot2` as the `plotting_library`. In this case, the plots  are saved as .png files. Becuase these plots are statics, i.e. not-interactive, therefore, it might be difficult to see the tail in a long squiggle in these static plots. 
@@ -78,7 +82,7 @@ df <- find_tails(fast5_dir = '/path/to/fast5/folder/',
                  csv_filename = 'tails.csv',
                  num_cores = 10,
                  save_plots = TRUE,
-                 plotting_library = 'rbokeh)
+                 plotting_library = 'ggplot2)
 ```
 
 ## The devil(s) in the details

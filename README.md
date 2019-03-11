@@ -1,6 +1,6 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-tailfindr <a href=''><img src='man/figures/tailfindr-logo.png' align="right" height="139" /></a>
+tailfindr <a href=''><img src='man/figures/tailfindr-logo.png' align="right" height="250" /></a>
 ================================================================================================
 
 <!-- badges: start -->
@@ -71,6 +71,8 @@ df <- find_tails(fast5_dir = '/path/to/fast5/folder/',
                  plotting_library = 'rbokeh)
 ```
 
+![alt text](https://github.com/adnaniazi/tailfindr/raw/master/man/figures/poly_t_without_debug.gif)
+
 However, note that using this option can slow down the performace because generating these interactive plots is a slow process. We recommend that you generate these plots only for a small subset of your reads.
 
 A relatively faster way of generating the plots is to use `ggplot2` as the `plotting_library`. In this case, the plots are saved as .png files. Becuase these plots are statics, i.e. not-interactive, therefore, it might be difficult to see the tail in a long squiggle in these static plots.
@@ -81,7 +83,7 @@ df <- find_tails(fast5_dir = '/path/to/fast5/folder/',
                  csv_filename = 'tails.csv',
                  num_cores = 10,
                  save_plots = TRUE,
-                 plotting_library = 'rbokeh)
+                 plotting_library = 'ggplot2)
 ```
 
 The devil(s) in the details
