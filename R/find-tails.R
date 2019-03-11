@@ -537,6 +537,15 @@ find_tails <- function(fast5_dir,
     result <- purrr::map(result, function(.x) tibble::as_tibble(.x))
     result <- dplyr::bind_rows(result, .id = "chunk")
     result <- dplyr::select(result, -chunk)
+    # cleanup the tibble
+    result <- tidyr::unnest(result)
+    if (experiment_type == 'dna') {
+        result <- within(result, rm(has_precise_boundary))
+    } else {
+        result <- within(result, rm(polya_fastq))
+    }
+    result$tail_length <- round(result$tail_length, digits = 2)
+    result$samples_per_nt <- round(result$samples_per_nt, digits = 2)
     cat('  Done!\n')
 
     # write the result to a csv file
