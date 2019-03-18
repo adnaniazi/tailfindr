@@ -148,4 +148,4 @@ If you encounter a clear bug, please file a minimal reproducible example on [git
 
 And of course:
 
-MIT: http://rem.mit-license.org
+GPL-3: https://www.gnu.org/licenses/gpl-3.0.en.html
