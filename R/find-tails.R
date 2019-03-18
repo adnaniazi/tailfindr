@@ -1,4 +1,4 @@
-#' Finds poly(A)/(T) tail lengths in Oxford Nanopore RNA and DNA reads
+#' Estimates poly(A)/(T) tail lengths in Oxford Nanopore RNA and DNA reads
 #'
 #' This function estimates poly(A) tail length in RNA reads, and both poly(A)
 #' and poly(T) tail lengths in DNA reads. It can operate on reads base called
