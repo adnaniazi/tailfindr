@@ -168,6 +168,12 @@ find_dna_tail_per_read <- function(file_path = NA,
     small_glitch_count <- 0
     quit_searching <- FALSE
     tail_end <- NA
+
+    # Main Algorithm:
+    # DO while we haven't reached the end of the search window:
+    #   1. Extend tail if slope and smoothened data is within the threshold and
+    #      we haven't exceeded the
+    #
     while (i < length(slope)){
         if ((slope[i] < SLOPE_THRESHOLD) & (slope[i] > -SLOPE_THRESHOLD) &
             (smoothed_data[tail_start+i*window_size] < SLOPE_THRESHOLD+0.1)) {
