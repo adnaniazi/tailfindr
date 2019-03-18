@@ -24,6 +24,7 @@ vignettes/*.R
 
 # General MAC Ignores
 .DS_Store
+._.DS_Store
 .AppleDouble
 .LSOverride
 
