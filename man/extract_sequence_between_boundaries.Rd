@@ -22,3 +22,11 @@ The functions takes two sample numbers -- \code{start} and \code{end} -- as
 inputs and finds their corresponding closest matching events in the event
 table. It then finds the FASTA sequence between these bounding events.
 }
+\examples{
+\dontrun{
+event_data <- data.frame(start=seq(0, 150, 5),
+                         model_state=sample(c("A", "T", "C", "G"), 1))
+sequence <- extract_sequence_between_boundaries(event_data, 98, 131)
+}
+
+}

@@ -1,12 +1,19 @@
-#' Title
+#' Finds the precise RNA tail and start
 #'
-#' @param smoothed_data
-#' @param crude_polya_boundries
+#' @param crude_polya_boundries list. A list of crude \code{start} and \code{end}
+#' of the poly(A) tail
+#' @param truncated_data numeric vector
+#' @param POLY_A_RNA_THRESHOLD numeric
+#' @param save_plots logical
+#' @param show_plots logical
 #'
 #' @return
 #'
-#' @examples
-find_rna_polya_precise_start_end <- function(truncated_data, POLY_A_RNA_THRESHOLD, crude_polya_boundries, save_plots, show_plots){
+find_rna_polya_precise_start_end <- function(truncated_data,
+                                             POLY_A_RNA_THRESHOLD,
+                                             crude_polya_boundries,
+                                             save_plots,
+                                             show_plots){
 
     crude_start <- crude_polya_boundries$start
     crude_end <- crude_polya_boundries$end

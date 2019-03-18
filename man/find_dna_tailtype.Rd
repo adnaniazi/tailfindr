@@ -33,7 +33,7 @@ Set to 'standard' if the basecalling model is standard model.l}
 path. Use this option when a read from a multifast5 file is to be read. In
 such a case, you should set file_path to NA, and set multifast5 flag to TRUE.}
 
-\item{plotting_library}{}
+\item{plotting_library}{a string.}
 
 \item{...}{An other parameter. For future expansion.}
 }
@@ -50,21 +50,26 @@ prematurely. The function also find the rough end site of the poly(A) tail,
 \examples{
 \dontrun{
 
-# 1. If the data is multifast5 cDNA (direct cDNA or amplified cDNA) data basecalled with flip-flop algorithm
+# 1. If the data is multifast5 cDNA (direct cDNA or amplified cDNA)
+data basecalled with flip-flop algorithm
+read_id_fast5_file = list(read_id=read_id, fast5_file=full_path_of_fast5_file)
 find_dna_tailtype(dna_datatype = 'cdna',
                   multifast5 = T,
                   basecalled_with = 'guppy',
                   model = 'flipflop',
-                  read_id_fast5_file = list(read_id=read_id, fast5_file=full_path_of_fast5_file))
+                  read_id_fast5_file = read_id_fast5_file)
 
-# 2. If the data is multifast5 pcr-DNA data basecalled with flip-flop algorithm
+# 2. If the data is multifast5 pcr-DNA data basecalled with flip-flop
+algorithm
+read_id_fast5_file = list(read_id=read_id, fast5_file=full_path_of_fast5_file)
 find_dna_tailtype(dna_datatype = 'pcr-dna',
                   multifast5=T,
                   basecalled_with = 'guppy',
                   model = 'flipflop',
-                  read_id_fast5_file = list(read_id=read_id, fast5_file=full_path_of_fast5_file))
+                  read_id_fast5_file = read_id_fast5_file)
 
-# 3. If the data is cDNA (direct cDNA or amplified cDNA) data basecalled with albacore with single fast5 files as output
+# 3. If the data is cDNA (direct cDNA or amplified cDNA) data basecalled with
+albacore with single fast5 files as output
 find_dna_tailtype(file_path = full_file_path_of_the_read,
                   dna_datatype = 'cdna',
                   multifast5 = F,

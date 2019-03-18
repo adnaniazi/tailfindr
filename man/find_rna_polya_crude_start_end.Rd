@@ -8,7 +8,13 @@ find_rna_polya_crude_start_end(rle_lengths, rle_values, rle_indices,
   trough_threshold)
 }
 \arguments{
-\item{trough_threshold}{}
+\item{rle_lengths}{a numeric vector. A vector of RLE lengths in samples}
+
+\item{rle_values}{a logical vector. A vector of logical RLE values}
+
+\item{rle_indices}{a numeric vector. A vector if cumsum of RLE lengths}
+
+\item{trough_threshold}{a numeric. The threshold below which to merge sections}
 }
 \value{
 

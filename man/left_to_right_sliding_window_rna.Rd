@@ -23,7 +23,3 @@ Applies a function to window that can slide across a timeseries from left to
 right, i.e. from a read's beginning to it end.
 Acknowledgment: evobiR tool
 }
-\examples{
-left_to_right_sliding_window_rna('mean', c(1,2,3,4,5,6,7,8), 2, 1)
-
-}

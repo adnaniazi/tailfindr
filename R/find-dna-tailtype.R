@@ -21,7 +21,7 @@
 #' @param model a string. Set to 'flipflop' if the basecalling model is flipflop.
 #' Set to 'standard' if the basecalling model is standard model.l
 #'
-#' @param plotting_library
+#' @param plotting_library a string.
 #'
 #' @param read_id_fast5_file a list [NA]. A list of 'read_id' and 'fast5_file'
 #' path. Use this option when a read from a multifast5 file is to be read. In
@@ -30,21 +30,26 @@
 #' @examples
 #' \dontrun{
 #'
-#' # 1. If the data is multifast5 cDNA (direct cDNA or amplified cDNA) data basecalled with flip-flop algorithm
+#' # 1. If the data is multifast5 cDNA (direct cDNA or amplified cDNA)
+#' data basecalled with flip-flop algorithm
+#' read_id_fast5_file = list(read_id=read_id, fast5_file=full_path_of_fast5_file)
 #' find_dna_tailtype(dna_datatype = 'cdna',
 #'                   multifast5 = T,
 #'                   basecalled_with = 'guppy',
 #'                   model = 'flipflop',
-#'                   read_id_fast5_file = list(read_id=read_id, fast5_file=full_path_of_fast5_file))
+#'                   read_id_fast5_file = read_id_fast5_file)
 #'
-#' # 2. If the data is multifast5 pcr-DNA data basecalled with flip-flop algorithm
+#' # 2. If the data is multifast5 pcr-DNA data basecalled with flip-flop
+#' algorithm
+#' read_id_fast5_file = list(read_id=read_id, fast5_file=full_path_of_fast5_file)
 #' find_dna_tailtype(dna_datatype = 'pcr-dna',
 #'                   multifast5=T,
 #'                   basecalled_with = 'guppy',
 #'                   model = 'flipflop',
-#'                   read_id_fast5_file = list(read_id=read_id, fast5_file=full_path_of_fast5_file))
+#'                   read_id_fast5_file = read_id_fast5_file)
 #'
-#' # 3. If the data is cDNA (direct cDNA or amplified cDNA) data basecalled with albacore with single fast5 files as output
+#' # 3. If the data is cDNA (direct cDNA or amplified cDNA) data basecalled with
+#' albacore with single fast5 files as output
 #' find_dna_tailtype(file_path = full_file_path_of_the_read,
 #'                   dna_datatype = 'cdna',
 #'                   multifast5 = F,

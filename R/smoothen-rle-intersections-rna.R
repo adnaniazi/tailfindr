@@ -1,3 +1,10 @@
+#' Smoothen RLE intersections for RNA
+#'
+#' @param rle_intersections RLE object
+#'
+#' @return
+#'
+
 smoothen_rle_intersections_rna <- function(rle_intersections){
 
     #rle_lengths <-  c(13, 137, 12, 8243, 45, 104, 45, 380)

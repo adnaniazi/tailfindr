@@ -30,9 +30,25 @@ file}
 \item{model}{a string. Set to 'flipflop' if the basecalling model is flipflop.
 Set to 'standard' if the basecalling model is standard model.}
 
-\item{plotting_library}{}
+\item{plotting_library}{a string}
+}
+\value{
+
 }
 \description{
 This function can deal with both multifast5 files and single fast5 files.
 It can handle files basecalled with standard or the flip flop model.
+}
+\examples{
+\dontrun{
+
+extract_read_data(file_path = '/path/to/the/file',
+                  read_id_fast5_file = NA,
+                  plot_debug = F,
+                  basecalled_with = 'albacore',
+                  multifast5 = TRUE,
+                  model = 'standard',
+                  plotting_library = 'rbokeh')
+}
+
 }

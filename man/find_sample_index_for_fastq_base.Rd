@@ -7,7 +7,11 @@
 find_sample_index_for_fastq_base(event_data, fastq_base_number, read_type)
 }
 \arguments{
-\item{read_type}{}
+\item{event_data}{dataframe}
+
+\item{fastq_base_number}{numeric}
+
+\item{read_type}{character string}
 }
 \value{
 
@@ -16,4 +20,13 @@ find_sample_index_for_fastq_base(event_data, fastq_base_number, read_type)
 Finds raw data sample index in the event data table corresponding to a FastQ
 base number. The closet possible matching sample is dependent on the type of
 the tail.
+}
+\examples{
+\dontrun{
+event_data <- data.frame(start = seq(0, 150, 5),
+                         move = 5,
+                         model_state = sample(c("A", "T", "C", "G"), 1))
+idx <- find_sample_index_for_fastq_base(event_data, 10, 'polyA')
+}
+
 }

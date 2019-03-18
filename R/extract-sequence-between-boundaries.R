@@ -11,9 +11,14 @@
 #'
 #' @return
 #' A character string is returned containing FastQ sequencing
-#' @export
 #'
 #' @examples
+#' \dontrun{
+#' event_data <- data.frame(start=seq(0, 150, 5),
+#'                          model_state=sample(c("A", "T", "C", "G"), 1))
+#' sequence <- extract_sequence_between_boundaries(event_data, 98, 131)
+#' }
+#'
 extract_sequence_between_boundaries <- function(event_data, start, end) {
     # get the row index of the start and end raw samples in the event_data
     row_index_start <- which.min(abs(event_data$start - start))

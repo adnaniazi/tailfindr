@@ -4,7 +4,6 @@
 #'
 #' @return A numeric vector containing the modified signal.
 #'
-#' @examples
 rectify <- function(data){
     data <- abs(data)
     return(data)

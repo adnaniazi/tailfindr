@@ -142,7 +142,7 @@ find_tails <- function(fast5_dir,
     }
 
     # display console messages
-    version <- packageDescription("tailfindr")$Version
+    version <- utils::packageDescription("tailfindr")$Version
     cat(cli::rule(left=''), '\n', sep = "")
     cat(cli::rule(left=paste("Started tailfindr ", '(version ', version, ')', sep='')), '\n', sep = "")
     cat(cli::rule(left=''), '\n',  sep = "")
@@ -343,10 +343,10 @@ find_tails <- function(fast5_dir,
             cat(paste('  Processing chunk ', chunk, ' of ', total_chunks, '\n', sep = ''))
 
             # progress bar
-            pb <- txtProgressBar(min = 1,
-                                 max = length(read_id_fast5_file_subset),
-                                 style = 3)
-            progress <- function(n) setTxtProgressBar(pb, n)
+            pb <- utils::txtProgressBar(min = 1,
+                                        max = length(read_id_fast5_file_subset),
+                                        style = 3)
+            progress <- function(n) utils::setTxtProgressBar(pb, n)
             opts <- list(progress = progress)
 
             # foreach loop
@@ -456,10 +456,10 @@ find_tails <- function(fast5_dir,
 
             # progress bar
             cat(paste('  Processing chunk ', chunk, ' of ', total_chunks, '\n', sep=''))
-            pb <- txtProgressBar(min = 1,
-                                 max = length(fast5_files_subset),
-                                 style = 3)
-            progress <- function(n) setTxtProgressBar(pb, n)
+            pb <- utils::txtProgressBar(min = 1,
+                                        max = length(fast5_files_subset),
+                                        style = 3)
+            progress <- function(n) utils::setTxtProgressBar(pb, n)
             opts <- list(progress = progress)
 
             # foreach loop

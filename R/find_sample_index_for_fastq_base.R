@@ -4,13 +4,20 @@
 #' base number. The closet possible matching sample is dependent on the type of
 #' the tail.
 #'
-#' @param event_data
-#' @param fastq_base_number
-#' @param read_type
+#' @param event_data dataframe
+#' @param fastq_base_number numeric
+#' @param read_type character string
 #'
 #' @return
 #'
 #' @examples
+#' \dontrun{
+#' event_data <- data.frame(start = seq(0, 150, 5),
+#'                          move = 5,
+#'                          model_state = sample(c("A", "T", "C", "G"), 1))
+#' idx <- find_sample_index_for_fastq_base(event_data, 10, 'polyA')
+#' }
+#'
 find_sample_index_for_fastq_base <- function(event_data, fastq_base_number, read_type){
     model_state_length <- nchar(event_data$model_state[1])
     cumm_sum <- cumsum(event_data$move) + model_state_length - 1

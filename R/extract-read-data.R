@@ -25,12 +25,22 @@
 #' @param model a string. Set to 'flipflop' if the basecalling model is flipflop.
 #' Set to 'standard' if the basecalling model is standard model.
 #'
-#' @param plotting_library
+#' @param plotting_library a string
 #'
 #' @return
-#' @export
 #'
 #' @examples
+#' \dontrun{
+#'
+#' extract_read_data(file_path = '/path/to/the/file',
+#'                   read_id_fast5_file = NA,
+#'                   plot_debug = F,
+#'                   basecalled_with = 'albacore',
+#'                   multifast5 = TRUE,
+#'                   model = 'standard',
+#'                   plotting_library = 'rbokeh')
+#' }
+#'
 extract_read_data <- function(file_path = NA,
                               read_id_fast5_file = NA,
                               plot_debug = F,
@@ -91,7 +101,8 @@ extract_read_data <- function(file_path = NA,
     if (make_event_data) {
         event_data <- data.frame(move = move,
                                  move_cumsum = cumsum(move),
-                                 fastq_bases=fastq, stringsAsFactors = F)
+                                 fastq_bases = fastq,
+                                 stringsAsFactors = FALSE)
         event_data <- dplyr::mutate(event_data,
                                     model_state = substr(fastq_bases,
                                                          start=move_cumsum,
@@ -132,7 +143,7 @@ extract_read_data <- function(file_path = NA,
         # remove NAs
         event_length_vector <- event_length_vector[!is.na(event_length_vector)]
         # Normalizer for flip-flop based data
-        samples_per_nt <- mean(event_length_vector[event_length_vector <= quantile(event_length_vector, 0.95)])
+        samples_per_nt <- mean(event_length_vector[event_length_vector <= stats::quantile(event_length_vector, 0.95)])
         # add the start column to the event table for legacy purposes
         start_col <-seq(from=start, to=(start + (nrow(event_data)-1)*stride), by=stride)
         event_data <- dplyr::mutate(event_data, start=start_col)

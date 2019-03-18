@@ -19,7 +19,7 @@
 #' multifast5 file
 #' @param basecalled_with a character. Specify whether the data has been basecalled
 #' with the \code{"guppy"} or \code{"albacore"} software.
-#' @param modela a character. Specify whether the data has been basecalled using
+#' @param model a character. Specify whether the data has been basecalled using
 #' the \code{"standard"} or the \code{"flipflop"} model
 #' @param ... Any optional parameter. Reserved for future.
 #'

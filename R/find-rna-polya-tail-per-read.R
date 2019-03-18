@@ -1,21 +1,23 @@
 #' Find Poly(A) tail in a single RNA read.
 #'
-#' @param file_path Path of the FAST5 file
-#' @param read_id_fast5_file
-#' @param multifast5
-#' @param basecalled_with
+#' @param file_path character string. Path of the FAST5 file
+#' @param read_id_fast5_file list
+#' @param multifast5 logical
+#' @param basecalled_with character string.
 #' @param save_plots logical.
-#' @param show_plots
-#' @param save_dir
-#' @param plotting_library
-#' @param plot_debug
-#' @param model
+#' @param show_plots logical
+#' @param save_dir character string
+#' @param plotting_library character string
+#' @param plot_debug logical
+#' @param model character string
 #'
 #' @return A list of Fast5 file data
-#' @export
 #'
 #' @examples
+#' \dontrun{
 #' find_rna_polya_tail_per_read('path/to/fast5/file')
+#' }
+#'
 find_rna_polya_tail_per_read <- function(file_path = NA,
                                          read_id_fast5_file = NA,
                                          multifast5,

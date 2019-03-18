@@ -22,7 +22,7 @@ right_to_left_sliding_window_dna <-
             result[i] <- match.fun(FUN)(data[spots[i]:(spots[i] + window_size - 1)])
         }
 
-        data_to_append <- mean(tail(result, n=150))
+        data_to_append <- mean(utils::tail(result, n=150))
         result <- c(result, rep(data_to_append, times=(length(data)-length(result))))
 
         result <- rev(result)
@@ -43,9 +43,6 @@ right_to_left_sliding_window_dna <-
 #'
 #' @return A signal that has been smoothed using the sliding window.
 #'
-#' @examples
-#' left_to_right_sliding_window_dna('mean', c(1,2,3,4,5,6,7,8), 2, 1)
-#'
 left_to_right_sliding_window_dna <-
     function(FUN, data, window_size, step_size) {
         total <- length(data)
@@ -55,7 +52,7 @@ left_to_right_sliding_window_dna <-
             result[i] <- match.fun(FUN)(data[spots[i]:(spots[i] + window_size - 1)])
         }
 
-        data_to_append <- mean(tail(result, n=400))
+        data_to_append <- mean(utils::tail(result, n=400))
         result <- c(result, rep(data_to_append, times=(length(data)-length(result))))
         return(result)
     }

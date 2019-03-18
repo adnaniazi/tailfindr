@@ -38,10 +38,10 @@ multifast5 file}
 \item{basecalled_with}{a character. Specify whether the data has been basecalled
 with the \code{"guppy"} or \code{"albacore"} software.}
 
-\item{...}{Any optional parameter. Reserved for future.}
-
-\item{modela}{a character. Specify whether the data has been basecalled using
+\item{model}{a character. Specify whether the data has been basecalled using
 the \code{"standard"} or the \code{"flipflop"} model}
+
+\item{...}{Any optional parameter. Reserved for future.}
 }
 \value{
 

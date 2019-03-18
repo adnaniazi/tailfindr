@@ -15,10 +15,3 @@ z_normalized_timeseries A z-normalized timeseries
 \description{
 Apply z-normalization to the time series data
 }
-\examples{
-\dontrun{
-
-z_normalize(c(1,2,3,4,5))
-}
-
-}

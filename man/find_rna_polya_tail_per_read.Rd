@@ -10,11 +10,25 @@ find_rna_polya_tail_per_read(file_path = NA, read_id_fast5_file = NA,
   plot_debug = FALSE)
 }
 \arguments{
-\item{file_path}{Path of the FAST5 file}
+\item{file_path}{character string. Path of the FAST5 file}
 
-\item{model}{}
+\item{read_id_fast5_file}{list}
+
+\item{multifast5}{logical}
+
+\item{basecalled_with}{character string.}
+
+\item{model}{character string}
 
 \item{save_plots}{logical.}
+
+\item{show_plots}{logical}
+
+\item{save_dir}{character string}
+
+\item{plotting_library}{character string}
+
+\item{plot_debug}{logical}
 }
 \value{
 A list of Fast5 file data
@@ -23,5 +37,8 @@ A list of Fast5 file data
 Find Poly(A) tail in a single RNA read.
 }
 \examples{
+\dontrun{
 find_rna_polya_tail_per_read('path/to/fast5/file')
+}
+
 }
