@@ -29,7 +29,6 @@ Imports:
     data.table (>= 1.11.4),
     tibble (>= 1.4.2),
     rbokeh (>= 0.5.0),
-    future (>= 1.10.0),
     purrr (>= 0.2.5),
     psych (>= 1.8.12),
     clisymbols (>= 1.2.0),
