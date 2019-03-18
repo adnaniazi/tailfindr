@@ -8,7 +8,7 @@ tailfindr <a href=''><img src='man/figures/tailfindr-logo.png' align="right" hei
 Overview
 --------
 
-tailfindr is a R package for estimating poly(A) tail lengths in Oxford Nanopore reads. It works for both RNA and DNA reads. In the case of DNA reads, it finds both poly(A)- and poly(T)-tail lengths. Currently, tailfindr can work only with 1D reads. It supports data that has been basecalled with Albacore or Guppy. Additionally, it also supports the newer multi-fast5 format.
+tailfindr is a R package for estimating poly(A) tail lengths in Oxford Nanopore reads. It works for both RNA and DNA reads. In the case of DNA reads, it estimates both poly(A)- and poly(T)-tail lengths. Currently, tailfindr can work only with 1D reads. It supports data that has been basecalled with Albacore or Guppy. Additionally, it also supports the newer multi-fast5 format.
 
 tailfindr has been developed at [Valen Lab](http://valenlab.com/) in [Computational Biology Unit](https://www.cbu.uib.no/) at the [University of Bergen](https://www.uib.no/), Norway.
 
@@ -29,7 +29,7 @@ HDF5 1.8.14 has been pre-compiled for Windows and is available [here](https://gi
 
 #### Step 2. Installing devtools
 
-Currently, tailfindr is not listed on CRAN, so you need to install it using `devtools`. To install `devtools` use the following command:
+Currently, tailfindr is not listed on CRAN/Bioconductor, so you need to install it using `devtools`. To install `devtools` use the following command:
 
 ``` r
 install.packages("devtools")
@@ -71,7 +71,7 @@ df <- find_tails(fast5_dir = '/path/to/fast5/folder/',
                  plotting_library = 'rbokeh)
 ```
 
-![alt text](https://github.com/adnaniazi/tailfindr/raw/master/man/figures/poly_t_without_debug.gif)
+![Poly(T) read squiggle plot](https://github.com/adnaniazi/tailfindr/raw/master/man/figures/poly_t_without_debug.gif)
 
 However, note that using this option can slow down the performace because generating these interactive plots is a slow process. We recommend that you generate these plots only for a small subset of your reads.
 
@@ -85,6 +85,120 @@ df <- find_tails(fast5_dir = '/path/to/fast5/folder/',
                  save_plots = TRUE,
                  plotting_library = 'ggplot2)
 ```
+
+### Description of the CSV/Dataframe columns
+
+##### RNA
+
+Here are the columns that you will get from tailfindr if you have run it on RNA data:
+
+<table>
+<colgroup>
+<col width="12%" />
+<col width="8%" />
+<col width="78%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Column Names</th>
+<th align="left">Datatype</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">read_id</td>
+<td align="left">character</td>
+<td align="left">Read ID as given in the Fast5 file</td>
+</tr>
+<tr class="even">
+<td align="left">tail_start</td>
+<td align="left">numeric</td>
+<td align="left">Sample index of start site of the tail in raw data</td>
+</tr>
+<tr class="odd">
+<td align="left">tail_end</td>
+<td align="left">numeric</td>
+<td align="left">Sample index of end site of the tail in raw data</td>
+</tr>
+<tr class="even">
+<td align="left">samples_per_nt</td>
+<td align="left">numeric</td>
+<td align="left">Read rate in terms of samples per nucleotide</td>
+</tr>
+<tr class="odd">
+<td align="left">tail_length</td>
+<td align="left">numeric</td>
+<td align="left">Tail length in nucleotides. It is the difference between tail_end and tail_start divided by samples_per_nt</td>
+</tr>
+<tr class="even">
+<td align="left">file_path</td>
+<td align="left">character</td>
+<td align="left">Absolute path of the Fast5 file</td>
+</tr>
+</tbody>
+</table>
+
+##### DNA
+
+Here are the columns that you will get from tailfindr if you have run it on DNA data:
+
+<table>
+<colgroup>
+<col width="7%" />
+<col width="8%" />
+<col width="83%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Column Names</th>
+<th>Datatype</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>read_id</td>
+<td>character</td>
+<td>Read ID as given in the Fast5 file</td>
+</tr>
+<tr class="even">
+<td>read_type</td>
+<td>character factor</td>
+<td>Whether a read is &quot;polyA&quot;, &quot;polyT&quot;, or &quot;invalid&quot;. Invalid reads are those in which tailfindr wasn't able to find Nanopore primers with high confidence.</td>
+</tr>
+<tr class="odd">
+<td>tail_is_valid</td>
+<td>bool</td>
+<td>Whether a poly(A) tail is a full-length read or not. This is important because a poly(A) tail is at the end of the read, and premature termination of reads is prevelant in cDNA.</td>
+</tr>
+<tr class="even">
+<td>tail_start</td>
+<td>numeric</td>
+<td>Sample index of start site of the tail in raw data</td>
+</tr>
+<tr class="odd">
+<td>tail_end</td>
+<td>numeric</td>
+<td>Sample index of end site of the tail in raw data</td>
+</tr>
+<tr class="even">
+<td>samples_per_nt</td>
+<td>numeric</td>
+<td>Read rate in terms of samples per nucleotide</td>
+</tr>
+<tr class="odd">
+<td>tail_length</td>
+<td>numeric</td>
+<td>Tail length in nucleotides. It is the difference between tail_end and tail_start divided by samples_per_nt</td>
+</tr>
+<tr class="even">
+<td>file_path</td>
+<td>character</td>
+<td>Absolute path of the Fast5 file</td>
+</tr>
+</tbody>
+</table>
 
 The devil(s) in the details
 ---------------------------
@@ -111,3 +225,10 @@ Getting help
 ------------
 
 If you encounter a clear bug, please file a minimal reproducible example on [github](https://github.com/adnaniazi/tailfindr/issues). For questions and other discussion, email me at <adnan.niazi@uib.no>.
+
+License
+-------
+
+And of course:
+
+MIT: <http://rem.mit-license.org>

@@ -22,7 +22,7 @@ options(tibble.print_min = 5, tibble.print_max = 5)
 
 ## Overview
 
-tailfindr is a R package for estimating poly(A) tail lengths in Oxford Nanopore reads. It works for both RNA and DNA reads. In the case of DNA reads, it finds both poly(A)- and poly(T)-tail lengths. Currently, tailfindr can work only with 1D reads. It supports data that has been basecalled with Albacore or Guppy. Additionally, it also supports the newer multi-fast5 format.
+tailfindr is a R package for estimating poly(A) tail lengths in Oxford Nanopore reads. It works for both RNA and DNA reads. In the case of DNA reads, it estimates both poly(A)- and poly(T)-tail lengths. Currently, tailfindr can work only with 1D reads. It supports data that has been basecalled with Albacore or Guppy. Additionally, it also supports the newer multi-fast5 format.
 
 tailfindr has been developed at [Valen Lab](http://valenlab.com/) in [Computational Biology Unit](https://www.cbu.uib.no/) at the [University of Bergen](https://www.uib.no/), Norway.
 
@@ -41,7 +41,7 @@ tailfindr depends on the HDF5 library for reading Fast5 files. For OS X and Linu
 HDF5 1.8.14 has been pre-compiled for Windows and is available [here](https://github.com/mannau/h5-libwin) &mdash; thus no manual installation is required.
 
 ####Step 2. Installing devtools
-Currently, tailfindr is not listed on CRAN, so you need to install it using `devtools`. To install `devtools` use the following command:
+Currently, tailfindr is not listed on CRAN/Bioconductor, so you need to install it using `devtools`. To install `devtools` use the following command:
 
 ```{r, message = FALSE, eval = FALSE}
 install.packages("devtools")
@@ -95,6 +95,32 @@ df <- find_tails(fast5_dir = '/path/to/fast5/folder/',
                  plotting_library = 'ggplot2)
 ```
 
+### Description of the CSV/Dataframe columns
+##### RNA
+Here are the columns that you will get from tailfindr if you have run it on RNA data:
+
+| Column Names   | Datatype  | Description                                                                                                |
+|:---------------|:----------|:-----------------------------------------------------------------------------------------------------------|
+| read_id        | character | Read ID as given in the Fast5 file                                                                         |
+| tail_start     | numeric   | Sample index of start site of the tail in raw data                                                         |
+| tail_end       | numeric   | Sample index of end site of the tail in raw data                                                           |
+| samples_per_nt | numeric   | Read rate in terms of samples per nucleotide                                                               |
+| tail_length    | numeric   | Tail length in nucleotides. It is the difference between tail_end and tail_start divided by samples_per_nt |
+| file_path      | character | Absolute path of the Fast5 file                                                                            |
+
+##### DNA
+Here are the columns that you will get from tailfindr if you have run it on DNA data:
+
+| Column Names   | Datatype         | Description                                                                                                                                                                       |
+|----------------|------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| read_id        | character        | Read ID as given in the Fast5 file                                                                                                                                                |
+| read_type      | character factor | Whether a read is "polyA", "polyT", or "invalid". Invalid reads are those in which tailfindr wasn't able to find Nanopore primers with high confidence.                           |
+| tail_is_valid  | bool             | Whether a poly(A) tail is a full-length read or not. This is important because a poly(A) tail is at the end of the read, and premature termination of reads is prevelant in cDNA. |
+| tail_start     | numeric          | Sample index of start site of the tail in raw data                                                                                                                                |
+| tail_end       | numeric          | Sample index of end site of the tail in raw data                                                                                                                                  |
+| samples_per_nt | numeric          | Read rate in terms of samples per nucleotide                                                                                                                                      |
+| tail_length    | numeric          | Tail length in nucleotides. It is the difference between tail_end and tail_start divided by samples_per_nt                                                                        |
+| file_path      | character        | Absolute path of the Fast5 file                                                                                                                                                   |
 ## The devil(s) in the details
 * tailfindr currently works on data in the `/Analyses/Basecall_1D_000/BaseCalled_template/` path of the Fast5 file data hierarchy. It won't work on data present in, lets say, `/Analyses/Basecall_1D_001/BaseCalled_template/` path or `/Analyses/Basecall_1D_002/BaseCalled_template/` path; such paths are generated if you re-basecall already-basecalled data. To avoid this problem, use tailfindr on files that have been basecalled from the raw Fast5 files.
 * If you are using the flip flop model to basecall DNA data, please ensure that the nanopore adaptors are not trimmed off while basecalling. This can be done by turning off `enabling_trimming` option in the basecalling script. The script below shows you how we have basecalled our reads using the flip-flop model
@@ -118,3 +144,8 @@ guppy_basecaller \
 
 If you encounter a clear bug, please file a minimal reproducible example on [github](https://github.com/adnaniazi/tailfindr/issues). For questions and other discussion, email me at adnan.niazi@uib.no.
 
+## License
+
+And of course:
+
+MIT: http://rem.mit-license.org
