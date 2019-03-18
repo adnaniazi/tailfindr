@@ -148,29 +148,29 @@ find_tails <- function(fast5_dir,
     cat(cli::rule(left=''), '\n',  sep = "")
 
     # display the user-specified parameters
-    cat(paste(clisymbols::symbol$menu, ' You have configured tailfindr as following:', '\n', sep=''))
-    cat(paste(clisymbols::symbol$pointer, ' fast5_dir:         ', fast5_dir, '\n', sep=''))
-    cat(paste(clisymbols::symbol$pointer, ' save_dir:          ', save_dir, '\n', sep=''))
-    cat(paste(clisymbols::symbol$pointer, ' csv_filename:      ', csv_filename, '\n', sep=''))
-    cat(paste(clisymbols::symbol$pointer, ' num_cores:         ', num_cores, '\n', sep=''))
-    cat(paste(clisymbols::symbol$pointer, ' save_plots:        ', save_plots, '\n', sep=''))
-    cat(paste(clisymbols::symbol$pointer, ' plot_debug_traces: ', plot_debug_traces, '\n', sep=''))
-    cat(paste(clisymbols::symbol$pointer, ' plotting_library:  ', plotting_library, '\n', sep=''))
+    cat(paste(cli::symbol$menu, ' You have configured tailfindr as following:', '\n', sep=''))
+    cat(paste(cli::symbol$pointer, ' fast5_dir:         ', fast5_dir, '\n', sep=''))
+    cat(paste(cli::symbol$pointer, ' save_dir:          ', save_dir, '\n', sep=''))
+    cat(paste(cli::symbol$pointer, ' csv_filename:      ', csv_filename, '\n', sep=''))
+    cat(paste(cli::symbol$pointer, ' num_cores:         ', num_cores, '\n', sep=''))
+    cat(paste(cli::symbol$pointer, ' save_plots:        ', save_plots, '\n', sep=''))
+    cat(paste(cli::symbol$pointer, ' plot_debug_traces: ', plot_debug_traces, '\n', sep=''))
+    cat(paste(cli::symbol$pointer, ' plotting_library:  ', plotting_library, '\n', sep=''))
     if (dna_datatype == 'pcr-dna'){
-        cat(paste(clisymbols::symbol$pointer, ' dna_datatype:      ', dna_datatype, '\n', sep=''))
+        cat(paste(cli::symbol$pointer, ' dna_datatype:      ', dna_datatype, '\n', sep=''))
     }
 
     cat(cli::rule(left=paste('Processing started at ', Sys.time(), sep = '')), '\n', sep = "")
 
     # Try to create the save directory
     if (!dir.exists(file.path(save_dir))) {
-        cat(paste(clisymbols::symbol$bullet, ' Save dir does not exist. Trying to create it...\n', sep=''))
+        cat(paste(cli::symbol$bullet, ' Save dir does not exist. Trying to create it...\n', sep=''))
         tryCatch({
             dir.create(file.path(save_dir, fsep = .Platform$file.sep))
             cat('  Done!\n')
         },
         error=function(e){
-            cat(paste(clisymbols::symbol$bullet, ' Failed to create the save dir. Results will be stored in the "~/" directory instead.\n', sep=''))
+            cat(paste(cli::symbol$bullet, ' Failed to create the save dir. Results will be stored in the "~/" directory instead.\n', sep=''))
             save_dir <- '~/'
         })
         logfile_name <- paste(format(Sys.time(), "%Y-%m-%d_%H-%M-%S"), "_tailfinder.log", sep = "")
@@ -184,7 +184,7 @@ find_tails <- function(fast5_dir,
     if (save_plots){
         plots_dir <- file.path(save_dir, 'plots', fsep = .Platform$file.sep)
         if (!dir.exists(file.path(plots_dir))) {
-            cat(paste(clisymbols::symbol$bullet, ' Creating a sub-directory to save the plots in.\n', sep=''))
+            cat(paste(cli::symbol$bullet, ' Creating a sub-directory to save the plots in.\n', sep=''))
             dir.create(plots_dir)
             cat('  Done! All plots will be saved in the following direcotry:\n')
             cat(paste('  ', file.path(save_dir, 'plots', fsep = .Platform$file.sep), '\n', sep = ''))
@@ -192,7 +192,7 @@ find_tails <- function(fast5_dir,
     }
 
     # search for all the fast5 files in the user-specified directory
-    cat(paste(clisymbols::symbol$bullet,' Searching for all Fast5 files...\n', sep=''))
+    cat(paste(cli::symbol$bullet,' Searching for all Fast5 files...\n', sep=''))
     fast5_files_list <- list.files(path = fast5_dir,
                                    pattern = "\\.fast5$",
                                    recursive = TRUE,
@@ -202,7 +202,7 @@ find_tails <- function(fast5_dir,
 
     # read the first read in the list of reads,
     # and determine all the properties of the data
-    cat(paste(clisymbols::symbol$bullet,' Analyzing a single Fast5 file to assess if your data \n', sep=''))
+    cat(paste(cli::symbol$bullet,' Analyzing a single Fast5 file to assess if your data \n', sep=''))
     cat('  is in an acceptable format...\n')
 
     type_info <- explore_basecaller_and_fast5type(fast5_files_list[1])
@@ -212,47 +212,47 @@ find_tails <- function(fast5_dir,
     read_is_1d <- type_info$read_is_1d
     model <- type_info$model
     if (basecalled_with == 'albacore'){
-        cat(paste('  ', crayon::green(clisymbols::symbol$tick),
+        cat(paste('  ', crayon::green(cli::symbol$tick),
                   ' The data has been basecalled using Albacore.\n', sep=''))
     } else {
-        cat(paste('  ', crayon::green(clisymbols::symbol$tick),
+        cat(paste('  ', crayon::green(cli::symbol$tick),
                   ' The data has been basecalled using Guppy.\n', sep=''))
     }
     if (model == 'flipflop'){
-        cat(paste('  ', crayon::green(clisymbols::symbol$tick),
+        cat(paste('  ', crayon::green(cli::symbol$tick),
                   ' Flipflop model was used during basecalling.\n', sep=''))
     } else {
-        cat(paste('  ', crayon::green(clisymbols::symbol$tick),
+        cat(paste('  ', crayon::green(cli::symbol$tick),
                   ' Standard model was used during basecalling.\n', sep=''))
     }
     if (multifast5){
-        cat(paste('  ', crayon::green(clisymbols::symbol$tick),
+        cat(paste('  ', crayon::green(cli::symbol$tick),
                   ' The reads are packed in multi-fast5 file(s).\n', sep=''))
     } else {
-        cat(paste('  ', crayon::green(clisymbols::symbol$tick),
+        cat(paste('  ', crayon::green(cli::symbol$tick),
                   ' Every read is in a single fast5 file of its own.\n', sep=''))
     }
     if (experiment_type == 'rna'){
-        cat(paste('  ', crayon::green(clisymbols::symbol$tick),
+        cat(paste('  ', crayon::green(cli::symbol$tick),
                   ' The experiment type is RNA, so we will search\n', sep=''))
         cat('    for poly(A) tails.\n')
     } else {
-        cat(paste('  ', crayon::green(clisymbols::symbol$tick),
+        cat(paste('  ', crayon::green(cli::symbol$tick),
                   ' The experiment type is DNA, so we will search\n', sep=''))
         cat('    for both poly(A) and poly(T) tails.\n')
     }
     if (read_is_1d == TRUE){
-        cat(paste('  ', crayon::green(clisymbols::symbol$tick),
+        cat(paste('  ', crayon::green(cli::symbol$tick),
                   ' The reads are 1D reads.\n', sep=''))
     } else {
-        cat(paste('  ', crayon::red(clisymbols::symbol$cross),
+        cat(paste('  ', crayon::red(cli::symbol$cross),
                   ' The reads are not 1D. Currently, we only support\n', sep=''))
         cat('    1D reads. If you believe your reads are 1D, and you are\n')
         cat('    getting this cat erroneously, please feel free\n')
         cat('    to contact us at adnan.niazi@uib.no. Do not forget to\n')
         cat('    send us one of the problematic reads so that we can\n')
         cat('    debug our software, and send you a patch.\n')
-        cat(paste('  ', crayon::red(clisymbols::symbol$cross),'
+        cat(paste('  ', crayon::red(cli::symbol$cross),'
                   Finished because of the error!\n', sep=''))
         cat(cli::rule(left=paste('tailfindr finished with a fatal error at ',
                                  Sys.time(), sep = '')), '\n', sep = "")
@@ -260,7 +260,7 @@ find_tails <- function(fast5_dir,
     }
 
     # Make a computer cluster
-    cat(paste(clisymbols::symbol$bullet,' Starting a parallel compute cluster...\n', sep=''))
+    cat(paste(cli::symbol$bullet,' Starting a parallel compute cluster...\n', sep=''))
     #cl <- parallel::makeCluster(num_cores, outfile='')
     cl <- parallel::makeCluster(num_cores)
     on.exit(parallel::stopCluster(cl))
@@ -292,7 +292,7 @@ find_tails <- function(fast5_dir,
     # If the fast5 are multifast5, then build an index of all the reads within these files
     remove_last_duplicate_read <- FALSE
     if (multifast5) {
-        cat(paste(clisymbols::symbol$bullet, ' Discovering reads in the ',
+        cat(paste(cli::symbol$bullet, ' Discovering reads in the ',
                   num_files, ' multifast5 files...\n', sep=''))
         read_id_fast5_file <- dplyr::tibble(read_id = character(),
                                             fast5_file = character())
@@ -316,10 +316,10 @@ find_tails <- function(fast5_dir,
 
         #loop
         if (experiment_type == 'dna') {
-            cat(paste(clisymbols::symbol$bullet,
+            cat(paste(cli::symbol$bullet,
                       ' Searching for Poly(A) and Poly(T) tails...\n', sep=''))
         } else {
-            cat(paste(clisymbols::symbol$bullet,
+            cat(paste(cli::symbol$bullet,
                       ' Searching for Poly(A) tails...\n', sep=''))
         }
         counter <- 0
@@ -431,10 +431,10 @@ find_tails <- function(fast5_dir,
         result <- list()
 
         if (experiment_type == 'dna') {
-            cat(paste(clisymbols::symbol$bullet,
+            cat(paste(cli::symbol$bullet,
                       ' Searching for Poly(A) and Poly(T) tails...\n', sep=''))
         } else {
-            cat(paste(clisymbols::symbol$bullet,
+            cat(paste(cli::symbol$bullet,
                       ' Searching for Poly(A) tails...\n', sep=''))
         }
 
@@ -533,7 +533,7 @@ find_tails <- function(fast5_dir,
     }
 
     # format the results list into a tibble
-    cat(paste0(clisymbols::symbol$bullet,' Formatting the tail data...\n'))
+    cat(paste0(cli::symbol$bullet,' Formatting the tail data...\n'))
     result <- purrr::map(result, function(.x) tibble::as_tibble(.x))
     result <- dplyr::bind_rows(result, .id = "chunk")
     result <- dplyr::select(result, -chunk)
@@ -549,18 +549,18 @@ find_tails <- function(fast5_dir,
     cat('  Done!\n')
 
     # write the result to a csv file
-    cat(paste(clisymbols::symbol$bullet,
+    cat(paste(cli::symbol$bullet,
               ' Saving the data in the CSV file...\n', sep=''))
     data.table::fwrite(result, file.path(save_dir, csv_filename, fsep = .Platform$file.sep))
     cat('  Done!\n')
 
-    cat(paste0(clisymbols::symbol$bullet,
+    cat(paste0(cli::symbol$bullet,
                ' A logfile containing all this information has been saved in this path: \n'))
     cat(paste0('  ', logfile_path, '\n'))
 
     cat(cli::rule(left=paste('Processing ended at ',
                              Sys.time(), sep = '')), '\n', sep = "")
-    cat(paste(crayon::green(clisymbols::symbol$tick),
+    cat(paste(crayon::green(cli::symbol$tick),
               ' tailfindr finished successfully!\n', sep=''))
     return(result)
 }

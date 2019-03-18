@@ -2,7 +2,7 @@
 % Please edit documentation in R/find-tails.R
 \name{find_tails}
 \alias{find_tails}
-\title{Finds poly(A)/(T) tail lengths in Oxford Nanopore RNA and DNA reads}
+\title{Estimates poly(A)/(T) tail lengths in Oxford Nanopore RNA and DNA reads}
 \usage{
 find_tails(fast5_dir, save_dir, csv_filename = "tails.csv",
   num_cores = 1, save_plots = FALSE, plot_debug_traces = FALSE,
