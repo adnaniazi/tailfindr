@@ -10,14 +10,14 @@ Authors@R: c(
   person(given = "Evind", family = "Valen", email = "eivind.valen@gmail.com", role = c("ths", "fnd")) )
 Maintainer: Adnan Niazi <adnan.niazi@uib.no>
 Description: tailfindr is an alignment-free tool (i.e., no BAM/SAM files are needed) to find poly(A)/poly(T) tail lengths in 1D Oxford nanopore sequencing reads. It can handle reads from basecalled with Albacore or Guppy using the standard or the newest 'flip-flop' model. It can work with single and multi-fast5 files. Currently, tailfinder can find poly(A) tail lengths in 1D RNA nanopore reads, and both poly(A) and poly(T) lengths in 1D DNA nanopore reads.
-License: MIT + file LICENSE
+License: Apache + file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.0
 Depends: R (>= 3.1.0)
 SystemRequirements: libhdf5 (>= 1.8.13)
 Imports: 
-    Biostrings(>= 2.48.0)
+    Biostrings(>= 2.48.0),
     ggplot2 (>= 3.0.0), 
     stats (>= 3.0.0), 
     dplyr (>= 0.7.6),
