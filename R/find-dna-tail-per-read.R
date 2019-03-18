@@ -171,8 +171,11 @@ find_dna_tail_per_read <- function(file_path = NA,
 
     # Main Algorithm:
     # DO while we haven't reached the end of the search window:
-    #   1. Extend tail if slope and smoothened data is within the threshold and
-    #      we haven't exceeded the
+    #   - Extend the tail if slope and smoothened data is within the threshold
+    #   - if the above criteria fails then:
+    #     - check for gap
+    #     - there must be at least 60-sample (or more) long tail adjacent to the gap
+    #     - the gap should be smaller than 120 nucleotide
     #
     while (i < length(slope)){
         if ((slope[i] < SLOPE_THRESHOLD) & (slope[i] > -SLOPE_THRESHOLD) &
