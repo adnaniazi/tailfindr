@@ -121,6 +121,9 @@ find_tails <- function(fast5_dir,
     # Taking out these parameter from the function parameters list
     # as they may be dangerous for normal users
     show_plots <- FALSE
+
+
+    #dna_datatype <- process_optional_params(...)  # R CMD NOTE
     if (length(list(...)) > 0) {
         if ("dna_datatype" %in% names(...)) {
             dna_datatype <- ...$dna_datatype
