@@ -50,23 +50,29 @@ Usage
 
 `find_tails()` is the main function that you can use to find tail lengths in both RNA and DNA reads. It saves a CSV file containing all the tail-length data. Furthermore, it also returns the same data as a tibble.
 
-Give below is a minimal use case:
+Give below is a minimal use case in which we will run tailfindr on example RNA reads present in the tailfindr package:
 
 ``` r
 library(tailfindr)
-df <- find_tails(fast5_dir = '/path/to/fast5/folder/',
-                 save_dir = '/path/to/a/folder/where/results/are/to/be/stored/',
-                 csv_filename = 'tails.csv',
-                 num_cores = 10)
+fast5_dir <- system.file('extdata', 'rna', package = 'tailfindr')
+save_dir <- '~/Downloads'
+df <- find_tails(fast5_dir = fast5_dir,
+                 save_dir = save_dir,
+                 csv_filename = 'rna_tails.csv',
+                 num_cores = 1)
 ```
 
 Additionally, tailfindr allows you to save plots that show the tail location and length. You can save these plots as interactive `.html` files by using `rbokeh` as `plotting_library`. You can zoom in on the tail region in the squiggle and see the exact location of the tail.
 
+Give below is a minimal use case in which we will run tailfindr on example cDNA reads present in the tailfindr package, and also save the plots:
+
 ``` r
-df <- find_tails(fast5_dir = '/path/to/fast5/folder/',
-                 save_dir = '/path/to/a/folder/where/results/are/to/be/stored/',
-                 csv_filename = 'tails.csv',
-                 num_cores = 10,
+fast5_dir <- system.file('extdata', 'cdna', package = 'tailfindr')
+save_dir <- '~/Downloads'
+df <- find_tails(fast5_dir = fast5_dir,
+                 save_dir = save_dir,
+                 csv_filename = 'cdna_tails.csv',
+                 num_cores = 1,
                  save_plots = TRUE,
                  plotting_library = 'rbokeh)
 ```
@@ -75,16 +81,7 @@ df <- find_tails(fast5_dir = '/path/to/fast5/folder/',
 
 However, note that using this option can slow down the performace because generating these interactive plots is a slow process. We recommend that you generate these plots only for a small subset of your reads.
 
-A relatively faster way of generating the plots is to use `ggplot2` as the `plotting_library`. In this case, the plots are saved as .png files. Becuase these plots are statics, i.e. not-interactive, therefore, it might be difficult to see the tail in a long squiggle in these static plots.
-
-``` r
-df <- find_tails(fast5_dir = '/path/to/fast5/folder/',
-                 save_dir = '/path/to/a/folder/where/results/are/to/be/stored/',
-                 csv_filename = 'tails.csv',
-                 num_cores = 10,
-                 save_plots = TRUE,
-                 plotting_library = 'ggplot2)
-```
+There are more options available in the find\_tails() function. Please see its [documentation](https://rdrr.io/github/adnaniazi/tailfindr/man/find_tails.html).
 
 ### Description of the CSV/Dataframe columns
 
@@ -200,8 +197,8 @@ Here are the columns that you will get from tailfindr if you have run it on DNA 
 </tbody>
 </table>
 
-The devil 👹 in the details
---------------------------
+The devil👹 in the details
+-------------------------
 
 -   tailfindr currently works on data in the `/Analyses/Basecall_1D_000/BaseCalled_template/` path of the Fast5 file data hierarchy. It won't work on data present in, lets say, `/Analyses/Basecall_1D_001/BaseCalled_template/` path or `/Analyses/Basecall_1D_002/BaseCalled_template/` path; such paths are generated if you re-basecall already-basecalled data. To avoid this problem, use tailfindr on files that have been basecalled from the raw Fast5 files.
 -   If you are using the flipflop model to basecall DNA data, please ensure that the nanopore adaptors are not trimmed off while basecalling. This can be done by turning off `enabling_trimming` option in the basecalling script. The script below shows you how we have basecalled our reads using the flipflop model
