@@ -169,7 +169,7 @@ Here are the columns that you will get from tailfindr if you have run it on DNA 
 </tr>
 <tr class="odd">
 <td>tail_is_valid</td>
-<td>bool</td>
+<td>logical</td>
 <td>Whether a poly(A) tail is a full-length read or not. This is important because a poly(A) tail is at the end of the read, and premature termination of reads is prevelant in cDNA.</td>
 </tr>
 <tr class="even">
@@ -200,11 +200,11 @@ Here are the columns that you will get from tailfindr if you have run it on DNA 
 </tbody>
 </table>
 
-The devil(s) in the details
----------------------------
+The devil 👹 in the details
+--------------------------
 
 -   tailfindr currently works on data in the `/Analyses/Basecall_1D_000/BaseCalled_template/` path of the Fast5 file data hierarchy. It won't work on data present in, lets say, `/Analyses/Basecall_1D_001/BaseCalled_template/` path or `/Analyses/Basecall_1D_002/BaseCalled_template/` path; such paths are generated if you re-basecall already-basecalled data. To avoid this problem, use tailfindr on files that have been basecalled from the raw Fast5 files.
--   If you are using the flip flop model to basecall DNA data, please ensure that the nanopore adaptors are not trimmed off while basecalling. This can be done by turning off `enabling_trimming` option in the basecalling script. The script below shows you how we have basecalled our reads using the flip-flop model
+-   If you are using the flipflop model to basecall DNA data, please ensure that the nanopore adaptors are not trimmed off while basecalling. This can be done by turning off `enabling_trimming` option in the basecalling script. The script below shows you how we have basecalled our reads using the flipflop model
 
 ``` bash
 #!/bin/sh
@@ -231,4 +231,4 @@ License
 
 And of course:
 
-MIT: <http://rem.mit-license.org>
+GPL-3: <https://www.gnu.org/licenses/gpl-3.0.en.html>

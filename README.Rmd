@@ -115,15 +115,15 @@ Here are the columns that you will get from tailfindr if you have run it on DNA 
 |----------------|------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | read_id        | character        | Read ID as given in the Fast5 file                                                                                                                                                |
 | read_type      | character factor | Whether a read is "polyA", "polyT", or "invalid". Invalid reads are those in which tailfindr wasn't able to find Nanopore primers with high confidence.                           |
-| tail_is_valid  | bool             | Whether a poly(A) tail is a full-length read or not. This is important because a poly(A) tail is at the end of the read, and premature termination of reads is prevelant in cDNA. |
+| tail_is_valid  | logical          | Whether a poly(A) tail is a full-length read or not. This is important because a poly(A) tail is at the end of the read, and premature termination of reads is prevelant in cDNA. |
 | tail_start     | numeric          | Sample index of start site of the tail in raw data                                                                                                                                |
 | tail_end       | numeric          | Sample index of end site of the tail in raw data                                                                                                                                  |
 | samples_per_nt | numeric          | Read rate in terms of samples per nucleotide                                                                                                                                      |
 | tail_length    | numeric          | Tail length in nucleotides. It is the difference between tail_end and tail_start divided by samples_per_nt                                                                        |
 | file_path      | character        | Absolute path of the Fast5 file                                                                                                                                                   |
-## The devil(s) in the details
+## The devil 👹 in the details
 * tailfindr currently works on data in the `/Analyses/Basecall_1D_000/BaseCalled_template/` path of the Fast5 file data hierarchy. It won't work on data present in, lets say, `/Analyses/Basecall_1D_001/BaseCalled_template/` path or `/Analyses/Basecall_1D_002/BaseCalled_template/` path; such paths are generated if you re-basecall already-basecalled data. To avoid this problem, use tailfindr on files that have been basecalled from the raw Fast5 files.
-* If you are using the flip flop model to basecall DNA data, please ensure that the nanopore adaptors are not trimmed off while basecalling. This can be done by turning off `enabling_trimming` option in the basecalling script. The script below shows you how we have basecalled our reads using the flip-flop model
+* If you are using the flipflop model to basecall DNA data, please ensure that the nanopore adaptors are not trimmed off while basecalling. This can be done by turning off `enabling_trimming` option in the basecalling script. The script below shows you how we have basecalled our reads using the flipflop model
 
 ```{r, engine='bash', message = FALSE, eval = FALSE}
 #!/bin/sh
