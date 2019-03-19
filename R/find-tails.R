@@ -355,6 +355,7 @@ find_tails <- function(fast5_dir,
 
             # foreach loop
             sink(file=NULL, type = 'output')
+            close(con)
             if (experiment_type == 'dna') {
                 riff <- NULL  # R CMD CHECK
                 data_list <- foreach::foreach(riff = read_id_fast5_file_subset,
@@ -470,6 +471,7 @@ find_tails <- function(fast5_dir,
 
             # foreach loop
             sink(file=NULL, type = 'output')
+            close(con)
             if (experiment_type == 'dna') {
                 file_path <- NULL  # R CMD CHECK
                 data_list <- foreach::foreach(file_path = fast5_files_subset,
@@ -562,7 +564,9 @@ find_tails <- function(fast5_dir,
     cat(paste(cli::symbol$bullet,
               ' Saving the data in the CSV file...\n', sep=''))
     data.table::fwrite(result, file.path(save_dir, csv_filename, fsep = .Platform$file.sep))
-    cat('  Done!\n')
+    cat('  Done! Below is the path of the CSV file:\n')
+    cat(paste0('  ', file.path(save_dir, csv_filename, fsep = .Platform$file.sep), '\n'))
+
 
     cat(paste0(cli::symbol$bullet,
                ' A logfile containing all this information has been saved in this path: \n'))
@@ -573,4 +577,7 @@ find_tails <- function(fast5_dir,
     cat(paste(crayon::green(cli::symbol$tick),
               ' tailfindr finished successfully!\n', sep=''))
     return(result)
+
+    # close logfile connection
+    close(con)
 }
