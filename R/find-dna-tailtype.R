@@ -80,7 +80,7 @@ find_dna_tailtype <- function(file_path = NA,
             type <- dna_opts$type
             gapOpening <- dna_opts$gapOpening
             gapExtension <- dna_opts$gapExtension
-            submat <- ...$submat
+            submat <- dna_opts$submat
         }
     } else {
         # otherwise make one
