@@ -411,13 +411,16 @@ find_dna_tail_per_read <- function(file_path = NA,
                     ggplot2::geom_hline(yintercept = -SLOPE_THRESHOLD, color = '#FF94CD', linetype = 'dotted') +
                     ggplot2::geom_line(ggplot2::aes(y = smoothed_data), color='#060B54') +
                     ggplot2::geom_line(ggplot2::aes(y = mean_data, color = '#F79A14')) +
+                    ggplot2::geom_line(ggplot2::aes(y = c(rep(NA, times=tail_start-1),
+                                                          truncated_data[tail_start:tail_end],
+                                                          rep(NA, times=(read_length-tail_end)))), color='#BF1268') +
                     ggplot2::ylab('z-normalized data values')
             } else {
                 p <- ggplot2::ggplot(data=df, ggplot2::aes(x = x)) +
                     ggplot2::geom_line(ggplot2::aes(y = raw_data), color = '#8E8E8E') +
                     ggplot2::ylab('pA')
             }
-            if (!is.na(tail_end)) {
+            if (!is.na(tail_end) & !is.na(tail_start) & plot_debug==FALSE) {
                 p <- p + ggplot2::geom_line(ggplot2::aes(y = c(rep(NA, times=tail_start-1),
                                                                raw_data[tail_start:tail_end],
                                                                rep(NA, times=(read_length-tail_end)))), color='#BF1268')
@@ -440,15 +443,6 @@ find_dna_tail_per_read <- function(file_path = NA,
             }
         }
     }
-
-
-
-
-
-
-
-
-
 
     return(list(read_id = read_data$read_id,
                 read_type = read_type,
