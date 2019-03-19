@@ -255,8 +255,8 @@ find_tails <- function(fast5_dir,
         cat('    to contact us at adnan.niazi@uib.no. Do not forget to\n')
         cat('    send us one of the problematic reads so that we can\n')
         cat('    debug our software, and send you a patch.\n')
-        cat(paste('  ', crayon::red(cli::symbol$cross),'
-                  Finished because of the error!\n', sep=''))
+        cat(paste('  ', crayon::red(cli::symbol$cross),
+                  'Finished because of the error!\n', sep=''))
         cat(cli::rule(left=paste('tailfindr finished with a fatal error at ',
                                  Sys.time(), sep = '')), '\n', sep = "")
         return(0)
