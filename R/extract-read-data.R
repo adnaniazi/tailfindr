@@ -27,7 +27,7 @@
 #'
 #' @param plotting_library a string
 #'
-#' @return
+#' @return a list
 #'
 #' @examples
 #' \dontrun{
@@ -99,10 +99,18 @@ extract_read_data <- function(file_path = NA,
 
     # if event_data wasn't present, make it now
     if (make_event_data) {
+        # The line below is there to remove R CMD CHECK
+        # "no visible binding for global variable" error
+        move_cumsum <- fastq_bases <- NULL
+
         event_data <- data.frame(move = move,
                                  move_cumsum = cumsum(move),
                                  fastq_bases = fastq,
                                  stringsAsFactors = FALSE)
+
+        # The line below is there to remove R CMD CHECK
+        # "no visible binding for global variable" error
+        model_state <- NULL
         event_data <- dplyr::mutate(event_data,
                                     model_state = substr(fastq_bases,
                                                          start=move_cumsum,

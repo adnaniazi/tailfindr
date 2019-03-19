@@ -33,7 +33,7 @@ Set to 'standard' if the basecalling model is standard model.}
 \item{plotting_library}{a string}
 }
 \value{
-
+a list
 }
 \description{
 This function can deal with both multifast5 files and single fast5 files.

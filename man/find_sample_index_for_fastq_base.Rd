@@ -14,7 +14,7 @@ find_sample_index_for_fastq_base(event_data, fastq_base_number, read_type)
 \item{read_type}{character string}
 }
 \value{
-
+numeric
 }
 \description{
 Finds raw data sample index in the event data table corresponding to a FastQ

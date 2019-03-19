@@ -17,7 +17,7 @@ find_rna_polya_crude_start_end(rle_lengths, rle_values, rle_indices,
 \item{trough_threshold}{a numeric. The threshold below which to merge sections}
 }
 \value{
-
+a list
 }
 \description{
 Find the crude start and end of polyA tail in RNA read

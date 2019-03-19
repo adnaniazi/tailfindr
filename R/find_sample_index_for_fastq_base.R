@@ -8,7 +8,7 @@
 #' @param fastq_base_number numeric
 #' @param read_type character string
 #'
-#' @return
+#' @return numeric
 #'
 #' @examples
 #' \dontrun{

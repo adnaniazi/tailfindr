@@ -124,6 +124,7 @@ find_rna_polya_tail_per_read <- function(file_path = NA,
                             'Samples per nt: ', round(read_data$samples_per_nt, 2),
                             sep='')
 
+        slope <- mean_data <- NULL  # R CMD CHECK
         df = data.frame(x=c(0:(length(read_data$raw_data)-1)),
                         truncated_data=truncated_data,
                         smoothed_data=smoothed_data,
@@ -133,6 +134,7 @@ find_rna_polya_tail_per_read <- function(file_path = NA,
 
         # add a poly(A) tail to the dataframe if it exists
         if (!is.na(tail_start) & !is.na(tail_end)) {
+            polya_tail <- NULL  # R CMD CHECK
             df['polya_tail'] <- c(rep(NA, times=tail_start-1),
                                   raw_data[tail_start:tail_end],
                                   rep(NA, times=(read_length-tail_end)))
@@ -168,6 +170,7 @@ find_rna_polya_tail_per_read <- function(file_path = NA,
             p1 <- rbokeh::figure(data=df,
                                  width=1000, height=200,
                                  legend_location="top_right")
+            y <- NULL  # R CMD CHECK
             p3 <- rbokeh::figure(data=data.frame(x=event_data$start,
                                                  y=event_data$move/2),
                                  width=1000, height=100,

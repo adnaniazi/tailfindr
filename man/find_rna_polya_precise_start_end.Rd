@@ -20,7 +20,7 @@ of the poly(A) tail}
 \item{show_plots}{logical}
 }
 \value{
-
+a list
 }
 \description{
 Finds the precise RNA tail and start

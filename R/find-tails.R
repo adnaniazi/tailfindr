@@ -301,6 +301,7 @@ find_tails <- function(fast5_dir,
             f5_tree <- f5_obj$ls(recursive = F)
             f5_tree <- f5_tree$name
             f5_tree <- dplyr::mutate(dplyr::tbl_df(f5_tree), fast5_file = fast5_file)
+            value <- NULL  # R CMD CHECK
             f5_tree <- dplyr::rename(f5_tree, read_id = value)
             read_id_fast5_file <- rbind(read_id_fast5_file, f5_tree)
             f5_obj$close_all()
@@ -352,6 +353,7 @@ find_tails <- function(fast5_dir,
             # foreach loop
             sink(file=NULL, type = 'output')
             if (experiment_type == 'dna') {
+                riff <- NULL  # R CMD CHECK
                 data_list <- foreach::foreach(riff = read_id_fast5_file_subset,
                                               .combine = 'rbind',
                                               .inorder = FALSE,
@@ -385,6 +387,7 @@ find_tails <- function(fast5_dir,
                                                   })
                                               }
             } else {
+                riff <- NULL  # R CMD CHECK
                 data_list <- foreach::foreach(riff = read_id_fast5_file_subset,
                                               .combine = 'rbind',
                                               .inorder = FALSE,
@@ -465,6 +468,7 @@ find_tails <- function(fast5_dir,
             # foreach loop
             sink(file=NULL, type = 'output')
             if (experiment_type == 'dna') {
+                file_path <- NULL  # R CMD CHECK
                 data_list <- foreach::foreach(file_path = fast5_files_subset,
                                               .combine = 'rbind',
                                               .inorder = FALSE,
@@ -496,6 +500,7 @@ find_tails <- function(fast5_dir,
                                                  })
                                              }
             } else {
+                file_path <- NULL  # R CMD CHECK
                 data_list <-foreach::foreach(file_path = fast5_files_subset,
                                              .combine = 'rbind',
                                              .inorder = FALSE,
@@ -540,8 +545,10 @@ find_tails <- function(fast5_dir,
     # cleanup the tibble
     result <- tidyr::unnest(result)
     if (experiment_type == 'dna') {
+        has_precise_boundary <- NULL  # R CMD CHECK
         result <- within(result, rm(has_precise_boundary))
     } else {
+        polya_fastq <- NULL  # R CMD CHECK
         result <- within(result, rm(polya_fastq))
     }
     result$tail_length <- round(result$tail_length, digits = 2)

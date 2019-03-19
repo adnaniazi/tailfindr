@@ -7,7 +7,7 @@
 #' @param save_plots logical
 #' @param show_plots logical
 #'
-#' @return
+#' @return a list
 #'
 find_rna_polya_precise_start_end <- function(truncated_data,
                                              POLY_A_RNA_THRESHOLD,

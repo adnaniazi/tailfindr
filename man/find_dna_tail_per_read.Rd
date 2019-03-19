@@ -44,7 +44,7 @@ the \code{"standard"} or the \code{"flipflop"} model}
 \item{...}{Any optional parameter. Reserved for future.}
 }
 \value{
-
+a list
 }
 \description{
 This function finds poly(A) or poly(T) tail length in DNA reads.

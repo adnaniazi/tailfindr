@@ -5,7 +5,7 @@
 #' @param rle_indices a numeric vector. A vector if cumsum of RLE lengths
 #' @param trough_threshold a numeric. The threshold below which to merge sections
 #'
-#' @return
+#' @return a list
 #'
 find_rna_polya_crude_start_end <- function(rle_lengths,
                                            rle_values,

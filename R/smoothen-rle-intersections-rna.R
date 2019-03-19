@@ -2,7 +2,7 @@
 #'
 #' @param rle_intersections RLE object
 #'
-#' @return
+#' @return a list
 #'
 
 smoothen_rle_intersections_rna <- function(rle_intersections){

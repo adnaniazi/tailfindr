@@ -10,7 +10,7 @@ smoothen_rle_intersections_rna(rle_intersections)
 \item{rle_intersections}{RLE object}
 }
 \value{
-
+a list
 }
 \description{
 Smoothen RLE intersections for RNA

@@ -23,7 +23,7 @@
 #' the \code{"standard"} or the \code{"flipflop"} model
 #' @param ... Any optional parameter. Reserved for future.
 #'
-#' @return
+#' @return a list
 #'
 find_dna_tail_per_read <- function(file_path = NA,
                                    read_id_fast5_file = NA,
@@ -280,6 +280,7 @@ find_dna_tail_per_read <- function(file_path = NA,
 
         if (read_type == 'polyA') {
             if (!is.na(tail_start) & (!is.na(tail_end))) {
+                polya_tail <- NULL  # CRAN R CMD
                 df['polya_tail'] <- c(rep(NA, times=tail_start-1),
                                       raw_data[tail_start:tail_end],
                                       rep(NA, times=(read_length-tail_end)))
@@ -293,6 +294,7 @@ find_dna_tail_per_read <- function(file_path = NA,
                                 sep='')
         } else {
             if (!is.na(tail_start) & (!is.na(tail_end))) {
+                polyt_tail <- NULL  # CRAN R CMD
                 df['polyt_tail'] <- c(rep(NA, times=tail_start-1),
                                       raw_data[tail_start:tail_end],
                                       rep(NA, times=(read_length-tail_end)))
@@ -314,6 +316,7 @@ find_dna_tail_per_read <- function(file_path = NA,
                 p1 <- rbokeh::figure(data=df,
                                      width=1000, height=200,
                                      legend_location="top_left")
+                y <- NULL  # R CMD CHECK
                 p3 <- rbokeh::figure(data=data.frame(x=event_data$start,
                                                      y=event_data$move/2),
                                      width=1000, height=100,
