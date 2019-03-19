@@ -123,17 +123,17 @@ find_tails <- function(fast5_dir,
     show_plots <- FALSE
 
 
-    #dna_datatype <- process_optional_params(...)  # R CMD NOTE
-    if (length(list(...)) > 0) {
-        if ("dna_datatype" %in% names(...)) {
-            dna_datatype <- ...$dna_datatype
-        } else {
-            # data parameter is used only when the experiment_type is dna
-            dna_datatype <- 'cdna'
-        }
-    } else {
-        dna_datatype <- 'cdna'
-    }
+    dna_datatype <- process_optional_params(...)  # R CMD NOTE
+    # if (length(list(...)) > 0) {
+    #     if ("dna_datatype" %in% names(...)) {
+    #         dna_datatype <- ...$dna_datatype
+    #     } else {
+    #         # data parameter is used only when the experiment_type is dna
+    #         dna_datatype <- 'cdna'
+    #     }
+    # } else {
+    #     dna_datatype <- 'cdna'
+    # }
 
     # start a log file
     if (dir.exists(file.path(save_dir))) {
