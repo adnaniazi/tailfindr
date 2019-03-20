@@ -35,7 +35,7 @@ smoothen_rle_intersections_rna <- function(rle_intersections){
     # and append them to the end
     remaining_items = length(rle_lengths) - i
     if (remaining_items > 0){
-        for (k in 1:remaining_items){
+        for (k in seq_len(remaining_items)) {
             j = k + i
             new_rle_values <- c(new_rle_values, rle_values[j])
             new_rle_lengths <- c(new_rle_lengths, rle_lengths[j])

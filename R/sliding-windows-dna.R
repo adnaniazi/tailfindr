@@ -18,7 +18,7 @@ right_to_left_sliding_window_dna <-
         total <- length(data)
         spots <- seq(from = 1, to = (total - window_size), by = step_size)
         result <- vector(length = length(spots))
-        for (i in 1:length(spots)) {
+        for (i in seq_along(spots)) {
             result[i] <- match.fun(FUN)(data[spots[i]:(spots[i] + window_size - 1)])
         }
 
@@ -48,7 +48,7 @@ left_to_right_sliding_window_dna <-
         total <- length(data)
         spots <- seq(from = 1, to = (total - window_size), by = step_size)
         result <- vector(length = length(spots))
-        for (i in 1:length(spots)) {
+        for (i in seq_along(spots)) {
             result[i] <- match.fun(FUN)(data[spots[i]:(spots[i] + window_size - 1)])
         }
 

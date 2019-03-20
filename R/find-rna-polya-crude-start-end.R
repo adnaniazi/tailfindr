@@ -15,7 +15,7 @@ find_rna_polya_crude_start_end <- function(rle_lengths,
     polya_crude_start <- NA
     polya_crude_end <- NA
 
-    for (i in 1:(length(rle_lengths)-1)) {
+    for (i in seq_len(length(rle_lengths)-1)) {
         # just check for a big enough trough in the begining of the read
         # followed by a peak in rle instersections
         if (rle_lengths[i] > trough_threshold &&

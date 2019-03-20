@@ -131,7 +131,7 @@ find_dna_tail_per_read <- function(file_path = NA,
     mean_data <- vector(mode="numeric", length = length(spots))
     slope <- vector(mode="numeric", length = length(spots)-1)
 
-    for (i in 1:(length(spots)-1)) {
+    for (i in seq_len(length(spots)-1)) {
         if (i < length(spots)-2) {
             mean_data[i] <- mean(data[spots[i]:(spots[i+1] - 1)])
             mean_data[i+1] <- mean(data[spots[i+1]:(spots[i+2] - 1)])

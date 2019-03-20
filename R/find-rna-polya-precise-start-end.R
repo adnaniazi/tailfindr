@@ -35,7 +35,7 @@ find_rna_polya_precise_start_end <- function(truncated_data,
         mean_data <- vector(mode="numeric", length = length(spots))
         slope <- vector(mode="numeric", length = length(spots)-1)
 
-        for (i in 1:(length(spots)-1)) {
+        for (i in seq_len(length(spots)-1)) {
             if (i < length(spots)-2) {
                 mean_data[i] <- mean(data[spots[i]:(spots[i+1] - 1)])
                 mean_data[i+1] <- mean(data[spots[i+1]:(spots[i+2] - 1)])
@@ -50,7 +50,7 @@ find_rna_polya_precise_start_end <- function(truncated_data,
         ### 2. Find the precise start
         # find the precise start of the poly(A), which is when the slope goes up in the begining and
         # then just starts to go down && the mean signal should be above - POLY_A_RNA_THRESHOLD
-        for (i in 1:(length(slope)-1)) {
+        for (i in seq_len(length(slope)-1)) {
             if ((slope[(i+1)] < slope[i]) &&
                 #(slope[i] > POLY_A_RNA_THRESHOLD) &&
                 (mean_data[i+1] > -POLY_A_RNA_THRESHOLD)) {

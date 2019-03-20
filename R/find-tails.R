@@ -328,7 +328,7 @@ find_tails <- function(fast5_dir,
         }
         counter <- 0
         result <- list()
-        for(chunk in c(1:total_chunks)){
+        for(chunk in seq_len(total_chunks)){
             # divide data in chunks
             if(chunk == total_chunks) {
                 read_id_fast5_file_subset <-
@@ -445,7 +445,7 @@ find_tails <- function(fast5_dir,
                       ' Searching for Poly(A) tails...\n', sep=''))
         }
 
-        for(chunk in c(1:total_chunks)) {
+        for (chunk in seq_len(total_chunks)) {
             if(chunk == total_chunks) {
                 fast5_files_subset <-
                     fast5_files_list[((counter*files_per_chunk)+1):total_files]
