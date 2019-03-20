@@ -43,7 +43,7 @@
 #'
 extract_read_data <- function(file_path = NA,
                               read_id_fast5_file = NA,
-                              plot_debug = F,
+                              plot_debug = FALSE,
                               basecalled_with,
                               multifast5,
                               model,

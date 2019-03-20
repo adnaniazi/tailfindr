@@ -28,12 +28,12 @@
 find_dna_tail_per_read <- function(file_path = NA,
                                    read_id_fast5_file = NA,
                                    dna_datatype = 'cdna',
-                                   save_plots = F,
-                                   show_plots = F,
-                                   plot_debug = F,
+                                   save_plots = FALSE,
+                                   show_plots = FALSE,
+                                   plot_debug = FALSE,
                                    save_dir = NA,
                                    plotting_library = 'rbokeh',
-                                   multifast5 = F,
+                                   multifast5 = FALSE,
                                    basecalled_with = 'albacore',
                                    model = 'standard',
                                    ...) {
@@ -399,7 +399,10 @@ find_dna_tail_per_read <- function(file_path = NA,
                 names(lst) <- c(plot_title, 'Moves')
                 nrow <- 2
             }
-            p <- rbokeh::grid_plot(lst, nrow = nrow, link_data = T, same_axes=c(T, F))
+            p <- rbokeh::grid_plot(lst,
+                                   nrow = nrow,
+                                   link_data = TRUE,
+                                   same_axes=c(TRUE, FALSE))
 
         } else { # plotting_library == 'ggplot2'
             if (plot_debug) {

@@ -174,7 +174,7 @@ find_rna_polya_tail_per_read <- function(file_path = NA,
             p3 <- rbokeh::figure(data=data.frame(x=event_data$start,
                                                  y=event_data$move/2),
                                  width=1000, height=100,
-                                 legend_location="top_right", ygrid = F)
+                                 legend_location="top_right", ygrid = FALSE)
             if (plot_debug)
                 p2 <- rbokeh::figure(data=df, width=1000, height=400,
                                      legend_location="top_right")
@@ -229,7 +229,10 @@ find_rna_polya_tail_per_read <- function(file_path = NA,
                 names(lst) <- c(plot_title, 'Moves')
                 nrow <- 2
             }
-            p <- rbokeh::grid_plot(lst, nrow = nrow, link_data = T, same_axes=c(T, F))
+            p <- rbokeh::grid_plot(lst,
+                                   nrow = nrow,
+                                   link_data = TRUE,
+                                   same_axes=c(TRUE, FALSE))
         }
 
         if (save_plots) {

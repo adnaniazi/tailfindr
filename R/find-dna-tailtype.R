@@ -34,7 +34,7 @@
 #' data basecalled with flip-flop algorithm
 #' read_id_fast5_file = list(read_id=read_id, fast5_file=full_path_of_fast5_file)
 #' find_dna_tailtype(dna_datatype = 'cdna',
-#'                   multifast5 = T,
+#'                   multifast5 = TRUE,
 #'                   basecalled_with = 'guppy',
 #'                   model = 'flipflop',
 #'                   read_id_fast5_file = read_id_fast5_file)
@@ -43,7 +43,7 @@
 #' algorithm
 #' read_id_fast5_file = list(read_id=read_id, fast5_file=full_path_of_fast5_file)
 #' find_dna_tailtype(dna_datatype = 'pcr-dna',
-#'                   multifast5=T,
+#'                   multifast5=TRUE,
 #'                   basecalled_with = 'guppy',
 #'                   model = 'flipflop',
 #'                   read_id_fast5_file = read_id_fast5_file)
@@ -52,7 +52,7 @@
 #' albacore with single fast5 files as output
 #' find_dna_tailtype(file_path = full_file_path_of_the_read,
 #'                   dna_datatype = 'cdna',
-#'                   multifast5 = F,
+#'                   multifast5 = FALSE,
 #'                   basecalled_with = 'albacore',
 #'                   model = 'standard')
 #' }
@@ -62,7 +62,7 @@
 
 find_dna_tailtype <- function(file_path = NA,
                               dna_datatype = 'cdna',
-                              plot_debug = F,
+                              plot_debug = FALSE,
                               basecalled_with,
                               multifast5,
                               model,
