@@ -1,15 +1,15 @@
 Package: tailfindr
 Type: Package
-Title: Finds Poly(A) and Poly(T) Tail Length in Nanopore Reads
+Title: Poly(A)/(T) Tail Length Estimator for Oxford Nanopore Reads
 Version: 0.1.0
 Authors@R: c(
-  person(given = "Adnan", family = "Niazi", email = "adnan.niazi@uib.no", role = c("aut", "cre", "cph")),
+  person(given = "Adnan", family = "Niazi", email = "adnaniazi@gmail.com", role = c("aut", "cre", "cph")),
   person(given = "Maximilian", family = "Kruise", email = "Maximilian.Krause@uib.no", role = c("dtc")),
   person(given = "Kornel", family = "Labun", email = "kornellabun@gmail.com", role = c("ctb")),
   person(given = "Florian", family = "Muller", email = "florianisch.flo@googlemail.com ", role = c("ctb")),
   person(given = "Evind", family = "Valen", email = "eivind.valen@gmail.com", role = c("ths", "fnd")) )
-Maintainer: Adnan Niazi <adnan.niazi@uib.no>
-Description: tailfindr is an alignment-free tool (i.e., no BAM/SAM files are needed) to find poly(A)/poly(T) tail lengths in 1D Oxford nanopore sequencing reads. It can handle reads from basecalled with Albacore or Guppy using the standard or the newest 'flip-flop' model. It can work with single and multi-fast5 files. Currently, tailfinder can find poly(A) tail lengths in 1D RNA nanopore reads, and both poly(A) and poly(T) lengths in 1D DNA nanopore reads.
+Maintainer: Adnan Niazi <adnaniazi@gmail.com>
+Description: An alignment-free tool to estimate poly(A)/poly(T) tail lengths in 1D Oxford nanopore sequencing reads. It can handle reads from basecalled with Albacore or Guppy using the standard or the newest 'flipflop' model. It can work with single as well as multi-fast5 files. Currently, tailfindr can estimate poly(A) tail length in 1D RNA nanopore reads, and both poly(A) and poly(T) lengths in 1D DNA nanopore reads.
 License: GPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true
