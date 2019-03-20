@@ -105,6 +105,5 @@ explore_basecaller_and_fast5type <- function(fast5file_path) {
          read_is_1d = read_is_1d,
          model = model,
          fast5type = fast5type,
-         experiment_type = experiment_type
-         )
+         experiment_type = experiment_type)
 }
