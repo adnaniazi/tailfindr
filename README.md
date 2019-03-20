@@ -54,10 +54,8 @@ Give below is a minimal use case in which we will run tailfindr on example RNA r
 
 ``` r
 library(tailfindr)
-fast5_dir <- system.file('extdata', 'rna', package = 'tailfindr')
-save_dir <- '~/Downloads'
-df <- find_tails(fast5_dir = fast5_dir,
-                 save_dir = save_dir,
+df <- find_tails(fast5_dir = system.file('extdata', 'rna', package = 'tailfindr'),
+                 save_dir = '~/Downloads',
                  csv_filename = 'rna_tails.csv',
                  num_cores = 1)
 ```
@@ -67,14 +65,12 @@ Additionally, tailfindr allows you to save plots that show the tail location and
 Give below is a minimal use case in which we will run tailfindr on example cDNA reads present in the tailfindr package, and also save the plots:
 
 ``` r
-fast5_dir <- system.file('extdata', 'cdna', package = 'tailfindr')
-save_dir <- '~/Downloads'
-df <- find_tails(fast5_dir = fast5_dir,
-                 save_dir = save_dir,
+df <- find_tails(fast5_dir = fast5_dir <- system.file('extdata', 'cdna', package = 'tailfindr'),
+                 save_dir = '~/Downloads',
                  csv_filename = 'cdna_tails.csv',
                  num_cores = 1,
                  save_plots = TRUE,
-                 plotting_library = 'rbokeh)
+                 plotting_library = 'rbokeh')
 ```
 
 ![Poly(T) read squiggle plot](https://github.com/adnaniazi/tailfindr/raw/master/man/figures/poly_t_without_debug.gif)
