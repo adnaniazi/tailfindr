@@ -1,6 +1,6 @@
 Package: tailfindr
 Type: Package
-Title: Poly(A)/(T) Tail Length Estimator for Oxford Nanopore Reads
+Title: Poly(A) Tail Length Estimator for Oxford Nanopore RNA and DNA Reads
 Version: 0.1.0
 Authors@R: c(
   person(given = "Adnan", family = "Niazi", email = "adnaniazi@gmail.com", role = c("aut", "cre", "cph")),
@@ -14,7 +14,7 @@ License: GPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1
-Depends: R (>= 3.1.0)
+Depends: R (>= 3.5.0)
 SystemRequirements: libhdf5 (>= 1.8.13)
 biocViews:
 Imports: 
