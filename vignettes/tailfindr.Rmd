@@ -1,10 +1,10 @@
 ---
-title: "tailfindr"
+title: "Introduction to tailfindr"
 author: "Adnan M. Niazi"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{How to use tailfindr}
+  %\VignetteIndexEntry{Introduction to tailfindr}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 fig_width: 6 
