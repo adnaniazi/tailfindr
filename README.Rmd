@@ -55,9 +55,14 @@ install.packages("devtools")
 
 ####Step 3. Installing tailfindr
 
-Now you can install tailfindr using the command below:
+If you want to install tailfindr without building the vignette, then run the command below:
 ````{r, message = FALSE, eval = FALSE}
 devtools::install_github("adnaniazi/tailfindr")
+```
+
+If you also want to build the vignette while installing tailfindr, then run the command below:
+```{r, message = FALSE, eval = FALSE}
+remotes::install_github('adnaniazi/tailfindr', build = TRUE, build_opts = c("--no-resave-data", "--no-manual"), force = TRUE)
 ```
 
 Now you are ready to use tailfindr.
