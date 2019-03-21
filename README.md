@@ -42,6 +42,12 @@ Currently, tailfindr is not listed on CRAN/Bioconductor, so you need to install 
 install.packages("devtools")
 ```
 
+If you also want to build vignette while installing then run this command instead of the one above:
+
+``` r
+remotes::install_github('adnaniazi/tailfindr', build = TRUE, build_opts = c("--no-resave-data", "--no-manual"), force = TRUE)
+```
+
 #### Step 3. Installing tailfindr
 
 Now you can install tailfindr using the command below:
