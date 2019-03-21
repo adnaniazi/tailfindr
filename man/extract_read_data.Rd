@@ -5,7 +5,8 @@
 \title{Extract the read data from a fast5 file}
 \usage{
 extract_read_data(file_path = NA, read_id_fast5_file = NA,
-  plot_debug = F, basecalled_with, multifast5, model, plotting_library)
+  plot_debug = FALSE, basecalled_with, multifast5, model,
+  plotting_library)
 }
 \arguments{
 \item{file_path}{a character string [NA]. Path of the single fast5 file.
