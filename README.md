@@ -36,7 +36,7 @@ HDF5 1.8.14 has been pre-compiled for Windows and is available [here](https://gi
 
 #### Step 2. Installing devtools
 
-Currently, tailfindr is not listed on CRAN/Bioconductor, so you need to install it using `devtools`. To install `devtools` use the following command:
+Currently, tailfindr is not listed on CRAN/Bioconductor, so you need to install it using `devtools`. To install `devtools` use the following command in R/R-studio:
 
 ``` r
 install.packages("devtools")
@@ -44,7 +44,7 @@ install.packages("devtools")
 
 #### Step 3. Installing tailfindr
 
-Now you can install tailfindr using the command below:
+Now you can install tailfindr using the command below in R/R-studio:
 
 ``` r
 devtools::install_github("adnaniazi/tailfindr")
