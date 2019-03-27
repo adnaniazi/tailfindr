@@ -28,7 +28,7 @@ Bergen](https://www.uib.no/), Norway.
 
 ## Installation
 
-\#\#\#\#Step 1. Installing HDF5 library
+#### Step 1. Installing HDF5 library
 
 tailfindr depends on the HDF5 library for reading Fast5 files. For OS X
 and Linux, the HDF5 library needs to be installed via one of the (shell)
@@ -45,15 +45,17 @@ HDF5 1.8.14 has been pre-compiled for Windows and is available
 [here](https://github.com/mannau/h5-libwin) — thus no manual
 installation is required.
 
-\#\#\#\#Step 2. Installing devtools Currently, tailfindr is not listed
-on CRAN/Bioconductor, so you need to install it using `devtools`. To
-install `devtools` use the following command in R/R-studio:
+#### Step 2. Installing devtools
+
+Currently, tailfindr is not listed on CRAN/Bioconductor, so you need to
+install it using `devtools`. To install `devtools` use the following
+command in R/R-studio:
 
 ``` r
 install.packages("devtools")
 ```
 
-\#\#\#\#Step 3. Installing tailfindr
+#### Step 3. Installing tailfindr
 
 Now you can install tailfindr using the command below in R/R-studio:
 
