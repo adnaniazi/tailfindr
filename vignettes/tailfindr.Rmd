@@ -159,6 +159,8 @@ guppy_basecaller \
 
 If you encounter a clear bug, please file a minimal reproducible example on [github](https://github.com/adnaniazi/tailfindr/issues). For questions and other discussion, email me at adnan.niazi@uib.no.
 
+## Citation
+Maximilian Krause, Adnan M. Niazi, Kornel Labun, Florian Sebastian Müller, Yamila Nicole Torres Cleuren, Eivind Valen (2019): ***tailfindr*: Alignment-free poly(A) length measurement for Oxford Nanopore RNA and DNA sequencing**. bioRxiv 588343; doi: https://doi.org/10.1101/588343
 
 ## License
 
