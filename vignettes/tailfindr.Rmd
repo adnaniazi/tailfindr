@@ -74,7 +74,7 @@ df <- find_tails(fast5_dir = system.file('extdata', 'rna', package = 'tailfindr'
                  csv_filename = 'rna_tails.csv',
                  num_cores = 2)
 ```
-In the above example, tailfindr returns a tibble containing the tail data which is then stored in the variable `df`. tailfindr also savs this dataframe as a csv file (`rna_tails.csv`) in the user-specified `save_dir`, which in this case is set to `~/Downloads`. A logfile is also saved in the `save_dir`. The parameter `num_cores` can be increased depending on the number of *physical* cores at your disposal.
+In the above example, tailfindr returns a tibble containing the tail data which is then stored in the variable `df`. tailfindr also saves this dataframe as a csv file (`rna_tails.csv`) in the user-specified `save_dir`, which in this case is set to `~/Downloads`. A logfile is also saved in the `save_dir`. The parameter `num_cores` can be increased depending on the number of *physical* cores at your disposal.
 
 #### 2. Plotting the tail
 
