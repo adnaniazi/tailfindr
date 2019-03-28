@@ -5,7 +5,7 @@
 \title{Extract the read data from a fast5 file}
 \usage{
 extract_read_data(file_path = NA, read_id_fast5_file = NA,
-  plot_debug = FALSE, basecalled_with, multifast5, model,
+  plot_debug = FALSE, basecalled_with, basecall_group, multifast5, model,
   plotting_library)
 }
 \arguments{
@@ -23,6 +23,9 @@ the plots be computed}
 
 \item{basecalled_with}{a character string. Specify if the data is from
 'albacore' or 'guppy'}
+
+\item{basecall_group}{a character string. Name of the level
+in the Fast5 file hierarchy from which to read the data e.g. "Basecall_1D_000"}
 
 \item{multifast5}{a logical. Set it to TRUE if the file to be processed
 is multifast5. Set it to FALSE if the file to be processed is a single fast5
@@ -47,6 +50,7 @@ extract_read_data(file_path = '/path/to/the/file',
                   read_id_fast5_file = NA,
                   plot_debug = F,
                   basecalled_with = 'albacore',
+                  basecall_group = 'Basecall_1D_000',
                   multifast5 = TRUE,
                   model = 'standard',
                   plotting_library = 'rbokeh')

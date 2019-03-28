@@ -7,6 +7,8 @@
 #' @param read_id_fast5_file a list. If the read to be processed is in a multi-
 #' fast5 file, then a list containing \code{fast5_file} path and \code{read_id}
 #' should be provided, otherwise, it should be set to \code{NA}
+#' @param basecall_group a character string. Name of the level
+#' in the Fast5 file hierarchy from which to read the data e.g. "Basecall_1D_000"
 #' @param dna_datatype a character string. Either set to \code{"cdna"} or
 #' \code{"pcr-dna"}
 #' @param save_plots a logical. Whether to save plots
@@ -27,6 +29,7 @@
 #'
 find_dna_tail_per_read <- function(file_path = NA,
                                    read_id_fast5_file = NA,
+                                   basecall_group = 'Basecall_1D_000',
                                    dna_datatype = 'cdna',
                                    save_plots = FALSE,
                                    show_plots = FALSE,
@@ -41,6 +44,7 @@ find_dna_tail_per_read <- function(file_path = NA,
     do_plots <- ifelse(save_plots | show_plots, TRUE, FALSE)
 
     data_list <- find_dna_tailtype(file_path = file_path,
+                                   basecall_group = basecall_group,
                                    dna_datatype = dna_datatype,
                                    plot_debug = plot_debug,
                                    basecalled_with = basecalled_with,

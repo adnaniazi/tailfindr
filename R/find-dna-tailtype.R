@@ -61,6 +61,7 @@
 #'
 
 find_dna_tailtype <- function(file_path = NA,
+                              basecall_group = 'Basecall_1D_000',
                               dna_datatype = 'cdna',
                               plot_debug = FALSE,
                               basecalled_with,
@@ -99,6 +100,7 @@ find_dna_tailtype <- function(file_path = NA,
                                    read_id_fast5_file,
                                    plot_debug,
                                    basecalled_with,
+                                   basecall_group,
                                    multifast5,
                                    model,
                                    plotting_library)

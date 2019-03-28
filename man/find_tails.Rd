@@ -5,7 +5,8 @@
 \title{Estimates poly(A)/(T) tail lengths in Oxford Nanopore RNA and DNA reads}
 \usage{
 find_tails(fast5_dir, save_dir, csv_filename = "tails.csv",
-  num_cores = 1, save_plots = FALSE, plot_debug_traces = FALSE,
+  num_cores = 1, basecall_group = "Basecall_1D_000",
+  save_plots = FALSE, plot_debug_traces = FALSE,
   plotting_library = "rbokeh", ...)
 }
 \arguments{
@@ -23,6 +24,9 @@ CSV file in which to store the tail length data}
 
 \item{num_cores}{numeric [1]. Num of physical cores to use in processing
 the data. Always use 1 less than the number of cores at your disposal.}
+
+\item{basecall_group}{a character string ["Basecall_1D_000"]. Name of the
+level in the Fast5 file hierarchy from which tailfindr should read the data.}
 
 \item{save_plots}{logical [\code{FALSE}]. If set to \code{TRUE}, a plots
 directory will be created within the save_dir, and plots showing poly(A) and

@@ -4,11 +4,14 @@
 \alias{explore_basecaller_and_fast5type}
 \title{Explore a fast5 file to find parameters of the experiment}
 \usage{
-explore_basecaller_and_fast5type(fast5file_path)
+explore_basecaller_and_fast5type(fast5file_path, basecall_group)
 }
 \arguments{
 \item{fast5file_path}{a character string. Path of a fast5file for determining
 parameter of the experiment.}
+
+\item{basecall_group}{a character string. Name of the level
+in the Fast5 file hierarchy from which to read the data e.g. "Basecall_1D_000"}
 }
 \value{
 A list containing the all the relevant data:
@@ -33,7 +36,8 @@ This function finds if a read is:
 \examples{
 \dontrun{
 
-lst <- explore_basecaller_and_fast5type('/path/to/fast5/file')
+lst <- explore_basecaller_and_fast5type('/path/to/fast5/file',
+                                        basecall_group='Basecall_1D_000')
 }
 
 }

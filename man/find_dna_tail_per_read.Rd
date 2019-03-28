@@ -5,10 +5,10 @@
 \title{Find poly(A)/poly(T) tail in a single DNA read}
 \usage{
 find_dna_tail_per_read(file_path = NA, read_id_fast5_file = NA,
-  dna_datatype = "cdna", save_plots = FALSE, show_plots = FALSE,
-  plot_debug = FALSE, save_dir = NA, plotting_library = "rbokeh",
-  multifast5 = FALSE, basecalled_with = "albacore",
-  model = "standard", ...)
+  basecall_group = "Basecall_1D_000", dna_datatype = "cdna",
+  save_plots = FALSE, show_plots = FALSE, plot_debug = FALSE,
+  save_dir = NA, plotting_library = "rbokeh", multifast5 = FALSE,
+  basecalled_with = "albacore", model = "standard", ...)
 }
 \arguments{
 \item{file_path}{a character string. Full path of the file that needs to be
@@ -17,6 +17,9 @@ processed.}
 \item{read_id_fast5_file}{a list. If the read to be processed is in a multi-
 fast5 file, then a list containing \code{fast5_file} path and \code{read_id}
 should be provided, otherwise, it should be set to \code{NA}}
+
+\item{basecall_group}{a character string. Name of the level
+in the Fast5 file hierarchy from which to read the data e.g. "Basecall_1D_000"}
 
 \item{dna_datatype}{a character string. Either set to \code{"cdna"} or
 \code{"pcr-dna"}}

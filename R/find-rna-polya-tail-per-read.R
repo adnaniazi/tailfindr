@@ -4,6 +4,7 @@
 #' @param read_id_fast5_file list
 #' @param multifast5 logical
 #' @param basecalled_with character string.
+#' @param basecall_group character string.
 #' @param save_plots logical.
 #' @param show_plots logical
 #' @param save_dir character string
@@ -22,6 +23,7 @@ find_rna_polya_tail_per_read <- function(file_path = NA,
                                          read_id_fast5_file = NA,
                                          multifast5,
                                          basecalled_with,
+                                         basecall_group = 'Basecall_1D_000',
                                          model,
                                          save_plots = FALSE,
                                          show_plots = FALSE,
@@ -39,6 +41,7 @@ find_rna_polya_tail_per_read <- function(file_path = NA,
                                    read_id_fast5_file,
                                    plot_debug,
                                    basecalled_with,
+                                   basecall_group,
                                    multifast5,
                                    model,
                                    plotting_library)

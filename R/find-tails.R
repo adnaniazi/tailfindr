@@ -23,6 +23,9 @@
 #' @param num_cores numeric [1]. Num of physical cores to use in processing
 #' the data. Always use 1 less than the number of cores at your disposal.
 #'
+#' @param basecall_group a character string ["Basecall_1D_000"]. Name of the
+#' level in the Fast5 file hierarchy from which tailfindr should read the data.
+#'
 #' @param save_plots logical [\code{FALSE}]. If set to \code{TRUE}, a plots
 #' directory will be created within the save_dir, and plots showing poly(A) and
 #' poly(T) tails in the raw squiggle will be saved in this \code{plots}
@@ -109,6 +112,7 @@ find_tails <- function(fast5_dir,
                        save_dir,
                        csv_filename = 'tails.csv',
                        num_cores = 1,
+                       basecall_group = 'Basecall_1D_000',
                        save_plots = FALSE,
                        plot_debug_traces = FALSE,
                        plotting_library = 'rbokeh',
@@ -156,6 +160,7 @@ find_tails <- function(fast5_dir,
     cat(paste(cli::symbol$pointer, ' save_dir:          ', save_dir, '\n', sep=''))
     cat(paste(cli::symbol$pointer, ' csv_filename:      ', csv_filename, '\n', sep=''))
     cat(paste(cli::symbol$pointer, ' num_cores:         ', num_cores, '\n', sep=''))
+    cat(paste(cli::symbol$pointer, ' basecall_group:    ', basecall_group, '\n', sep=''))
     cat(paste(cli::symbol$pointer, ' save_plots:        ', save_plots, '\n', sep=''))
     cat(paste(cli::symbol$pointer, ' plot_debug_traces: ', plot_debug_traces, '\n', sep=''))
     cat(paste(cli::symbol$pointer, ' plotting_library:  ', plotting_library, '\n', sep=''))
@@ -208,7 +213,8 @@ find_tails <- function(fast5_dir,
     cat(paste(cli::symbol$bullet,' Analyzing a single Fast5 file to assess if your data \n', sep=''))
     cat('  is in an acceptable format...\n')
 
-    type_info <- explore_basecaller_and_fast5type(fast5_files_list[1])
+    type_info <- explore_basecaller_and_fast5type(fast5_files_list[1],
+                                                  basecall_group = basecall_group)
     basecalled_with <- type_info$basecalled_with
     multifast5 <- ifelse(type_info$fast5type == 'multi', TRUE, FALSE)
     experiment_type <- type_info$experiment_type
@@ -367,6 +373,7 @@ find_tails <- function(fast5_dir,
                                                   tryCatch({
                                                       find_dna_tail_per_read(read_id_fast5_file = riff,
                                                                              file_path = NA,
+                                                                             basecall_group = basecall_group,
                                                                              dna_datatype = dna_datatype,
                                                                              save_plots = save_plots,
                                                                              show_plots = show_plots,
@@ -401,6 +408,7 @@ find_tails <- function(fast5_dir,
                                                   tryCatch({
                                                       find_rna_polya_tail_per_read(file_path = NA,
                                                                                    read_id_fast5_file = riff,
+                                                                                   basecall_group = basecall_group,
                                                                                    multifast5 = multifast5,
                                                                                    basecalled_with = basecalled_with,
                                                                                    model = model,
@@ -481,6 +489,7 @@ find_tails <- function(fast5_dir,
                                               .options.multicore = mcoptions) %dopar% {
                                                  tryCatch({
                                                      find_dna_tail_per_read(file_path = file_path,
+                                                                            basecall_group = basecall_group,
                                                                             dna_datatype = dna_datatype,
                                                                             save_plots = save_plots,
                                                                             show_plots = show_plots,
@@ -514,6 +523,7 @@ find_tails <- function(fast5_dir,
                                                  tryCatch({
                                                      find_rna_polya_tail_per_read(file_path = file_path,
                                                                                   read_id_fast5_file = NA,
+                                                                                  basecall_group = basecall_group,
                                                                                   multifast5 = multifast5,
                                                                                   basecalled_with = basecalled_with,
                                                                                   model = model,

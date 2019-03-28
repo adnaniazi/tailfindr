@@ -11,6 +11,8 @@
 #'
 #' @param fast5file_path a character string. Path of a fast5file for determining
 #' parameter of the experiment.
+#' @param basecall_group a character string. Name of the level
+#' in the Fast5 file hierarchy from which to read the data e.g. "Basecall_1D_000"
 #'
 #' @return A list containing the all the relevant data:
 #' \itemize{
@@ -24,10 +26,11 @@
 #' @examples
 #' \dontrun{
 #'
-#' lst <- explore_basecaller_and_fast5type('/path/to/fast5/file')
+#' lst <- explore_basecaller_and_fast5type('/path/to/fast5/file',
+#'                                         basecall_group='Basecall_1D_000')
 #' }
 #'
-explore_basecaller_and_fast5type <- function(fast5file_path) {
+explore_basecaller_and_fast5type <- function(fast5file_path, basecall_group) {
 
     f5_obj <- hdf5r::H5File$new(fast5file_path, mode='r')
     first_read <- f5_obj$open_by_idx(1)
@@ -45,18 +48,20 @@ explore_basecaller_and_fast5type <- function(fast5file_path) {
     f5_tree <- f5_tree$name
 
     # find if the reads are 1D
+    path_to_check <- paste0('Analyses/', basecall_group)
     if (fast5type == 'single') {
-        basecall_1d <- sum(which(f5_tree == 'Analyses/Basecall_1D_000', arr.ind = T))
+        basecall_1d <- sum(which(f5_tree == path_to_check, arr.ind = T))
     } else {
-        basecall_1d <- sum(grepl('Analyses/Basecall_1D_000', f5_tree))
+        basecall_1d <- sum(grepl(path_to_check, f5_tree))
     }
     read_is_1d <- ifelse(basecall_1d > 0, TRUE, FALSE)
 
     # find if the basecaller is legacy Albacore or the newer Guppy
     if (fast5type == 'multi' & read_is_1d) {
-        basecaller_path <- paste(object_name, '/Analyses/Basecall_1D_000', sep = '')
+        pth <- paste0('/', path_to_check)
+        basecaller_path <- paste(object_name, pth, sep = '')
     } else if (fast5type == 'single' & read_is_1d) {
-        basecaller_path <- 'Analyses/Basecall_1D_000'
+        basecaller_path <- path_to_check
     }
 
     if (read_is_1d) {
