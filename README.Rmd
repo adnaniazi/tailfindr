@@ -34,7 +34,7 @@ tailfindr has been developed at [Valen Lab](https://www.cbu.uib.no/valen/) in [C
 
 ## Installation
 
-####Step 1. Installing HDF5 library
+#### Step 1. Installing HDF5 library
 
 tailfindr depends on the HDF5 library for reading Fast5 files. For OS X and Linux, the HDF5 library needs to be installed via one of the (shell) commands specified below:
 
@@ -46,18 +46,22 @@ tailfindr depends on the HDF5 library for reading Fast5 files. For OS X and Linu
 
 HDF5 1.8.14 has been pre-compiled for Windows and is available [here](https://github.com/mannau/h5-libwin) &mdash; thus no manual installation is required.
 
-####Step 2. Installing devtools
-Currently, tailfindr is not listed on CRAN/Bioconductor, so you need to install it using `devtools`. To install `devtools` use the following command:
+#### Step 2. Installing devtools
+Currently, tailfindr is not listed on CRAN/Bioconductor, so you need to install it using `devtools`. To install `devtools` use the following command in R/R-studio:
 
 ```{r, message = FALSE, eval = FALSE}
 install.packages("devtools")
 ```
 
-####Step 3. Installing tailfindr
+#### Step 3. Installing tailfindr
 
-If you want to install tailfindr without building the vignette, then run the command below:
+Now you can install tailfindr using the command below in R/R-studio:
 ````{r, message = FALSE, eval = FALSE}
 devtools::install_github("adnaniazi/tailfindr")
+```
+If you also want to build the vignette while installing tailfindr, then run the command below:
+```{r, message = FALSE, eval = FALSE}
+remotes::install_github('adnaniazi/tailfindr', build = TRUE, build_opts = c("--no-resave-data", "--no-manual"), force = TRUE)
 ```
 
 If you also want to build the vignette while installing tailfindr, then run the command below:
@@ -168,6 +172,9 @@ guppy_basecaller \
 ## Getting help
 
 If you encounter a clear bug, please file a minimal reproducible example on [github](https://github.com/adnaniazi/tailfindr/issues). For questions and other discussion, email me at adnan.niazi@uib.no.
+
+## Citation
+Maximilian Krause, Adnan M. Niazi, Kornel Labun, Florian Sebastian Müller, Yamila Nicole Torres Cleuren, Eivind Valen (2019): ***tailfindr*: Alignment-free poly(A) length measurement for Oxford Nanopore RNA and DNA sequencing**. bioRxiv 588343; doi: https://doi.org/10.1101/588343
 
 
 ## License
