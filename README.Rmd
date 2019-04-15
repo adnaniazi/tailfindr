@@ -116,6 +116,20 @@ df <- find_tails(fast5_dir = fast5_dir <- system.file('extdata', 'cdna', package
 ![Poly(A) read squiggle plot](https://github.com/adnaniazi/tailfindr/raw/master/man/figures/poly_a_with_debug.gif)
 
 
+#### 4. Specifying custom basecall group
+tailfindr needs `Fastq` and `Events` table to work on. By default, it searches them in the `Basecall_1D_000` group in the Analyses section of the FAST5 file. If for whatever reason, you need tailfindr to read data from another basecall group -- lets say `Basecall_1D_001` -- then you can run tailfindr as below:
+```{r, message = FALSE, eval = FALSE}
+df <- find_tails(fast5_dir = fast5_dir <- system.file('extdata', 'rna_basecall_1D_001', package = 'tailfindr'),
+                 save_dir = '~/Downloads',
+                 csv_filename = 'rna_tails.csv',
+                 num_cores = 2,
+                 basecall_group = 'Basecall_1D_001',
+                 save_plots = TRUE,
+                 plot_debug_traces = TRUE,
+                 plotting_library = 'rbokeh')
+```
+In this case, the input FAST5 have two basecall groups: `Basecall_1D_000` and `Basecall_1D_001` but we configured tailfindr to use `Events` table from the `Basecall_1D_001` group.
+
 There are more options available in the find_tails() function. Please see its [documentation](https://rdrr.io/github/adnaniazi/tailfindr/man/find_tails.html). 
 
 ### Description of the CSV/Dataframe columns
@@ -146,7 +160,9 @@ Here are the columns that you will get from tailfindr if you have run it on DNA 
 | tail_length    | numeric          | Tail length in nucleotides. It is the difference between `tail_end` and `tail_start` divided by `samples_per_nt`                                                                        |
 | file_path      | character        | Absolute path of the Fast5 file                                                                                                                                                   |
 ## The devil👹 in the details
-* tailfindr currently works on data in the `/Analyses/Basecall_1D_000/BaseCalled_template/` path of the Fast5 file data hierarchy. It won't work on data present in, lets say, `/Analyses/Basecall_1D_001/BaseCalled_template/` path or `/Analyses/Basecall_1D_002/BaseCalled_template/` path; such paths are generated if you re-basecall already-basecalled data. To avoid this problem, use tailfindr on files that have been basecalled from the raw Fast5 files.
+
+* tailfindr needs the `Events` table in the FAST5 file to calculate the read-specific normalizer -- `samples_per_nt` -- which is used to convert tail length in samples to tail length in nucleotides. If your data was basecalled with *MinKNOW-Live-Basecalling*, then the Events table might not be saved in the FAST5 file. In such a case, you can rebasecall your reads and adjust the `basecall_group` parameter accordingly in the `find_tails()` function as demonstrated in the use case # 4 above.
+
 * For DNA data, tailfindr decides whether a read is poly(A) or poly(T) based on finding Nanopore primers/adaptors. If you are using the flipflop model to basecall DNA data, please ensure that the nanopore adaptors are not trimmed off while basecalling. This can be done by turning off `enabling_trimming` option in the basecalling script. The script below shows you how we have basecalled our reads using the flipflop model
 
 ```{r, engine='bash', message = FALSE, eval = FALSE}
@@ -166,7 +182,7 @@ guppy_basecaller \
 
 ## Getting help
 
-If you encounter a clear bug, please file a minimal reproducible example on [github](https://github.com/adnaniazi/tailfindr/issues). For questions and other discussion, email me at adnan.niazi@uib.no.
+If you encounter a clear bug, please file a minimal reproducible example on [github](https://github.com/adnaniazi/tailfindr/issues). Please do provide us a few reads (around 10) so that we can reproduce the problem at our end, and figure out a solution for you.
 
 ## Citation
 Maximilian Krause, Adnan M. Niazi, Kornel Labun, Florian Sebastian Müller, Yamila Nicole Torres Cleuren, Eivind Valen (2019): ***tailfindr*: Alignment-free poly(A) length measurement for Oxford Nanopore RNA and DNA sequencing**. bioRxiv 588343; doi: https://doi.org/10.1101/588343
