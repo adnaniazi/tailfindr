@@ -5,9 +5,9 @@
 \title{Find Poly(A) tail in a single RNA read.}
 \usage{
 find_rna_polya_tail_per_read(file_path = NA, read_id_fast5_file = NA,
-  multifast5, basecalled_with, basecall_group, model, save_plots = FALSE,
-  show_plots = FALSE, save_dir = "~", plotting_library = "rbokeh",
-  plot_debug = FALSE)
+  multifast5, basecalled_with, basecall_group = "Basecall_1D_000", model,
+  save_plots = FALSE, show_plots = FALSE, save_dir = "~",
+  plotting_library = "rbokeh", plot_debug = FALSE)
 }
 \arguments{
 \item{file_path}{character string. Path of the FAST5 file}
