@@ -403,10 +403,12 @@ find_dna_tail_per_read <- function(file_path = NA,
                 names(lst) <- c(plot_title, 'Moves')
                 nrow <- 2
             }
+            suppressWarnings({
             p <- rbokeh::grid_plot(lst,
                                    nrow = nrow,
                                    link_data = TRUE,
                                    same_axes=c(TRUE, FALSE))
+            })
 
         } else { # plotting_library == 'ggplot2'
             if (plot_debug) {
