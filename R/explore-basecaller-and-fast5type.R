@@ -79,7 +79,7 @@ explore_basecaller_and_fast5type <- function(fast5file_path, basecall_group) {
 
     # find if the model used was standard model or flipflop model
     if (basecaller == 'guppy' & read_is_1d) {
-        trace <- sum(f5_tree == grepl('.*Trace$', f5_tree), arr.ind = T)
+        trace <- sum(which(grepl('.*Trace$', f5_tree)))
         model <- ifelse(trace > 0, 'flipflop', 'standard')
     } else if (basecaller == 'albacore') {
         model <- 'standard'
