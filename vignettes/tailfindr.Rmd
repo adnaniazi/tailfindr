@@ -83,7 +83,7 @@ Additionally, tailfindr allows you to generate plots that show the tail location
 Give below is a minimal use case in which we will run tailfindr on example cDNA reads present in the tailfindr package, and also save the plots:
 
 ```{r, message = FALSE, eval = FALSE}
-df <- find_tails(fast5_dir = fast5_dir <- system.file('extdata', 'cdna', package = 'tailfindr'),
+df <- find_tails(fast5_dir = system.file('extdata', 'cdna', package = 'tailfindr'),
                  save_dir = '~/Downloads',
                  csv_filename = 'cdna_tails.csv',
                  num_cores = 2,
@@ -97,7 +97,7 @@ However, note that generating plots can slow down the performace of tailfindr. W
 
 tailfindr can plot additional information that it used while deriving the tail boundaries. Please read our preprint to learn how tailfindr works. To plot this information, set the `plot_debug_traces` parameter to `TRUE`.
 ```{r, message = FALSE, eval = FALSE}
-df <- find_tails(fast5_dir = fast5_dir <- system.file('extdata', 'cdna', package = 'tailfindr'),
+df <- find_tails(fast5_dir = system.file('extdata', 'cdna', package = 'tailfindr'),
                  save_dir = '~/Downloads',
                  csv_filename = 'cdna_tails.csv',
                  num_cores = 2,
@@ -110,7 +110,7 @@ df <- find_tails(fast5_dir = fast5_dir <- system.file('extdata', 'cdna', package
 #### 4. Specifying custom basecall group
 tailfindr needs `Fastq` and `Events/Move` table to work on. By default, it searches for them in the `Basecall_1D_000` group in the Analyses section of the FAST5 file. If for whatever reason, you need tailfindr to read data from another basecall group -- lets say `Basecall_1D_001` -- then you can run tailfindr as below:
 ```{r, message = FALSE, eval = FALSE}
-df <- find_tails(fast5_dir = fast5_dir <- system.file('extdata', 'rna_basecall_1D_001', package = 'tailfindr'),
+df <- find_tails(fast5_dir = system.file('extdata', 'rna_basecall_1D_001', package = 'tailfindr'),
                  save_dir = '~/Downloads',
                  csv_filename = 'rna_tails.csv',
                  num_cores = 2,

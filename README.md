@@ -113,7 +113,7 @@ example cDNA reads present in the tailfindr package, and also save the
 plots:
 
 ``` r
-df <- find_tails(fast5_dir = fast5_dir <- system.file('extdata', 'cdna', package = 'tailfindr'),
+df <- find_tails(fast5_dir = system.file('extdata', 'cdna', package = 'tailfindr'),
                  save_dir = '~/Downloads',
                  csv_filename = 'cdna_tails.csv',
                  num_cores = 2,
@@ -137,7 +137,7 @@ to
 `TRUE`.
 
 ``` r
-df <- find_tails(fast5_dir = fast5_dir <- system.file('extdata', 'cdna', package = 'tailfindr'),
+df <- find_tails(fast5_dir = system.file('extdata', 'cdna', package = 'tailfindr'),
                  save_dir = '~/Downloads',
                  csv_filename = 'cdna_tails.csv',
                  num_cores = 2,
@@ -159,7 +159,7 @@ then you can run tailfindr as
 below:
 
 ``` r
-df <- find_tails(fast5_dir = fast5_dir <- system.file('extdata', 'rna_basecall_1D_001', package = 'tailfindr'),
+df <- find_tails(fast5_dir = system.file('extdata', 'rna_basecall_1D_001', package = 'tailfindr'),
                  save_dir = '~/Downloads',
                  csv_filename = 'rna_tails.csv',
                  num_cores = 2,
