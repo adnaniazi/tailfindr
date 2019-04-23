@@ -126,18 +126,7 @@ find_tails <- function(fast5_dir,
     # as they may be dangerous for normal users
     show_plots <- FALSE
 
-
     dna_datatype <- process_optional_params(...)  # R CMD NOTE
-    # if (length(list(...)) > 0) {
-    #     if ("dna_datatype" %in% names(...)) {
-    #         dna_datatype <- ...$dna_datatype
-    #     } else {
-    #         # data parameter is used only when the experiment_type is dna
-    #         dna_datatype <- 'cdna'
-    #     }
-    # } else {
-    #     dna_datatype <- 'cdna'
-    # }
 
     # start a log file
     if (dir.exists(file.path(save_dir))) {
@@ -215,6 +204,33 @@ find_tails <- function(fast5_dir,
 
     type_info <- explore_basecaller_and_fast5type(fast5_files_list[1],
                                                   basecall_group = basecall_group)
+
+    # currently MinKNOW does not store Events/Move table without which we
+    # cannot compute the read-specific normalizer
+    if (type_info$basecalled_with == 'minknow' & type_info$model == 'unknown') {
+        cat(paste0('  ', cli::symbol$cross,
+                  ' Fatal error! Your data has been basecalled with MinKNOW\n'))
+        cat('    live basecalling which currently does not save the\n')
+        cat('    Events/Move table in the Analyses/Basecall_dd_nnn section of\n')
+        cat('    the FAST5 file. You should rebasecall your FAST5 files using \n')
+        cat('    standalone Guppy or Albacore, and then use tailfindr on the \n')
+        cat('    rebasecalled files. Please adjust the value of basecall_group\n')
+        cat('    parameter in such a case, so that tailfindr can find the \n')
+        cat('    Events/Move table in the specified basecall_group. You can\n')
+        cat('    check which basecall_group the Event/Move is residing by\n')
+        cat('    opening your FAST5 file in HDFView.\n\n')
+        cat('    If the Events/Move is present in the data, and you still\n')
+        cat('    get this error then please open an issue on GitHub:\n')
+        cat('    https://github.com/adnaniazi/tailfindr/issues\n')
+        cat('    Remember to attach a few (around 5) of your FAST5 files\n')
+        cat('    to help us understand the issue.\n')
+        cat(cli::rule(left=paste('Processing ended at ',
+                                 Sys.time(), sep = '')), '\n', sep = "")
+        cat(paste(crayon::green(cli::symbol$cross),
+                  ' tailfindr finished unsuccessfully!\n', sep=''))
+        return(0)
+    }
+
     basecalled_with <- type_info$basecalled_with
     multifast5 <- ifelse(type_info$fast5type == 'multi', TRUE, FALSE)
     experiment_type <- type_info$experiment_type

@@ -68,10 +68,19 @@ explore_basecaller_and_fast5type <- function(fast5file_path, basecall_group) {
         basecaller <- f5_obj[[basecaller_path]]$attr_open('name')$read()
         basecalled_with_albacore <- grepl('Albacore', basecaller)
         basecalled_with_guppy <- grepl('Guppy', basecaller)
-        if (basecalled_with_albacore & !basecalled_with_guppy) {
+        basecalled_with_minknow <- grepl('MinKNOW', basecaller)
+        if (basecalled_with_albacore &
+            !basecalled_with_guppy &
+            !basecalled_with_minknow) {
             basecaller <- 'albacore'
-        } else if (!basecalled_with_albacore & basecalled_with_guppy) {
+        } else if (!basecalled_with_albacore &
+                   basecalled_with_guppy &
+                   !basecalled_with_minknow) {
             basecaller <- 'guppy'
+        } else if (!basecalled_with_albacore &
+                   !basecalled_with_guppy &
+                   basecalled_with_minknow) {
+            basecaller <- 'minknow'
         }
     } else {
         basecaller <- 'unknown'
@@ -83,6 +92,8 @@ explore_basecaller_and_fast5type <- function(fast5file_path, basecall_group) {
         model <- ifelse(trace > 0, 'flipflop', 'standard')
     } else if (basecaller == 'albacore') {
         model <- 'standard'
+    } else if (basecaller == 'minknow') {
+        model <- 'unknown'
     }
 
     # find if data is dna or rna

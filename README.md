@@ -113,7 +113,7 @@ example cDNA reads present in the tailfindr package, and also save the
 plots:
 
 ``` r
-df <- find_tails(fast5_dir = fast5_dir <- system.file('extdata', 'cdna', package = 'tailfindr'),
+df <- find_tails(fast5_dir = system.file('extdata', 'cdna', package = 'tailfindr'),
                  save_dir = '~/Downloads',
                  csv_filename = 'cdna_tails.csv',
                  num_cores = 2,
@@ -137,7 +137,7 @@ to
 `TRUE`.
 
 ``` r
-df <- find_tails(fast5_dir = fast5_dir <- system.file('extdata', 'cdna', package = 'tailfindr'),
+df <- find_tails(fast5_dir = system.file('extdata', 'cdna', package = 'tailfindr'),
                  save_dir = '~/Downloads',
                  csv_filename = 'cdna_tails.csv',
                  num_cores = 2,
@@ -151,15 +151,15 @@ plot](https://github.com/adnaniazi/tailfindr/raw/master/man/figures/poly_a_with_
 
 #### 4\. Specifying custom basecall group
 
-tailfindr needs `Fastq` and `Events` table to work on. By default, it
-searches them in the `Basecall_1D_000` group in the Analyses section of
-the FAST5 file. If for whatever reason, you need tailfindr to read data
-from another basecall group – lets say `Basecall_1D_001` – then you can
-run tailfindr as
+tailfindr needs `Fastq` and `Events/Move` table to work on. By default,
+it searches for them in the `Basecall_1D_000` group in the Analyses
+section of the FAST5 file. If for whatever reason, you need tailfindr to
+read data from another basecall group – lets say `Basecall_1D_001` –
+then you can run tailfindr as
 below:
 
 ``` r
-df <- find_tails(fast5_dir = fast5_dir <- system.file('extdata', 'rna_basecall_1D_001', package = 'tailfindr'),
+df <- find_tails(fast5_dir = system.file('extdata', 'rna_basecall_1D_001', package = 'tailfindr'),
                  save_dir = '~/Downloads',
                  csv_filename = 'rna_tails.csv',
                  num_cores = 2,
@@ -171,7 +171,7 @@ df <- find_tails(fast5_dir = fast5_dir <- system.file('extdata', 'rna_basecall_1
 
 In this case, the input FAST5 have two basecall groups:
 `Basecall_1D_000` and `Basecall_1D_001` but we configured tailfindr to
-use `Events` table from the `Basecall_1D_001` group.
+use `Events/Move` table from the `Basecall_1D_001` group.
 
 There are more options available in the find\_tails() function. Please
 see its
@@ -215,14 +215,14 @@ data:
 
 ## The devil👹 in the details
 
-  - tailfindr needs the `Events` table in the FAST5 file to calculate
-    the read-specific normalizer – `samples_per_nt` – which is used to
-    convert tail length in samples to tail length in nucleotides. If
-    your data was basecalled with *MinKNOW-Live-Basecalling*, then the
-    Events table might not be saved in the FAST5 file. In such a case,
-    you can rebasecall your reads and adjust the `basecall_group`
-    parameter accordingly in the `find_tails()` function as demonstrated
-    in the use case \# 4 above.
+  - tailfindr needs the `Events/Move` table in the FAST5 file to
+    calculate the read-specific normalizer – `samples_per_nt` – which is
+    used to convert tail length in samples to tail length in
+    nucleotides. If your data was basecalled with
+    *MinKNOW-Live-Basecalling*, then the Events/Move table might not be
+    saved in the FAST5 file. In such a case, you can rebasecall your
+    reads and adjust the `basecall_group` parameter accordingly in the
+    `find_tails()` function as demonstrated in the use case \# 4 above.
 
   - For DNA data, tailfindr decides whether a read is poly(A) or poly(T)
     based on finding Nanopore primers/adaptors. If you are using the
