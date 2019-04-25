@@ -205,10 +205,17 @@ find_tails <- function(fast5_dir,
 
     # search for all the fast5 files in the user-specified directory
     cat(paste(cli::symbol$bullet,' Searching for all Fast5 files...\n', sep=''))
-    fast5_files_list <- list.files(path = fast5_dir,
-                                   pattern = "\\.fast5$",
-                                   recursive = TRUE,
-                                   full.names = TRUE)
+
+    # must handle fast5 dir, or a pre-made character vector of file paths
+    if (is.na(fast5_dir[2])) {
+        fast5_files_list <- list.files(path = fast5_dir,
+                                       pattern = "\\.fast5$",
+                                       recursive = TRUE,
+                                       full.names = TRUE)
+    } else {
+        fast5_files_list <- fast5_dir
+    }
+
     num_files <- length(fast5_files_list)
     cat(paste0('  Done! Found ', num_files, ' Fast5 files.\n'))
 
