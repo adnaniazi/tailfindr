@@ -235,7 +235,7 @@ find_tails <- function(fast5_dir,
         cat('    check which basecall_group the Event/Move is residing by\n')
         cat('    opening your FAST5 file in HDFView.\n\n')
         cat('    If the Events/Move is present in the data and you have\n')
-        cat('    specified the correct basecall_group, and still\n')
+        cat('    specified the correct basecall_group, but you still\n')
         cat('    get this error then please open an issue on GitHub:\n')
         cat('    https://github.com/adnaniazi/tailfindr/issues\n')
         cat('    Remember to attach a few (around 5) of your FAST5 files\n')
