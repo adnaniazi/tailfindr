@@ -70,35 +70,28 @@
 #'
 #' # 1. Suppose you have 11 cores at your disposal, then you should run tailfindr
 #' # on your data as following:
-#' df <- find_tails(fast5_dir = '/path/to/fast5/folder/',
-#'                  save_dir = '/path/to/a/folder/where/results/are/to/be/stored/',
-#'                  csv_filename = 'tails.csv',
+#' df <- find_tails(fast5_dir = system.file('extdata', 'rna', package = 'tailfindr'),
+#'                  save_dir = '~/Downloads',
+#'                  csv_filename = 'rna_tails.csv',
 #'                  num_cores = 10)
+#' # In the above example, we have  used tailfindr on example RNA reads
+#' # present in the tailfindr package. You should substitute the path of
+#' # your data for the fast5_dir parameter.
 #'
-#' # 2. If you also want to save the plots showing the tail on the raw
-#' # squiggle using ggplot2 (plots will be save as .png files),
+#' # 2. If you want to save interactive HTML plots using rbokeh,
 #' # then you should run tailfindr as following:
-#' df <- find_tails(fast5_dir = '/path/to/fast5/folder/',
-#'                  save_dir = '/path/to/a/folder/where/results/are/to/be/stored/',
-#'                  csv_filename = 'tails.csv',
-#'                  num_cores = 10,
-#'                  save_plots = TRUE,
-#'                  plotting_library = 'ggplot2')
-#'
-#' # 3. If you want to save interactive HTML plots using rbokeh,
-#' # then you should run tailfindr as following:
-#' df <- find_tails(fast5_dir = '/path/to/fast5/folder/',
-#'                  save_dir = '/path/to/a/folder/where/results/are/to/be/stored/',
-#'                  csv_filename = 'tails.csv',
+#' df <- find_tails(fast5_dir = system.file('extdata', 'cdna', package = 'tailfindr'),
+#'                  save_dir = '~/Downloads',
+#'                  csv_filename = 'cdna_tails.csv',
 #'                  num_cores = 10,
 #'                  save_plots = TRUE,
 #'                  plotting_library = 'rbokeh')
 #'
-#' # 4. If you also want to plot debug traces, then you should run tailfindr as
+#' # 3. If you also want to plot debug traces, then you should run tailfindr as
 #' # below:
-#' df <- find_tails(fast5_dir = '/path/to/fast5/folder/',
-#'                  save_dir = '/path/to/a/folder/where/results/are/to/be/stored/',
-#'                  csv_filename = 'tails.csv',
+#' df <- find_tails(fast5_dir = system.file('extdata', 'cdna', package = 'tailfindr'),
+#'                  save_dir = '~/Downloads',
+#'                  csv_filename = 'cdna_tails.csv',
 #'                  num_cores = 10,
 #'                  save_plots = TRUE,
 #'                  plot_debug_traces = TRUE,
@@ -106,6 +99,28 @@
 #'
 #' # N.B.: Making and saving plots is a computationally slow process.
 #' # Only generate plots by running tailfindr on a small subset of your reads.
+#'
+#' # 4. By default, tailfindr uses Events/Move table in the Basecall_1D_000
+#' # section of the FAST5 file. If you want tailfindr to pick Events/Move table
+#' # from some other section of the FAST5 file -- lets say Basecall_1D_001--
+#' # then you should use tailfindr like below:
+#' df <- find_tails(fast5_dir = system.file('extdata', 'rna_basecall_1D_001', package = 'tailfindr'),
+#'                  save_dir = '~/Downloads',
+#'                  csv_filename = 'rna_tails.csv',
+#'                  num_cores = 2,
+#'                  basecall_group = 'Basecall_1D_001',
+#'                  save_plots = TRUE,
+#'                  plot_debug_traces = TRUE,
+#'                  plotting_library = 'rbokeh')
+#' # N.B.: tailfindr cannot work if it can't find Events or Move table in
+#' # your FAST5 files. MinKNOW Live Basecalling currently does not save the
+#' # Events/Move table in the FAST5 file. If your reads have been live
+#' # basecalled, then you should rebasecall them using Albacore or Guppy, and
+#' # subsequently use tailfindr and specify the basecall_group parameter. Most
+#' # probably, in the second round of your basecalling, the Events/Move table
+#' # is stored in the 'Basecall_1D_001' section, so set this as the value of the
+#' # basecall_group parameter. You can also confirm this by viewing your
+#' # re-basecalled reads in HDFView.
 #' }
 #'
 find_tails <- function(fast5_dir,
