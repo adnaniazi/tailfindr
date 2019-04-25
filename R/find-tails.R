@@ -17,7 +17,7 @@
 #' is set to \code{TRUE}, then a \code{plots} directory is also created within
 #' the \code{save_dir}.
 #'
-#' @param csv_filename character string [\code{"tails.csv"}]. Filename of the
+#' @param csv_filename character string ["tails.csv"]. Filename of the
 #' CSV file in which to store the tail length data
 #'
 #' @param num_cores numeric [1]. Num of physical cores to use in processing
@@ -26,7 +26,7 @@
 #' @param basecall_group a character string ["Basecall_1D_000"]. Name of the
 #' level in the Fast5 file hierarchy from which tailfindr should read the data.
 #'
-#' @param save_plots logical [\code{FALSE}]. If set to \code{TRUE}, a plots
+#' @param save_plots logical [FALSE]. If set to \code{TRUE}, a plots
 #' directory will be created within the save_dir, and plots showing poly(A) and
 #' poly(T) tails in the raw squiggle will be saved in this \code{plots}
 #' directory. Creating plots and saving them to the disk is a slow process. We
@@ -36,13 +36,13 @@
 #' Fast5 file containing this read; the read ID and fast5 file name are
 #' separated by two underscores (__).
 #'
-#' @param plot_debug_traces logical [\code{FALSE}]. This option works only
+#' @param plot_debug_traces logical [FALSE]. This option works only
 #' if \code{save_plots} option is also set to \code{TRUE}.If set to \code{TRUE},
 #' debugging information is plotted in the plots as well. This includes mean
 #' signal, slope signal,thresholds, smoothened signal, etc. We use this option
 #' internally to debug our algorithm.
 #'
-#' @param plotting_library character string [\code{"rbokeh"}]. \code{rbokeh}
+#' @param plotting_library character string ["rbokeh"]. \code{rbokeh}
 #' is the default plotting library used if \code{save_plots} is set to
 #' \code{TRUE}. The plots will be saved as HTML files in the
 #' \code{/save_dir/plots} directory. You can open these HTLM files in any
