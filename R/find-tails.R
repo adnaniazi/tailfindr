@@ -226,7 +226,7 @@ find_tails <- function(fast5_dir,
         cat(paste0('  ', cli::symbol$cross,
                   ' Fatal error! Your data has been basecalled with MinKNOW\n'))
         cat('    live basecalling which currently does not save the\n')
-        cat('    Events/Move table in the Analyses/Basecall_dd_nnn section of\n')
+        cat('    Events/Move table in the Analyses/Basecall_1D_000 section of\n')
         cat('    the FAST5 file. You should rebasecall your FAST5 files using \n')
         cat('    standalone Guppy or Albacore, and then use tailfindr on the \n')
         cat('    rebasecalled files. Please adjust the value of basecall_group\n')
@@ -234,7 +234,8 @@ find_tails <- function(fast5_dir,
         cat('    Events/Move table in the specified basecall_group. You can\n')
         cat('    check which basecall_group the Event/Move is residing by\n')
         cat('    opening your FAST5 file in HDFView.\n\n')
-        cat('    If the Events/Move is present in the data, and you still\n')
+        cat('    If the Events/Move is present in the data and you have\n')
+        cat('    specified the correct basecall_group, and still\n')
         cat('    get this error then please open an issue on GitHub:\n')
         cat('    https://github.com/adnaniazi/tailfindr/issues\n')
         cat('    Remember to attach a few (around 5) of your FAST5 files\n')
