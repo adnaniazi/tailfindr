@@ -33,35 +33,32 @@
 explore_basecaller_and_fast5type <- function(fast5file_path, basecall_group) {
 
     f5_obj <- hdf5r::H5File$new(fast5file_path, mode='r')
-    first_read <- f5_obj$open_by_idx(1)
-    object_name <- first_read$get_obj_name()
+    f5_obj_names <- f5_obj$names
 
     # find if the fast5 file is single or multifast5 file
-    if (grepl('read_', object_name)) {
-        fast5type <- 'multi'
-        first_read <- f5_obj$open_by_idx(1)
-        f5_tree <- first_read$ls(recursive=TRUE)
-    } else {
+    if (sum(grepl('read_', f5_obj_names)) <= 1) {
         fast5type <- 'single'
         f5_tree <- f5_obj$ls(recursive=TRUE)
+    } else {
+        fast5type <- 'multi'
+        first_read <- f5_obj$open_by_idx(1)
+        first_read_name <- f5_obj$names[1]
+        f5_tree <- first_read$ls(recursive=TRUE)
     }
     f5_tree <- f5_tree$name
 
     # find if the reads are 1D
-    path_to_check <- paste0('Analyses/', basecall_group)
-    if (fast5type == 'single') {
-        basecall_1d <- sum(which(f5_tree == path_to_check, arr.ind = T))
-    } else {
-        basecall_1d <- sum(grepl(path_to_check, f5_tree))
-    }
-    read_is_1d <- ifelse(basecall_1d > 0, TRUE, FALSE)
+    path_to_check <- paste0('Analyses/', 'Basecall_1D_')
+    basecall_1d_found <- sum(grepl(path_to_check, f5_tree))
+    read_is_1d <- ifelse(basecall_1d_found > 0, TRUE, FALSE)
 
     # find if the basecaller is legacy Albacore or the newer Guppy
     if (fast5type == 'multi' & read_is_1d) {
-        pth <- paste0('/', path_to_check)
-        basecaller_path <- paste(object_name, pth, sep = '')
+        basecaller_path <- paste0('/', first_read_name, '/Analyses/', basecall_group)
     } else if (fast5type == 'single' & read_is_1d) {
-        basecaller_path <- path_to_check
+        # handle both guppy and albacore single Fast5 files using regex
+        basecaller_path <- paste0('.*Analyses/', basecall_group, '$')
+        basecaller_path <- grep(basecaller_path,f5_tree, perl=TRUE, value=TRUE)
     }
 
     if (read_is_1d) {
@@ -100,7 +97,7 @@ explore_basecaller_and_fast5type <- function(fast5file_path, basecall_group) {
     if (fast5type == 'single') {
         context_tags_path <- f5_tree[grepl('.*context_tags$', f5_tree)]
     } else {
-        context_tags_path <- paste(object_name,
+        context_tags_path <- paste(first_read_name,
                             '/context_tags',
                             sep = '')
     }
