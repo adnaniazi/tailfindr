@@ -59,16 +59,23 @@ extract_read_data <- function(file_path = NA,
         f5_tree <- f5_obj$ls(recursive=TRUE)
         f5_tree <- f5_tree$name
         # define all the paths
-        read_id_path <- f5_tree[grepl('Raw/Reads/Read_[0-9]+$', f5_tree)]
-        raw_signal_path <- f5_tree[grepl('Raw/Reads/Read_[0-9]+/Signal', f5_tree)]
+        raw_signal_path <- grep('.*Signal$', f5_tree, perl = TRUE, value = TRUE)
+        if (sum(grepl('Raw/Reads/Read_[0-9]+$', f5_tree)) == 0) {
+            read_id_path <-  grep('.*Raw$', f5_tree, perl = TRUE, value = TRUE)
+        } else {
+            read_id_path <- f5_tree[grepl('Raw/Reads/Read_[0-9]+$', f5_tree)]
+        }
         # make fastq, Event/Move path
-        event_data_fastq_path <- paste0('Analyses/', basecall_group, '/BaseCalled_template')
+        event_data_fastq_path <- grep(paste0('.*', basecall_group, '/BaseCalled_template$'),
+                                      f5_tree, perl = TRUE, value = TRUE)
         # make segmentation path based on the basecall group
         sp <- strsplit(basecall_group, split = '_')
         seg_group <- sp[[1]][3]
-        segmentation_path <- paste0('Analyses/Segmentation_', seg_group, '/Summary/segmentation')
+        segmentation_path <- grep(paste0('.*', seg_group, '/Summary/segmentation$'),
+                                  f5_tree, perl = TRUE, value = TRUE)
         # make basecalled_template path
-        basecall_1d_template_path <- paste0('Analyses/', basecall_group, '/Summary/basecall_1d_template')
+        basecall_1d_template_path <- grep(paste0('.*', basecall_group, '/Summary/basecall_1d_template$'),
+                                          f5_tree, perl = TRUE, value = TRUE)
     }
     else {
         f5_obj <- hdf5r::H5File$new(read_id_fast5_file$fast5_file, mode='r')
