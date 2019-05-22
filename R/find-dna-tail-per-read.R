@@ -181,9 +181,17 @@ find_dna_tail_per_read <- function(file_path = NA,
     #     - there must be at least 60-sample (or more) long tail adjacent to the gap
     #     - the gap should be smaller than 120 nucleotide
     #
+
+    # define smoothened data threshold first
+    if (read_type == 'polyA') {
+        sm_data_threshold <- 0.6
+    } else if  (read_type == 'polyT') {
+        sm_data_threshold <- 0.3
+    }
+
     while (i < length(slope)){
         if ((slope[i] < SLOPE_THRESHOLD) & (slope[i] > -SLOPE_THRESHOLD) &
-            (smoothed_data[tail_start+i*window_size] < SLOPE_THRESHOLD+0.1)) {
+            (smoothed_data[tail_start+i*window_size] < sm_data_threshold)) {
             tail_end <- i
             i <- i + 1
         } else {
@@ -226,6 +234,19 @@ find_dna_tail_per_read <- function(file_path = NA,
                     file_path = file_path,
                     has_precise_boundary = has_precise_boundary))
     }
+
+
+    # tail ends prematurely especially the poly(A) because of the main tail
+    # finding logic above. This code extends that tail so that it is correct
+    while (i < length(slope)) {
+        if (smoothed_data[tail_start+i * window_size] < sm_data_threshold) {
+            tail_end <- i
+            i <- i + 1
+        } else {
+            break
+        }
+    }
+
 
     if (has_precise_boundary){
         tail_end <- start + (tail_end)*window_size
