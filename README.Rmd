@@ -163,6 +163,8 @@ Here are the columns that you will get from tailfindr if you have run it on DNA 
 
 * tailfindr needs the `Events/Move` table in the FAST5 file to calculate the read-specific normalizer -- `samples_per_nt` -- which is used to convert tail length in samples to tail length in nucleotides. If your data was basecalled with *MinKNOW-Live-Basecalling*, then the Events/Move table might not be saved in the FAST5 file. In such a case, you can rebasecall your reads and adjust the `basecall_group` parameter accordingly in the `find_tails()` function as demonstrated in the use case # 4 above.
 
+In the next release of MinKNOW, there will be an option to save the Move table in the the FAST5 files produced by live basecalling. When this happens, tailfindr will work on MinKNOW Live Basecalled reads out of the box without you having to re-basecall your live-basecalled data.
+
 * For DNA data, tailfindr decides whether a read is poly(A) or poly(T) based on finding Nanopore primers/adaptors. If you are using the flipflop model to basecall DNA data, please ensure that the nanopore adaptors are not trimmed off while basecalling. This can be done by turning off `enabling_trimming` option in the basecalling script. The script below shows you how we have basecalled our reads using the flipflop model
 
 ```{r, engine='bash', message = FALSE, eval = FALSE}
@@ -179,6 +181,14 @@ guppy_basecaller \
     --disable_pings 1 \
     --enable_trimming 0 
 ```
+
+* tailfindr has been tested and validated using the following sequencing kits:
+1. SQK-RNA001 and SQK-RNA002 for RNA 
+2. SQK-LSK108 and SQK-LSK109 for DNA
+
+* tailfindr has been tested and validated using the basecallers:
+1. Albacore v2.3.1 and v2.3.3.
+2. Guppy v2.2.2, v2.3.1, v3.0.1. Guppy v2.2.2, v2.3.1 were tested with flipflop basecalling for DNA, and Guppy v3.0.1 was tested with flipflop basecalling for RNA.
 
 ## Getting help
 
