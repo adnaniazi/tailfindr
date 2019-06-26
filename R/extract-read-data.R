@@ -31,7 +31,7 @@
 #' @param plotting_library a string
 #'
 #' @return a list
-#'
+#' @export
 #' @examples
 #' \dontrun{
 #'

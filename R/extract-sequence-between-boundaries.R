@@ -11,6 +11,7 @@
 #'
 #' @return
 #' A character string is returned containing FastQ sequencing
+#' @export
 #'
 #' @examples
 #' \dontrun{
@@ -27,14 +28,24 @@ extract_sequence_between_boundaries <- function(event_data, start, end) {
     i <- row_index_start
     fastq_bases <- ''
 
+    model_state_length_1 <- nchar(event_data$model_state[1]) == 1
+
     # make a fastq sequence
     while (i <= row_index_end){
         if (i == row_index_start){
             fastq_bases <- event_data$model_state[i]
         } else if (event_data$move[i] == 1) {
-            fastq_bases <- paste(fastq_bases, substr(event_data$model_state[i], 5, 5), sep='')
+            if (model_state_length_1) {
+                fastq_bases <- paste(fastq_bases,
+                                     event_data$model_state[i],
+                                     sep = '')
+            } else {
+                fastq_bases <- paste(fastq_bases,
+                                     substr(event_data$model_state[i], 5, 5),
+                                     sep = '')
+            }
         } else if (event_data$move[i] == 2) {
-            fastq_bases <- paste(fastq_bases, substr(event_data$model_state[i], 4, 5), sep='')
+            fastq_bases <- paste(fastq_bases, substr(event_data$model_state[i], 4, 5), sep = '')
         }
         i <- i + 1
     }
