@@ -9,6 +9,8 @@
 #' @param window_size Size of the window
 #' @param step_size Step-size of the sliding window
 #'
+#' @export
+#'
 #' @return A signal that has been smoothed using the sliding window.
 #'
 right_to_left_sliding_window_dna <-
@@ -40,6 +42,8 @@ right_to_left_sliding_window_dna <-
 #' @param data Timeseries data to which to apply the sliding window
 #' @param window_size Size of the window
 #' @param step_size Step-size of the sliding window
+#'
+#' @export
 #'
 #' @return A signal that has been smoothed using the sliding window.
 #'

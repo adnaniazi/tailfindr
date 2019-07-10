@@ -2,6 +2,8 @@
 #'
 #' @param data a numeric. A numeric vector containing the raw signal.
 #'
+#' @export
+#'
 #' @return A numeric vector containing the modified signal.
 #'
 rectify <- function(data){

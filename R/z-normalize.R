@@ -5,6 +5,7 @@
 #' @param timeseries Timeseries data that needs to be z-normalized
 #'
 #' @return z_normalized_timeseries A z-normalized timeseries
+#' @export
 #'
 z_normalize <- function(timeseries) {
     ts_mean <- mean(timeseries)

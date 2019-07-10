@@ -8,6 +8,7 @@
 #' @param spike_threshold Threshold beyond which spikes will be clipped
 #'
 #' @return Same data as input but with spikes clipped
+#' @export
 #'
 #' @examples
 #' \dontrun{

@@ -19,6 +19,9 @@ SystemRequirements: libhdf5 (>= 1.8.13)
 biocViews:
 Imports: 
     Biostrings (>= 2.48.0),
+    DECIPHER (>= 2.12.0),
+    msa (>= 1.16.0),
+    magrittr (>= 1.5),
     ggplot2 (>= 3.0.0), 
     stats (>= 3.0.0), 
     dplyr (>= 0.7.6),

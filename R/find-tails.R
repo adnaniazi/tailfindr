@@ -323,12 +323,19 @@ find_tails <- function(fast5_dir,
     if (experiment_type == 'dna') {
         match <- 1
         mismatch <- -1
-        type <-'local'
+        type <- 'local'
         gapOpening <- 0
         gapExtension <- 1
-        submat <- Biostrings::nucleotideSubstitutionMatrix(match = match,
-                                                           mismatch = mismatch,
-                                                           baseOnly = TRUE)
+
+        if (dna_datatype == 'rca-cdna') {
+            submat <- Biostrings::nucleotideSubstitutionMatrix(match = match,
+                                                               mismatch = mismatch)
+        } else {
+            submat <- Biostrings::nucleotideSubstitutionMatrix(match = match,
+                                                               mismatch = mismatch,
+                                                               baseOnly = TRUE)
+        }
+
         dna_opts <- list(match = match,
                          mismatch = mismatch,
                          type = type,
@@ -399,9 +406,9 @@ find_tails <- function(fast5_dir,
             opts <- list(progress = progress)
 
             # foreach loop
-            sink(file=NULL, type = 'output')
+            sink(file = NULL, type = 'output')
             close(con)
-            if (experiment_type == 'dna') {
+            if (experiment_type == 'dna' & dna_datatype != 'rca-cdna') {
                 riff <- NULL  # R CMD CHECK
                 data_list <- foreach::foreach(riff = read_id_fast5_file_subset,
                                               .combine = 'rbind',
@@ -436,7 +443,47 @@ find_tails <- function(fast5_dir,
                                                                  has_precise_boundary = NA)
                                                   })
                                               }
-            } else {
+            } else if (experiment_type == 'dna' & dna_datatype == 'rca-cdna') {
+                riff <- NULL  # R CMD CHECK
+                data_list <- foreach::foreach(riff = read_id_fast5_file_subset,
+                                              .combine = 'rbind',
+                                              .inorder = FALSE,
+                                              .packages = c('msa'),
+                                              .options.snow = opts,
+                                              .options.multicore = mcoptions) %dopar% {
+                                                  tryCatch({
+                                                      rca_find_tails_main(file_path = NA,
+                                                                          read_id_fast5_file = riff,
+                                                                          basecall_group = basecall_group,
+                                                                          save_plots = save_plots,
+                                                                          show_plots = show_plots,
+                                                                          plot_debug = plot_debug,
+                                                                          save_dir = save_dir,
+                                                                          plotting_library = plotting_library,
+                                                                          multifast5 = multifast5,
+                                                                          basecalled_with = basecalled_with,
+                                                                          model = model,
+                                                                          dna_opts = dna_opts)
+                                                  },
+                                                  error=function(e){
+                                                      ls <- data.frame(
+                                                          start = NA,
+                                                          end = NA,
+                                                          fastq_segment = NA,
+                                                          read_type = 'invalid',
+                                                          cluster = NA,
+                                                          tail_start = NA,
+                                                          tail_end = NA,
+                                                          read_id = riff$read_id,
+                                                          cluster_n = NA,
+                                                          file_path = riff$fast5_file,
+                                                          tail_length = NA,
+                                                          samples_per_nt = NA
+                                                      )
+                                                  })
+                                              }
+            }
+            else {
                 riff <- NULL  # R CMD CHECK
                 data_list <- foreach::foreach(riff = read_id_fast5_file_subset,
                                               .combine = 'rbind',
@@ -517,9 +564,9 @@ find_tails <- function(fast5_dir,
             opts <- list(progress = progress)
 
             # foreach loop
-            sink(file=NULL, type = 'output')
+            sink(file = NULL, type = 'output')
             close(con)
-            if (experiment_type == 'dna') {
+            if (experiment_type == 'dna' & dna_datatype != 'rca-cdna') {
                 file_path <- NULL  # R CMD CHECK
                 data_list <- foreach::foreach(file_path = fast5_files_subset,
                                               .combine = 'rbind',
@@ -552,6 +599,46 @@ find_tails <- function(fast5_dir,
                                                                 has_precise_boundary = NA)
                                                  })
                                              }
+            } else if (experiment_type == 'dna' & dna_datatype == 'rca-cdna') {
+                file_path <- NULL  # R CMD CHECK
+                data_list <- foreach::foreach(file_path = fast5_files_subset,
+                                              .combine = 'rbind',
+                                              .inorder = FALSE,
+                                              .packages = c('msa'),
+                                              .options.snow = opts,
+                                              .options.multicore = mcoptions) %dopar% {
+                                                  tryCatch({
+                                                      rca_find_tails_main(file_path = file_path,
+                                                                          read_id_fast5_file = NA,
+                                                                          basecall_group = basecall_group,
+                                                                          save_plots = save_plots,
+                                                                          show_plots = show_plots,
+                                                                          plot_debug = plot_debug,
+                                                                          save_dir = save_dir,
+                                                                          plotting_library = plotting_library,
+                                                                          multifast5 = multifast5,
+                                                                          basecalled_with = basecalled_with,
+                                                                          model = model,
+                                                                          dna_opts = dna_opts)
+                                                  },
+                                                  error=function(e){
+                                                      ls <-data.frame(
+                                                          error = e,
+                                                          start = NA,
+                                                          end = NA,
+                                                          fastq_segment = NA,
+                                                          read_type = 'invalid',
+                                                          cluster = NA,
+                                                          tail_start = NA,
+                                                          tail_end = NA,
+                                                          read_id = NA,
+                                                          cluster_n = NA,
+                                                          file_path = file_path,
+                                                          tail_length = NA,
+                                                          samples_per_nt = NA
+                                                      )
+                                                  })
+                                              }
             } else {
                 file_path <- NULL  # R CMD CHECK
                 data_list <-foreach::foreach(file_path = fast5_files_subset,
@@ -593,18 +680,25 @@ find_tails <- function(fast5_dir,
 
     # format the results list into a tibble
     cat(paste0(cli::symbol$bullet,' Formatting the tail data...\n'))
+
+    if (dna_datatype != 'rca-cdna') {
+        print(2)
+    }
+
     result <- purrr::map(result, function(.x) tibble::as_tibble(.x))
     result <- dplyr::bind_rows(result, .id = "chunk")
     result <- dplyr::select(result, -chunk)
     # cleanup the tibble
     result <- tidyr::unnest(result)
-    if (experiment_type == 'dna') {
+    if (experiment_type == 'dna' & dna_datatype != 'rca-cdna') {
         has_precise_boundary <- NULL  # R CMD CHECK
         result <- within(result, rm(has_precise_boundary))
-    } else {
+    } else if (experiment_type == 'rna') {
         polya_fastq <- NULL  # R CMD CHECK
         result <- within(result, rm(polya_fastq))
     }
+
+
     result$tail_length <- round(result$tail_length, digits = 2)
     result$samples_per_nt <- round(result$samples_per_nt, digits = 2)
     cat('  Done!\n')

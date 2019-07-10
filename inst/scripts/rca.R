@@ -9,7 +9,11 @@ df$filepath <-  gsub(pattern = "/Users/max/R/RCA/",
                      replacement = "/Users/adnaniazi/mnt/kjempetuja/export/valenfs/data/processed_data/MinION/20190506_DNA_Max_RCA-GFP/basecalled_data_guppy_301_single_fast5/",
                      x = df$filepath)
 #filepath <- "/Users/adnaniazi/mnt/kjempetuja/export/valenfs/data/processed_data/MinION/20190506_DNA_Max_RCA-GFP/basecalled_data_guppy_301_single_fast5/4/b86a1494-ae62-4092-a104-5df8f64c22a1.fast5"
-filepath <- "/Users/adnaniazi/mnt/kjempetuja/export/valenfs/data/processed_data/MinION/20190506_DNA_Max_RCA-GFP/basecalled_data_guppy_301_single_fast5/13/9e10a4a2-f884-4861-ab6e-b0d73667d93a.fast5"
+#filepath <- "/Users/adnaniazi/mnt/kjempetuja/export/valenfs/data/processed_data/MinION/20190506_DNA_Max_RCA-GFP/basecalled_data_guppy_301_single_fast5/13/9e10a4a2-f884-4861-ab6e-b0d73667d93a.fast5"
+
+# polyT
+filepath <- "/Users/adnaniazi/mnt/kjempetuja/export/valenfs/data/processed_data/MinION/20190506_DNA_Max_RCA-GFP/basecalled_data_guppy_301_single_fast5/14/95c012fd-ed98-41ca-8fe4-2101b16a45f8.fast5"
+
 # Extract read data
 read_data <- extract_read_data(file_path = filepath,
                                read_id_fast5_file = NA,
@@ -119,8 +123,11 @@ as_rc_oligoT_mp
 ########################
 ### 2. Strand switch ###
 ########################
-ss <- Biostrings::DNAString("AACGATGTACGGCGGGGAAGATAGAGCGACAGGC")
-rc_ss <- Biostrings::DNAString("GCCTGTCGCTCTATCTTCCCCGCCGTACATCGTT")
+#ss <- Biostrings::DNAString("AACGATGTACGGCGGGGAAGATAGAGCGACAGGC")
+#rc_ss <- Biostrings::DNAString("GCCTGTCGCTCTATCTTCCCCGCCGTACATCGTT")
+
+ss <- Biostrings::DNAString("AACGATGTACGGCGGG")
+rc_ss <- Biostrings::DNAString("CCCGCCGTACATCGTT")
 
 as_ss <- Biostrings::pairwiseAlignment(pattern = ss,
                                               subject = fastq,
