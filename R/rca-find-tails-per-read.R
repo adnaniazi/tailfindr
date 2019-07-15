@@ -23,6 +23,7 @@ rca_find_tails_per_read <- function(rca_data, read_data, file_path) {
             tail_end = NA,
             read_id = read_data$read_id,
             cluster_n = NA,
+            stdev = NA,
             file_path = file_path,
             tail_length = NA,
             samples_per_nt = NA
@@ -244,18 +245,20 @@ rca_find_tails_per_read <- function(rca_data, read_data, file_path) {
     } # End of for loop
 
     # Prepare the data
-    cluster <- tail_length.x <- tail_length.y <- NULL
+    cluster <- tail_length.x <- tail_length.y <- stdev <- NULL
     rca_data_mean <- rca_data %>%
         dplyr::filter(read_type == 'polyA' | read_type == 'polyT') %>%
         dplyr::group_by(read_type, cluster) %>%
-        dplyr::summarise(cluster_n = sum(!is.na(tail_length)),
+        dplyr::summarize(cluster_n = sum(!is.na(tail_length)),
+                         stdev = sd(tail_length, na.rm = TRUE),
                          tail_length = mean(tail_length, na.rm = TRUE)) %>%
         dplyr::mutate(file_path = file_path) %>%
         dplyr::ungroup() %>%
         dplyr::mutate(read_type = dplyr::if_else(
             read_type == 'polyA', 'consensus_polyA', 'consensus_polyT')) %>%
-        dplyr::mutate(tail_length = ifelse(is.nan(tail_length), NA, tail_length)
-        )
+        dplyr::mutate(tail_length = ifelse(is.nan(tail_length), NA, tail_length)) %>%
+        dplyr::mutate(stdev = ifelse(is.nan(stdev), NA, stdev))
+
     result <- dplyr::full_join(rca_data, rca_data_mean, by = c('read_type', 'cluster')) %>%
         dplyr::mutate(tail_length = dplyr::coalesce(tail_length.x, tail_length.y)) %>%
         dplyr::select(-tail_length.x, -tail_length.y, -id) %>%

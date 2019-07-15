@@ -97,10 +97,19 @@ df_dna <- find_tails(fast5_dir = "/Users/adnaniazi/mnt/kjempetuja/export/valenfs
                      save_dir = '~/Downloads/rca',
                      basecall_group = 'Basecall_1D_000',
                      csv_filename = 'tails.csv',
-                     num_cores = 6,
+                     num_cores = 4,
                      save_plots = FALSE,
                      dna_datatype = 'rca-cdna')
 
+
+library(tailfindr)
+df_dna <- find_tails(fast5_dir = "/export/valenfs/data/processed_data/MinION/20190506_DNA_Max_RCA-GFP/basecalled_data_guppy_301_single_fast5/",
+                     save_dir = '/export/valenfs/data/processed_data/MinION/20190506_DNA_Max_RCA-GFP/basecalled_data_guppy_301_single_fast5/tailfindr_rca',
+                     basecall_group = 'Basecall_1D_000',
+                     csv_filename = 'tails.csv',
+                     num_cores = 1,
+                     save_plots = FALSE,
+                     dna_datatype = 'rca-cdna')
 
 df_dna <- find_tails(fast5_dir = "/Users/adnaniazi/Documents/phd/delete_later/rca3",
                      save_dir = '~/Downloads/rca',
@@ -122,3 +131,7 @@ df <- rca_find_tails_main(file_path = "/Users/adnaniazi/Documents/phd/delete_lat
                                 multifast5 = FALSE,
                                 basecalled_with = 'guppy',
                                 model = 'flipflop')
+
+
+# Analysis
+df <- read.csv("~/Downloads/rca/tails.csv", header = TRUE, stringsAsFactors = FALSE)
