@@ -93,7 +93,7 @@ rca_data_2 <- rca_find_tails_per_read(rca_data = rca_data,
 
 # run the final algorithm
 library(tailfindr)
-df_dna <- find_tails(fast5_dir = "/Users/adnaniazi/mnt/kjempetuja/export/valenfs/data/processed_data/MinION/20190506_DNA_Max_RCA-GFP/basecalled_data_guppy_301_single_fast5/",
+df_dna <- find_tails(fast5_dir = "/Users/adnaniazi/mnt/kjempetuja/export/valenfs/data/processed_data/MinION/20190506_DNA_Max_RCA-GFP/basecalled_data_guppy_301_single_fast5/1/",
                      save_dir = '~/Downloads/rca',
                      basecall_group = 'Basecall_1D_000',
                      csv_filename = 'tails.csv',
@@ -107,7 +107,7 @@ df_dna <- find_tails(fast5_dir = "/export/valenfs/data/processed_data/MinION/201
                      save_dir = '/export/valenfs/data/processed_data/MinION/20190506_DNA_Max_RCA-GFP/tailfindr_rca',
                      basecall_group = 'Basecall_1D_000',
                      csv_filename = 'tails.csv',
-                     num_cores = 10,
+                     num_cores = 2,
                      save_plots = FALSE,
                      dna_datatype = 'rca-cdna')
 

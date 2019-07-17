@@ -27,7 +27,7 @@ rca_create_consensus_sequence <- function(data){
             consensus <- msa::msaConsensusSequence(alignments, ignoreGaps = FALSE)
             consensus <- gsub('[[:punct:]]', '', consensus)
         } else {# if only one element in cluster then clustering fails
-            consensus <- Biostrings::DNAStringSet(polya_cluster_list[[i]])
+            consensus <- Biostrings::DNAString(polya_cluster_list[[i]])
         }
 
         polyat_df[nrow(polyat_df) + 1, ] = list(start = NA,
@@ -46,7 +46,7 @@ rca_create_consensus_sequence <- function(data){
             consensus <- msa::msaConsensusSequence(alignments, ignoreGaps = FALSE)
             consensus <- gsub('[[:punct:]]', '', consensus)
         } else {# if only one element in cluster then clustering fails
-            consensus <- Biostrings::DNAStringSet(polyt_cluster_list[[i]])
+            consensus <- Biostrings::DNAString(polyt_cluster_list[[i]])
         }
 
 
