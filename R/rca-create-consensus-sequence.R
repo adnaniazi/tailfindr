@@ -32,7 +32,8 @@ rca_create_consensus_sequence <- function(data){
             } else {
                 alignments <- DECIPHER::AlignSeqs(Biostrings::DNAStringSet(polya_cluster_list[[i]]),
                                                   gapOpening = gapOpening,
-                                                  gapExtension = gapExtension)
+                                                  gapExtension = gapExtension,
+                                                  verbose = FALE)
             }
             consensus <- msa::msaConsensusSequence(alignments, ignoreGaps = FALSE)
             consensus <- gsub('[[:punct:]]', '', consensus)
@@ -56,7 +57,8 @@ rca_create_consensus_sequence <- function(data){
             } else {
                 alignments <- DECIPHER::AlignSeqs(Biostrings::DNAStringSet(polyt_cluster_list[[i]]),
                                                   gapOpening = gapOpening,
-                                                  gapExtension = gapExtension)
+                                                  gapExtension = gapExtension,
+                                                  verbose = FALSE)
             }
             consensus <- msa::msaConsensusSequence(alignments, ignoreGaps = FALSE)
             consensus <- gsub('[[:punct:]]', '', consensus)
