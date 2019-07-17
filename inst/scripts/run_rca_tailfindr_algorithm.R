@@ -107,7 +107,7 @@ df_dna <- find_tails(fast5_dir = "/export/valenfs/data/processed_data/MinION/201
                      save_dir = '/export/valenfs/data/processed_data/MinION/20190506_DNA_Max_RCA-GFP/tailfindr_rca',
                      basecall_group = 'Basecall_1D_000',
                      csv_filename = 'tails.csv',
-                     num_cores = 60,
+                     num_cores = 20,
                      save_plots = FALSE,
                      dna_datatype = 'rca-cdna')
 

@@ -607,6 +607,7 @@ find_tails <- function(fast5_dir,
                                               .combine = 'rbind',
                                               .inorder = FALSE,
                                               .packages = c('msa'),
+                                              .errorhandling = 'remove',
                                               .options.snow = opts,
                                               .options.multicore = mcoptions) %dopar% {
                                                   tryCatch({
