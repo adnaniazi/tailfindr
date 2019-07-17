@@ -97,7 +97,7 @@ df_dna <- find_tails(fast5_dir = "/Users/adnaniazi/mnt/kjempetuja/export/valenfs
                      save_dir = '~/Downloads/rca',
                      basecall_group = 'Basecall_1D_000',
                      csv_filename = 'tails.csv',
-                     num_cores = 4,
+                     num_cores = 6,
                      save_plots = FALSE,
                      dna_datatype = 'rca-cdna')
 
