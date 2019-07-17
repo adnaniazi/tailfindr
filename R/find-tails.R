@@ -309,8 +309,8 @@ find_tails <- function(fast5_dir,
 
     # Make a compute cluster
     cat(paste(cli::symbol$bullet,' Starting a parallel compute cluster...\n', sep=''))
-    #cl <- parallel::makeCluster(num_cores, outfile='')
-    cl <- parallel::makeCluster(num_cores)
+    cl <- parallel::makeCluster(num_cores, outfile = '')
+    #cl <- parallel::makeCluster(num_cores)
     on.exit(parallel::stopCluster(cl))
 
     doSNOW::registerDoSNOW(cl)
@@ -607,7 +607,6 @@ find_tails <- function(fast5_dir,
                                               .combine = 'rbind',
                                               .inorder = FALSE,
                                               .packages = c('msa'),
-                                              .errorhandling = 'remove',
                                               .options.snow = opts,
                                               .options.multicore = mcoptions) %dopar% {
                                                   tryCatch({
