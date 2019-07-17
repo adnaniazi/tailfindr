@@ -37,14 +37,14 @@ rca_create_consensus_sequence <- function(data){
                                                   verbose = FALSE)
                 consensus <- DECIPHER::ConsensusSequence(alignments,
                                                          ambiguity = FALSE,
-                                                         threshold=0.3,
-                                                         minInformation=0.6,
-                                                         noConsensusChar="-")
+                                                         threshold = 0.3,
+                                                         minInformation = 0.6,
+                                                         noConsensusChar = "-")
                 consensus <- as.character(consensus)
             }
             consensus <- gsub('[[:punct:]]', '', consensus)
         } else {# if only one element in cluster then clustering fails
-            consensus <- Biostrings::DNAString(polya_cluster_list[[i]]
+            consensus <- polya_cluster_list[[i]]
         }
         polyat_df[nrow(polyat_df) + 1, ] = list(start = NA,
                                                 end = NA,
@@ -68,9 +68,9 @@ rca_create_consensus_sequence <- function(data){
                                                   verbose = FALSE)
                 consensus <- DECIPHER::ConsensusSequence(alignments,
                                                          ambiguity = FALSE,
-                                                         threshold=0.3,
-                                                         minInformation=0.6,
-                                                         noConsensusChar="-")
+                                                         threshold  = 0.3,
+                                                         minInformation = 0.6,
+                                                         noConsensusChar = "-")
                 consensus <- as.character(consensus)
             }
             consensus <- gsub('[[:punct:]]', '', consensus)
