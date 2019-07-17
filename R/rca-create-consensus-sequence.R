@@ -29,13 +29,19 @@ rca_create_consensus_sequence <- function(data){
                                        method = 'ClustalW',
                                        gapOpening = gapOpening,
                                        gapExtension = gapExtension)
+                consensus <- msa::msaConsensusSequence(alignments, ignoreGaps = FALSE)
             } else {
                 alignments <- DECIPHER::AlignSeqs(Biostrings::DNAStringSet(polya_cluster_list[[i]]),
                                                   gapOpening = gapOpening,
                                                   gapExtension = gapExtension,
-                                                  verbose = FALE)
+                                                  verbose = FALSE)
+                consensus <- DECIPHER::ConsensusSequence(alignments,
+                                                         ambiguity = FALSE,
+                                                         threshold=0.3,
+                                                         minInformation=0.6,
+                                                         noConsensusChar="-")
+                consensus <- as.character(consensus)
             }
-            consensus <- msa::msaConsensusSequence(alignments, ignoreGaps = FALSE)
             consensus <- gsub('[[:punct:]]', '', consensus)
         } else {# if only one element in cluster then clustering fails
             consensus <- Biostrings::DNAString(polya_cluster_list[[i]])
@@ -54,13 +60,19 @@ rca_create_consensus_sequence <- function(data){
                                        method = 'ClustalW',
                                        gapOpening = gapOpening,
                                        gapExtension = gapExtension)
+                consensus <- msa::msaConsensusSequence(alignments, ignoreGaps = FALSE)
             } else {
                 alignments <- DECIPHER::AlignSeqs(Biostrings::DNAStringSet(polyt_cluster_list[[i]]),
                                                   gapOpening = gapOpening,
                                                   gapExtension = gapExtension,
                                                   verbose = FALSE)
+                consensus <- DECIPHER::ConsensusSequence(alignments,
+                                                         ambiguity = FALSE,
+                                                         threshold=0.3,
+                                                         minInformation=0.6,
+                                                         noConsensusChar="-")
+                consensus <- as.character(consensus)
             }
-            consensus <- msa::msaConsensusSequence(alignments, ignoreGaps = FALSE)
             consensus <- gsub('[[:punct:]]', '', consensus)
         } else {# if only one element in cluster then clustering fails
             consensus <- Biostrings::DNAString(polyt_cluster_list[[i]])
