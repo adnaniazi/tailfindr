@@ -17,19 +17,28 @@ rca_create_consensus_sequence <- function(data){
     gapOpening <- 0
     gapExtension <- 1
 
+    tool <- 'decipher'
+    # msa tool has this wierd error
+    # internalRsequence.aln and internalRsequence.dnd not found
+
     # DO the alignment of all clusters
     for (i in seq_along(polya_cluster_list)) {
         if (length(polya_cluster_list[[i]]) > 1) {
-            alignments <- msa::msa(Biostrings::DNAStringSet(polya_cluster_list[[i]]),
-                                   method = 'ClustalW',
-                                   gapOpening = gapOpening,
-                                   gapExtension = gapExtension)
+            if (tool == 'msa') {
+                alignments <- msa::msa(Biostrings::DNAStringSet(polya_cluster_list[[i]]),
+                                       method = 'ClustalW',
+                                       gapOpening = gapOpening,
+                                       gapExtension = gapExtension)
+            } else {
+                alignments <- DECIPHER::AlignSeqs(Biostrings::DNAStringSet(polya_cluster_list[[i]]),
+                                                  gapOpening = gapOpening,
+                                                  gapExtension = gapExtension)
+            }
             consensus <- msa::msaConsensusSequence(alignments, ignoreGaps = FALSE)
             consensus <- gsub('[[:punct:]]', '', consensus)
         } else {# if only one element in cluster then clustering fails
             consensus <- Biostrings::DNAString(polya_cluster_list[[i]])
         }
-
         polyat_df[nrow(polyat_df) + 1, ] = list(start = NA,
                                                 end = NA,
                                                 fastq_segment = consensus,
@@ -39,23 +48,27 @@ rca_create_consensus_sequence <- function(data){
 
     for (i in seq_along(polyt_cluster_list)) {
         if (length(polyt_cluster_list[[i]]) > 1) {
-            alignments <- msa::msa(Biostrings::DNAStringSet(polyt_cluster_list[[i]]),
-                                   method = 'ClustalW',
-                                   gapOpening = gapOpening,
-                                   gapExtension = gapExtension)
+            if (tool == 'msa') {
+                alignments <- msa::msa(Biostrings::DNAStringSet(polyt_cluster_list[[i]]),
+                                       method = 'ClustalW',
+                                       gapOpening = gapOpening,
+                                       gapExtension = gapExtension)
+            } else {
+                alignments <- DECIPHER::AlignSeqs(Biostrings::DNAStringSet(polyt_cluster_list[[i]]),
+                                                  gapOpening = gapOpening,
+                                                  gapExtension = gapExtension)
+            }
             consensus <- msa::msaConsensusSequence(alignments, ignoreGaps = FALSE)
             consensus <- gsub('[[:punct:]]', '', consensus)
         } else {# if only one element in cluster then clustering fails
             consensus <- Biostrings::DNAString(polyt_cluster_list[[i]])
         }
 
-
         polyat_df[nrow(polyat_df) + 1, ] = list(start = NA,
                                                 end = NA,
                                                 fastq_segment = consensus,
                                                 read_type = 'consensus_polyT',
                                                 cluster = i)
-
     }
 
     return(polyat_df)
