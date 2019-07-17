@@ -132,6 +132,18 @@ df <- rca_find_tails_main(file_path = "/Users/adnaniazi/Documents/phd/delete_lat
                                 basecalled_with = 'guppy',
                                 model = 'flipflop')
 
+df <- rca_find_tails_main(file_path = "/Users/adnaniazi/mnt/kjempetuja/export/valenfs/data/processed_data/MinION/20190506_DNA_Max_RCA-GFP/basecalled_data_guppy_301_single_fast5//10/af9bed08-6eaa-4af6-a3f3-c30d6a9e1b49.fast5",
+                          read_id_fast5_file = NA,
+                          basecall_group = 'Basecall_1D_000',
+                          save_plots = FALSE,
+                          show_plots = FALSE,
+                          plot_debug = FALSE,
+                          save_dir = '~/Downloads/rca',
+                          plotting_library = 'rbokeh',
+                          multifast5 = FALSE,
+                          basecalled_with = 'guppy',
+                          model = 'flipflop')
+
 
 # Analysis
 df <- read.csv("~/Downloads/rca/tails.csv", header = TRUE, stringsAsFactors = FALSE)
