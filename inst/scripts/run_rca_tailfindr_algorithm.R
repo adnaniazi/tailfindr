@@ -104,10 +104,10 @@ df_dna <- find_tails(fast5_dir = "/Users/adnaniazi/mnt/kjempetuja/export/valenfs
 
 library(tailfindr)
 df_dna <- find_tails(fast5_dir = "/export/valenfs/data/processed_data/MinION/20190506_DNA_Max_RCA-GFP/basecalled_data_guppy_301_single_fast5/",
-                     save_dir = '/export/valenfs/data/processed_data/MinION/20190506_DNA_Max_RCA-GFP/basecalled_data_guppy_301_single_fast5/tailfindr_rca',
+                     save_dir = '/export/valenfs/data/processed_data/MinION/20190506_DNA_Max_RCA-GFP/tailfindr_rca',
                      basecall_group = 'Basecall_1D_000',
                      csv_filename = 'tails.csv',
-                     num_cores = 1,
+                     num_cores = 10,
                      save_plots = FALSE,
                      dna_datatype = 'rca-cdna')
 

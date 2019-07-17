@@ -413,7 +413,6 @@ find_tails <- function(fast5_dir,
                 data_list <- foreach::foreach(riff = read_id_fast5_file_subset,
                                               .combine = 'rbind',
                                               .inorder = FALSE,
-                                              .errorhandling = 'pass',
                                               .options.snow = opts,
                                               .options.multicore = mcoptions) %dopar% {
                                                   tryCatch({
