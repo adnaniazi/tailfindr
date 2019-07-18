@@ -33,7 +33,7 @@ rca_find_tails_per_read <- function(rca_data, read_data, file_path) {
     # Define thresholds
     SPIKE_THRESHOLD <- 2.0
     MOVING_WINDOW_SIZE <- 30
-    MAX_GAP_BETWEEN_TAILS <- 90 * read_data$samples_per_nt
+    MAX_GAP_BETWEEN_TAILS <- 20 * read_data$samples_per_nt
     SLOPE_THRESHOLD <- 0.20
 
     # Get raw data and event data
@@ -220,7 +220,7 @@ rca_find_tails_per_read <- function(rca_data, read_data, file_path) {
                 real_tail_end <- precise_tail_end + start_index
             }
 
-            # plotting
+            # # plotting
             # plot(truncated_data, type = "l", col = "red")
             # lines(precise_tail_start:precise_tail_end,
             #       truncated_data[precise_tail_start:precise_tail_end],
@@ -241,7 +241,7 @@ rca_find_tails_per_read <- function(rca_data, read_data, file_path) {
             rca_data$tail_end[row_num] <- NA
             rca_data$tail_length[row_num] <- NA
         }
-        print('s')
+        #print('s')
     } # End of for loop
 
     # Prepare the data
