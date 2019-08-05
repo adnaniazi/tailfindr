@@ -28,14 +28,14 @@ rca_search_oligo <- function(fastq,
                              submat) {
 
     # Defining thresholds
-    ot_threshold <- 0.6
-    rc_ot_threshold <- 0.6
-    gfp_threshold <- 0.6
-    rc_gfp_threshold <- 0.6
+    ot_threshold <- 0.8
+    rc_ot_threshold <- 0.8
+    gfp_threshold <- 0.8
+    rc_gfp_threshold <- 0.8
     ssw_before_threshold <-
         rc_ssw_before_threshold <-
         ssw_after_threshold <-
-        rc_ssw_after_threshold <- 0.6
+        rc_ssw_after_threshold <- 0.8
 
     # Define parameters of alignment
     type <- 'local'
