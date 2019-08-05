@@ -132,7 +132,7 @@ df <- rca_find_tails_main(file_path = "/Users/adnaniazi/Documents/phd/delete_lat
                                 basecalled_with = 'guppy',
                                 model = 'flipflop')
 
-df <- rca_find_tails_main(file_path = "/Users/adnaniazi/mnt/kjempetuja//export/valenfs/data/processed_data/MinION/20190506_DNA_Max_RCA-GFP/basecalled_data_guppy_301_single_fast5//13/9b8c55e6-798c-402e-811b-bc1af05f4232.fast5",
+df <- rca_find_tails_main(file_path = "/Users/adnaniazi/mnt/kjempetuja//export/valenfs/data/processed_data/MinION/20190719_DNA_Max_RCA-GFP-2/basecalled_data_flipflop_single/A/2/cd7f21cd-2cc1-449c-a9e1-bbe96f100157.fast5",
                           basecall_group = 'Basecall_1D_000',
                           save_plots = FALSE,
                           show_plots = FALSE,
@@ -143,6 +143,16 @@ df <- rca_find_tails_main(file_path = "/Users/adnaniazi/mnt/kjempetuja//export/v
                           basecalled_with = 'guppy',
                           model = 'flipflop')
 
+
+df <- rca_find_tails_main(file_path = "/Users/adnaniazi/mnt/kjempetuja//export/valenfs/data/processed_data/MinION/20190719_DNA_Max_RCA-GFP-2/basecalled_data_flipflop_single/B/fast5/FAK84547_eeb380556b19ebca511eb0d0cf8984b9082acc35_5059.fast5",
+                          save_plots = FALSE,
+                          show_plots = FALSE,
+                          plot_debug = FALSE,
+                          save_dir = '~/Downloads/rca',
+                          plotting_library = 'rbokeh',
+                          multifast5 = FALSE,
+                          basecalled_with = 'guppy',
+                          model = 'flipflop')
 
 # Analysis
 df <- read.csv("~/Downloads/rca/tails.csv", header = TRUE, stringsAsFactors = FALSE)

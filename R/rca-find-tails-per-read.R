@@ -205,7 +205,7 @@ rca_find_tails_per_read <- function(rca_data, read_data, file_path) {
         real_tail_start <- NA
         real_tail_end <- NA
 
-        #plot(truncated_data, type = "l", col = "black")
+        plot(truncated_data, type = "l", col = "black")
         if (!is.na(precise_tail_start) & !is.na(precise_tail_end)) {
             if (read_type[seg] == 'polyA') {
                 real_tail_start <- len_data - precise_tail_end + start_index
@@ -220,12 +220,12 @@ rca_find_tails_per_read <- function(rca_data, read_data, file_path) {
                 real_tail_end <- precise_tail_end + start_index
             }
 
-            # # plotting
-            # plot(truncated_data, type = "l", col = "red")
-            # lines(precise_tail_start:precise_tail_end,
-            #       truncated_data[precise_tail_start:precise_tail_end],
-            #       type = "l",
-            #       col = "blue")
+            # plotting
+            plot(truncated_data, type = "l", col = "red")
+            lines(precise_tail_start:precise_tail_end,
+                  truncated_data[precise_tail_start:precise_tail_end],
+                  type = "l",
+                  col = "blue")
 
             # Normalize the tail length
             tail_length <- (precise_tail_end - precise_tail_start) /
@@ -241,7 +241,7 @@ rca_find_tails_per_read <- function(rca_data, read_data, file_path) {
             rca_data$tail_end[row_num] <- NA
             rca_data$tail_length[row_num] <- NA
         }
-        #print('s')
+        print('s')
     } # End of for loop
 
     # Prepare the data
