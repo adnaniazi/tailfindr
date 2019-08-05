@@ -467,19 +467,11 @@ find_tails <- function(fast5_dir,
                                                   },
                                                   error=function(e){
                                                       ls <- data.frame(
-                                                          start = NA,
-                                                          end = NA,
-                                                          fastq_segment = NA,
-                                                          read_type = 'invalid',
-                                                          cluster = NA,
-                                                          tail_start = NA,
-                                                          tail_end = NA,
-                                                          read_id = riff$read_id,
-                                                          cluster_n = NA,
-                                                          stdev = NA,
-                                                          file_path = riff$fast5_file,
-                                                          tail_length = NA,
-                                                          samples_per_nt = NA
+                                                          read_id = NA,
+                                                          content_string = NA,
+                                                          fastq_start_string = NA,
+                                                          fastq_length = NA,
+                                                          file_path = file_path,
                                                       )
                                                   })
                                               }
@@ -606,7 +598,6 @@ find_tails <- function(fast5_dir,
                 data_list <- foreach::foreach(file_path = fast5_files_subset,
                                               .combine = 'rbind',
                                               .inorder = FALSE,
-                                              .packages = c('msa'),
                                               .options.snow = opts,
                                               .options.multicore = mcoptions) %dopar% {
                                                   tryCatch({
@@ -625,20 +616,12 @@ find_tails <- function(fast5_dir,
                                                   },
                                                   error=function(e){
                                                       ls <-data.frame(
-                                                          error = e,
-                                                          start = NA,
-                                                          end = NA,
-                                                          fastq_segment = NA,
-                                                          read_type = 'invalid',
-                                                          cluster = NA,
-                                                          tail_start = NA,
-                                                          tail_end = NA,
                                                           read_id = NA,
-                                                          cluster_n = NA,
-                                                          stdev = NA,
+                                                          content_string = NA,
+                                                          fastq_start_string = NA,
+                                                          fastq_length = NA,
                                                           file_path = file_path,
-                                                          tail_length = NA,
-                                                          samples_per_nt = NA
+
                                                       )
                                                   })
                                               }
@@ -684,10 +667,6 @@ find_tails <- function(fast5_dir,
     # format the results list into a tibble
     cat(paste0(cli::symbol$bullet,' Formatting the tail data...\n'))
 
-    if (dna_datatype != 'rca-cdna') {
-        print(2)
-    }
-
     result <- purrr::map(result, function(.x) tibble::as_tibble(.x))
     result <- dplyr::bind_rows(result, .id = "chunk")
     result <- dplyr::select(result, -chunk)
@@ -701,9 +680,6 @@ find_tails <- function(fast5_dir,
         result <- within(result, rm(polya_fastq))
     }
 
-
-    result$tail_length <- round(result$tail_length, digits = 2)
-    result$samples_per_nt <- round(result$samples_per_nt, digits = 2)
     cat('  Done!\n')
 
     # write the result to a csv file

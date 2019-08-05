@@ -4,16 +4,11 @@
 \alias{rca_search_oligo}
 \title{Search for OligoT and reverse complement oligoT}
 \usage{
-rca_search_oligo(fastq, ot, rc_ot, submat)
+rca_search_oligo(fastq, ot, rc_ot, gfp, rc_gfp, ssw_before, rc_ssw_before,
+  ssw_after, rc_ssw_after, submat)
 }
 \arguments{
-\item{fastq}{a string. The fastQ sequence of the read.}
-
-\item{ot}{a DNA string. Oligo T sequence (5' to 3')}
-
-\item{rc_ot}{a DNA string. Reverese complement Oligo T sequence (5' to 3')}
-
-\item{submat}{A Biostring substitution matrix}
+\item{submat}{}
 }
 \value{
 a dataframe containing `start`, `stop` index of oligo in the FastQ

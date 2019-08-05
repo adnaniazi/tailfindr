@@ -1,9 +1,16 @@
 #' Search for OligoT and reverse complement oligoT
 #'
-#' @param fastq a string. The fastQ sequence of the read.
-#' @param ot a DNA string. Oligo T sequence (5' to 3')
-#' @param rc_ot a DNA string. Reverese complement Oligo T sequence (5' to 3')
-#' @param submat A Biostring substitution matrix
+#'
+#' @param fastq
+#' @param ot
+#' @param rc_ot
+#' @param gfp
+#' @param rc_gfp
+#' @param ssw_before
+#' @param rc_ssw_before
+#' @param ssw_after
+#' @param rc_ssw_after
+#' @param submat
 #'
 #' @importFrom magrittr "%>%"
 #'
@@ -13,11 +20,22 @@
 #'
 #' @export
 #'
-rca_search_oligo <- function(fastq, ot, rc_ot, submat) {
+rca_search_oligo <- function(fastq,
+                             ot, rc_ot,
+                             gfp, rc_gfp,
+                             ssw_before, rc_ssw_before,
+                             ssw_after, rc_ssw_after,
+                             submat) {
 
     # Defining thresholds
     ot_threshold <- 0.6
     rc_ot_threshold <- 0.6
+    gfp_threshold <- 0.6
+    rc_gfp_threshold <- 0.6
+    ssw_before_threshold <-
+        rc_ssw_before_threshold <-
+        ssw_after_threshold <-
+        rc_ssw_after_threshold <- 0.6
 
     # Define parameters of alignment
     type <- 'local'
@@ -57,7 +75,7 @@ rca_search_oligo <- function(fastq, ot, rc_ot, submat) {
                stop = stop) <-
             strrep('N', aligned_portion_length)
 
-        data_list[[i]] <- list(start = start, stop = stop, what_is_it = 'ot')
+        data_list[[i]] <- list(start = start, stop = stop, what_is_it = 'OT')
         i <- i + 1
     }
 
@@ -90,7 +108,7 @@ rca_search_oligo <- function(fastq, ot, rc_ot, submat) {
                stop = stop) <-
             strrep('N', aligned_portion_length)
 
-        data_list[[i]] <- list(start = start, stop = stop, what_is_it = 'rc_ot')
+        data_list[[i]] <- list(start = start, stop = stop, what_is_it = 'rcOT')
         i <- i + 1
     }
 
@@ -107,5 +125,225 @@ rca_search_oligo <- function(fastq, ot, rc_ot, submat) {
         result <- NULL
     }
 
-    return(result)
+
+    ##########################
+    ##### 3. GFP search ######
+    ##########################
+    fastq_tmp <- fastq
+
+    while (TRUE) {
+        searchfor <- gfp
+        as <- Biostrings::pairwiseAlignment(pattern = searchfor,
+                                            subject = fastq_tmp,
+                                            substitutionMatrix = submat,
+                                            type = type,
+                                            #scoreOnly = FALSE,
+                                            gapOpening = gapOpening,
+                                            gapExtension = gapExtension)
+
+        as
+        nas <- as@score/searchfor@length
+
+        if (nas < gfp_threshold) {
+            break
+        }
+
+        # substitute NNNs where alignment was found
+        aligned_portion <- gsub('-', '', as@subject)
+        aligned_portion_length <- nchar(aligned_portion)
+        start <- as@subject@range@start
+        stop <- start + aligned_portion_length
+        substr(fastq_tmp,
+               start = start,
+               stop = stop) <-
+            strrep('N', aligned_portion_length)
+
+        data_list[[i]] <- list(start = start, stop = stop, what_is_it = 'GFP')
+        i <- i + 1
+    }
+
+    #############################
+    ##### 4. RC GFP search ######
+    ############################
+    fastq_tmp <- fastq
+    while (TRUE) {
+        searchfor <- rc_gfp
+        as <- Biostrings::pairwiseAlignment(pattern = searchfor,
+                                            subject = fastq_tmp,
+                                            substitutionMatrix = submat,
+                                            type = type,
+                                            #scoreOnly = FALSE,
+                                            gapOpening = gapOpening,
+                                            gapExtension = gapExtension)
+
+        as
+        nas <- as@score/searchfor@length
+
+        if (nas < rc_gfp_threshold) {
+            break
+        }
+
+        # substitute NNNs where alignment was found
+        aligned_portion <- gsub('-', '', as@subject)
+        aligned_portion_length <- nchar(aligned_portion)
+        start <- as@subject@range@start
+        stop <- start + aligned_portion_length
+        substr(fastq_tmp,
+               start = start,
+               stop = stop) <-
+            strrep('N', aligned_portion_length)
+
+        data_list[[i]] <- list(start = start, stop = stop, what_is_it = 'rcGFP')
+        i <- i + 1
+    }
+
+
+    ####################################
+    ##### 5. Strand Switch Before ######
+    ####################################
+    fastq_tmp <- fastq
+    while (TRUE) {
+        searchfor <- ssw_before
+        as <- Biostrings::pairwiseAlignment(pattern = searchfor,
+                                            subject = fastq_tmp,
+                                            substitutionMatrix = submat,
+                                            type = type,
+                                            #scoreOnly = FALSE,
+                                            gapOpening = gapOpening,
+                                            gapExtension = gapExtension)
+
+        as
+        nas <- as@score/searchfor@length
+
+        if (nas < ssw_before_threshold) {
+            break
+        }
+
+        # substitute NNNs where alignment was found
+        aligned_portion <- gsub('-', '', as@subject)
+        aligned_portion_length <- nchar(aligned_portion)
+        start <- as@subject@range@start
+        stop <- start + aligned_portion_length
+        substr(fastq_tmp,
+               start = start,
+               stop = stop) <-
+            strrep('N', aligned_portion_length)
+
+        data_list[[i]] <- list(start = start, stop = stop, what_is_it = 'SSWB')
+        i <- i + 1
+    }
+
+
+    #######################################
+    ##### 6. RC Strand Switch Before ######
+    #######################################
+    fastq_tmp <- fastq
+    while (TRUE) {
+        searchfor <- rc_ssw_before
+        as <- Biostrings::pairwiseAlignment(pattern = searchfor,
+                                            subject = fastq_tmp,
+                                            substitutionMatrix = submat,
+                                            type = type,
+                                            #scoreOnly = FALSE,
+                                            gapOpening = gapOpening,
+                                            gapExtension = gapExtension)
+
+        as
+        nas <- as@score/searchfor@length
+
+        if (nas < rc_ssw_before_threshold) {
+            break
+        }
+
+        # substitute NNNs where alignment was found
+        aligned_portion <- gsub('-', '', as@subject)
+        aligned_portion_length <- nchar(aligned_portion)
+        start <- as@subject@range@start
+        stop <- start + aligned_portion_length
+        substr(fastq_tmp,
+               start = start,
+               stop = stop) <-
+            strrep('N', aligned_portion_length)
+
+        data_list[[i]] <- list(start = start, stop = stop, what_is_it = 'rcSSWB')
+        i <- i + 1
+    }
+
+
+    ####################################
+    ##### 7. Strand Switch After ######
+    ####################################
+    fastq_tmp <- fastq
+    while (TRUE) {
+        searchfor <- ssw_after
+        as <- Biostrings::pairwiseAlignment(pattern = searchfor,
+                                            subject = fastq_tmp,
+                                            substitutionMatrix = submat,
+                                            type = type,
+                                            #scoreOnly = FALSE,
+                                            gapOpening = gapOpening,
+                                            gapExtension = gapExtension)
+
+        as
+        nas <- as@score/searchfor@length
+
+        if (nas < ssw_after_threshold) {
+            break
+        }
+
+        # substitute NNNs where alignment was found
+        aligned_portion <- gsub('-', '', as@subject)
+        aligned_portion_length <- nchar(aligned_portion)
+        start <- as@subject@range@start
+        stop <- start + aligned_portion_length
+        substr(fastq_tmp,
+               start = start,
+               stop = stop) <-
+            strrep('N', aligned_portion_length)
+
+        data_list[[i]] <- list(start = start, stop = stop, what_is_it = 'SSWA')
+        i <- i + 1
+    }
+
+
+    #######################################
+    ##### 8. RC Strand Switch Aftter ######
+    #######################################
+    fastq_tmp <- fastq
+    while (TRUE) {
+        searchfor <- rc_ssw_after
+        as <- Biostrings::pairwiseAlignment(pattern = searchfor,
+                                            subject = fastq_tmp,
+                                            substitutionMatrix = submat,
+                                            type = type,
+                                            #scoreOnly = FALSE,
+                                            gapOpening = gapOpening,
+                                            gapExtension = gapExtension)
+
+        as
+        nas <- as@score/searchfor@length
+
+        if (nas < rc_ssw_after_threshold) {
+            break
+        }
+
+        # substitute NNNs where alignment was found
+        aligned_portion <- gsub('-', '', as@subject)
+        aligned_portion_length <- nchar(aligned_portion)
+        start <- as@subject@range@start
+        stop <- start + aligned_portion_length
+        substr(fastq_tmp,
+               start = start,
+               stop = stop) <-
+            strrep('N', aligned_portion_length)
+
+        data_list[[i]] <- list(start = start, stop = stop, what_is_it = 'rcSSWA')
+        i <- i + 1
+    }
+
+    if (i == 1) {
+        data_list <- NULL
+    }
+
+    return(data_list)
 }

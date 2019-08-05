@@ -61,28 +61,49 @@ rca_find_tails_main <- function(file_path,
                                    model,
                                    plotting_library)
     fastq <- read_data$fastq
-    fastq_biostring <- Biostrings::DNAString(fastq)
+    fastq_length <- nchar(fastq)
+    #fastq_biostring <- Biostrings::DNAString(fastq)
 
     # Define the oligos adjacent to the tails
     ot <- Biostrings::DNAString("GCCTGTCGCTCTATCTTC")
     rc_ot <- Biostrings::DNAString("GAAGATAGAGCGACAGGC")
+    gfp <- Biostrings::DNAString('GGATCACTCTCGGCATGGACGAGCTGTACAAGTAG')
+    rc_gfp <- Biostrings::reverseComplement(gfp)
+    ssw_before <- Biostrings::DNAString("CTGTTGGTGCTGATATTGC")
+    rc_ssw_before <-  Biostrings::reverseComplement(ssw_before)
+    ssw_after <- Biostrings::DNAString("CGATGTACGGCCGGG")
+    rc_ssw_after <-  Biostrings::reverseComplement(ssw_after)
 
     # STEP1: Find ot and rc_ot oligos
-    ot_rc_ot_df <- rca_search_oligo(fastq, ot, rc_ot, submat)
+    data_list <- rca_search_oligo(fastq,
+                                  ot, rc_ot,
+                                  gfp, rc_gfp,
+                                  ssw_before, rc_ssw_before,
+                                  ssw_after, rc_ssw_after, submat)
 
-    # STEP2: Find poly(A) and poly(T) segments within the read
-    polyat_df <- rca_locate_polya_polyt_segments(ot_rc_ot_df, fastq_biostring)
 
-    # STEP3: Cluster reads
-    data <- rca_cluster_read_segments(polyat_df)
+    # TODO: IMPORTANT do this only if data_list is not empty
+    chunk <- NULL
+    if (!is.null(data_list)) {
+        result <- data_list
+        result <- purrr::map(result, function(.x) tibble::as_tibble(.x))
+        result <- dplyr::bind_rows(result, .id = "chunk")
+        result <- dplyr::select(result, -chunk)
+        result <- result %>% dplyr::arrange(start, stop)
+        content_string <- paste(result$what_is_it, collapse = '-')
+        fastq_start_string <- paste(result$start, collapse = '-')
 
-    # STEP4: Create consensus of each cluster
-    rca_data <- rca_create_consensus_sequence(data)
+        return(list(read_id = read_data$read_id,
+                    content_string = content_string,
+                    fastq_start_string = fastq_start_string,
+                    fastq_length = fastq_length,
+                    file_path = file_path))
+    } else {
+        return(list(read_id = read_data$read_id,
+                    content_string = NA,
+                    fastq_start_string = NA,
+                    fastq_length = fastq_length,
+                    file_path = file_path))
+    }
 
-    # STEP 5: find tail lengths
-    result <- rca_find_tails_per_read(rca_data = rca_data,
-                                      read_data = read_data,
-                                      file_path = file_path)
-
-    return(result)
 }
