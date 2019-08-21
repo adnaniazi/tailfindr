@@ -76,3 +76,26 @@ write.table(df_fq,
             col.names = FALSE,
             row.names = FALSE
 )
+
+
+# 0.6 threshold
+df <- read.csv("/Users/adnaniazi/mnt/kjempetuja/export/valenfs/data/processed_data/MinION/20190506_DNA_Max_RCA-GFP/tailfindr_rca/tails_string_0.6_threshold.csv",
+               stringsAsFactors = FALSE, header = TRUE)
+
+library(dplyr)
+df_fq <- dplyr::select(df, fastq_length, content_string) %>%
+    dplyr::arrange(fastq_length)
+
+write.table(df_fq,
+            file="/Users/adnaniazi/mnt/kjempetuja/export/valenfs/data/processed_data/MinION/20190506_DNA_Max_RCA-GFP/tailfindr_rca/read_length_vs_content_all_p6_gfp_dataset1.txt",
+            col.names = FALSE,
+            row.names = FALSE
+)
+
+
+df_fq <- df_fq[df_fq$content_string != "",]
+write.table(df_fq,
+            file="/Users/adnaniazi/mnt/kjempetuja/export/valenfs/data/processed_data/MinION/20190506_DNA_Max_RCA-GFP/tailfindr_rca/read_length_vs_content_only_complete_cases_p6_gfp_dataset1.txt",
+            col.names = FALSE,
+            row.names = FALSE
+)
