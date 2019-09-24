@@ -36,7 +36,7 @@ df$filepath <-  gsub(pattern = "/Users/max/R/RCA/",
 #filepath <- "/Users/adnaniazi/mnt/kjempetuja/export/valenfs/data/processed_data/MinION/20190506_DNA_Max_RCA-GFP/basecalled_data_guppy_301_single_fast5/15/c7f631d9-bdfe-40ab-976b-d2780eb2b63b.fast5"
 
 # good polyA polyT
-#filepath <- "/Users/adnaniazi/mnt/kjempetuja/export/valenfs/data/processed_data/MinION/20190506_DNA_Max_RCA-GFP/basecalled_data_guppy_301_single_fast5/1/f802fbac-a7ec-440b-a84f-12f01e9f15ad.fast5"
+filepath <- "/Users/adnaniazi/mnt/kjempetuja/export/valenfs/data/processed_data/MinION/20190506_DNA_Max_RCA-GFP/basecalled_data_guppy_301_single_fast5/1/f802fbac-a7ec-440b-a84f-12f01e9f15ad.fast5"
 
 # good polyT 20 nt
 #filepath <- "/Users/adnaniazi/mnt/kjempetuja/export/valenfs/data/processed_data/MinION/20190506_DNA_Max_RCA-GFP/basecalled_data_guppy_301_single_fast5/8/3fc7b899-ee97-409f-9b42-e90341721528.fast5"
