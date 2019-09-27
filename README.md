@@ -124,7 +124,7 @@ df <- find_tails(fast5_dir = system.file('extdata', 'cdna', package = 'tailfindr
 ![Poly(T) read squiggle
 plot](https://github.com/adnaniazi/tailfindr/raw/master/man/figures/poly_t_without_debug.gif)
 
-However, note that generating plots can slow down the performace of
+However, note that generating plots can slow down the performance of
 tailfindr. We recommend that you generate these plots only for a small
 subset of your reads.
 
@@ -176,6 +176,29 @@ use `Events/Move` table from the `Basecall_1D_001` group.
 There are more options available in the find\_tails() function. Please
 see its
 [documentation](https://rdrr.io/github/adnaniazi/tailfindr/man/find_tails.html).
+
+#### 4\. Specifying custom cDNA primers
+
+If you have used custom front and end primers while designing you cDNA
+sequences, you can now specify them in tailfindr. tailfindr will use
+these sequences instead of the defaults ones to find the orientation of
+the reads and one of the ends of the poly(A)/(T) tail. Here is how you
+call tailfindr if you have used custom
+primers:
+
+``` r
+df <- find_tails(fast5_dir = system.file('extdata', 'cdna', package = 'tailfindr'),
+                 save_dir = '~/Downloads/tailfindr_output',
+                 csv_filename = 'cdna_tails.csv',
+                 num_cores = 4,
+                 dna_datatype = 'custom-cdna',
+                 front_primer = "TTTCTGTTGGTGCTGATATTGCTGCCATTACGGCCGG",
+                 end_primer = "ACTTGCCTGTCGCTCTATCTT")
+```
+
+`front_primer` and `end_primer` sequences should be specified in the 5’
+to 3’ direction.
+![cDNA](https://github.com/adnaniazi/tailfindr/raw/master/man/figures/cdna_construct.png)
 
 ### Description of the CSV/Dataframe columns
 
