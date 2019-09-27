@@ -150,7 +150,10 @@ Important thing to note here is the use of three additional parameters: `dna_dat
 
 `front_primer` and `end_primer` sequences should always be specified in the 5' to 3' direction. 
 
+<center>
 ![cDNA](https://github.com/adnaniazi/tailfindr/raw/master/man/figures/cdna_construct.png)
+</center>
+
 
 
 
@@ -185,7 +188,9 @@ Here are the columns that you will get from tailfindr if you have run it on DNA 
 
 * tailfindr needs the `Events/Move` table in the FAST5 file to calculate the read-specific normalizer -- `samples_per_nt` -- which is used to convert tail length in samples to tail length in nucleotides. If your data was basecalled with *MinKNOW-Live-Basecalling*, then the Events/Move table might not be saved in the FAST5 file. In such a case, you can rebasecall your reads and adjust the `basecall_group` parameter accordingly when calling `find_tails()` function as demonstrated in the use case # 4 above. This is because now the Events/Move table will now be under `Basecall_1D_001` instead of  tailfindr's default search location `Basecall_1D_000`. See the figure below: The panel on left shows that the MinKNOW live basecalled read; it has no Event/Move table. The panel on the right shows the same read after it has been re-basecalled using standalone Guppy. Now there is Event/Move table under the freshly-added basaecall group (`Basecall_1D_001`). `find_tails()`  should be called with `basecall_group` set to `"Basecall_1D_001"`.
 
+<center>
 ![MinKNOW Live Basecalling problem](https://github.com/adnaniazi/tailfindr/raw/master/man/figures/minkow_live_basecalling.png)
+</center>
 
 
 * For DNA data, tailfindr decides whether a read is poly(A) or poly(T) based on finding Nanopore primers/adaptors. If you are using the flipflop model to basecall DNA data, please ensure that the nanopore adaptors are not trimmed off while basecalling. This can be done by turning off `enabling_trimming` option in the basecalling script. The script below shows you how we have basecalled our reads using the flipflop model

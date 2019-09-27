@@ -203,7 +203,11 @@ Important thing to note here is the use of three additional parameters:
 the 5’ to 3’
 direction.
 
+<center>
+
 ![cDNA](https://github.com/adnaniazi/tailfindr/raw/master/man/figures/cdna_construct.png)
+
+</center>
 
 ### Description of the CSV/Dataframe columns
 
@@ -261,8 +265,12 @@ data:
     `find_tails()` should be called with `basecall_group` set to
     `"Basecall_1D_001"`.
 
+<center>
+
 ![MinKNOW Live Basecalling
 problem](https://github.com/adnaniazi/tailfindr/raw/master/man/figures/minkow_live_basecalling.png)
+
+</center>
 
   - For DNA data, tailfindr decides whether a read is poly(A) or poly(T)
     based on finding Nanopore primers/adaptors. If you are using the
