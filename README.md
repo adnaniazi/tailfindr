@@ -177,7 +177,7 @@ There are more options available in the find\_tails() function. Please
 see its
 [documentation](https://rdrr.io/github/adnaniazi/tailfindr/man/find_tails.html).
 
-#### 4\. Specifying custom cDNA primers
+#### 5\. Specifying custom cDNA primers
 
 If you have used custom front and end primers while designing you cDNA
 sequences, you can now specify them in tailfindr. tailfindr will use
@@ -196,8 +196,13 @@ df <- find_tails(fast5_dir = system.file('extdata', 'cdna', package = 'tailfindr
                  end_primer = "ACTTGCCTGTCGCTCTATCTT")
 ```
 
-`front_primer` and `end_primer` sequences should be specified in the 5’
-to 3’ direction.
+Important thing to note here is the use of three additional parameters:
+`dna_datatype`, `front_primer`, and `end_primer`.
+
+`front_primer` and `end_primer` sequences should always be specified in
+the 5’ to 3’
+direction.
+
 ![cDNA](https://github.com/adnaniazi/tailfindr/raw/master/man/figures/cdna_construct.png)
 
 ### Description of the CSV/Dataframe columns
@@ -244,13 +249,20 @@ data:
     nucleotides. If your data was basecalled with
     *MinKNOW-Live-Basecalling*, then the Events/Move table might not be
     saved in the FAST5 file. In such a case, you can rebasecall your
-    reads and adjust the `basecall_group` parameter accordingly in the
-    `find_tails()` function as demonstrated in the use case \# 4 above.
+    reads and adjust the `basecall_group` parameter accordingly when
+    calling `find_tails()` function as demonstrated in the use case \# 4
+    above. This is because now the Events/Move table will now be under
+    `Basecall_1D_001` instead of tailfindr’s default search location
+    `Basecall_1D_000`. See the figure below: The panel on left shows
+    that the MinKNOW live basecalled read; it has no Event/Move table.
+    The panel on the right shows the same read after it has been
+    re-basecalled using standalone Guppy. Now there is Event/Move table
+    under the freshly-added basaecall group (`Basecall_1D_001`).
+    `find_tails()` should be called with `basecall_group` set to
+    `"Basecall_1D_001"`.
 
-In the next release of MinKNOW, there will be an option to save the Move
-table in the the FAST5 files produced by live basecalling. When this
-happens, tailfindr will work on MinKNOW Live Basecalled reads out of the
-box without you having to re-basecall your live-basecalled data.
+![MinKNOW Live Basecalling
+problem](https://github.com/adnaniazi/tailfindr/raw/master/man/figures/minkow_live_basecalling.png)
 
   - For DNA data, tailfindr decides whether a read is poly(A) or poly(T)
     based on finding Nanopore primers/adaptors. If you are using the
