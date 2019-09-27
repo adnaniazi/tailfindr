@@ -6,12 +6,12 @@
 #' @return a list
 #'
 read_sam <- function(sam_file_path){
-    #message("reading file...")
+    message("Reading SAM file...")
     x = readLines(sam_file_path)
-    #message("fetching header...")
+    message("Fetching header...")
     headerpos = grep("^@", x)
     header = x[headerpos]
-    #message("converting header...")
+    message("Converting header...")
 
     header = list("HD" = lapply(gsub("^@HD\t", "", header[grep("^@HD", header)]),
                                 function(x)strsplit(x, "\t")[[1]]),
@@ -24,9 +24,9 @@ read_sam <- function(sam_file_path){
                   "CO" = gsub("^@CO\t", "", header[grep("^@CO", header)])
     )
 
-    #message("fetching data...")
+    message("Fetching data...")
     x = lapply(x[-headerpos], line2vals)
-    #message("convert to data.frame...")
+    message("Convert to data.frame...")
     x = matrix(unlist(x),
                nrow = length(x),
                ncol = length(x[[1]]),

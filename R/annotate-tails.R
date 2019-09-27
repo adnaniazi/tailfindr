@@ -22,6 +22,7 @@ annotate_tails <- function(sam_file,
     QNAME <- RNAME <- MAPQ <- FLAG <- NULL
     read_id <- transcript_id <- mapping_quality <- sam_flag <- NULL
     df_sam <- df_sam %>%
+        dplyr::filter(FLAG != 256 & FLAG != 272 & FLAG != 4 & FLAG < 2048) %>%
         dplyr::rename(read_id = QNAME,
                       transcript_id = RNAME,
                       mapping_quality = MAPQ,
@@ -33,13 +34,20 @@ annotate_tails <- function(sam_file,
 
 
     #Read tails CSV file
+    message("Reading poly(A) tail data...")
+
     df_tails <- read.csv(file = tails_csv_file,
                          header = TRUE,
                          stringsAsFactors = FALSE)
 
+    message("Merging poly(A) tail data and transcript IDs...")
+
     df <- dplyr::inner_join(df_tails, df_sam, by = 'read_id')
 
+    message("Writing CSV file...")
+
     data.table::fwrite(df, file = output_file)
+    message("Done!")
 
     return(df)
 }
