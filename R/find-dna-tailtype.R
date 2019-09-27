@@ -82,12 +82,16 @@ find_dna_tailtype <- function(file_path = NA,
             gapOpening <- dna_opts$gapOpening
             gapExtension <- dna_opts$gapExtension
             submat <- dna_opts$submat
+            if (dna_datatype == 'custom-cdna') {
+                fp <- dna_opts$fp
+                ep <- dna_opts$ep
+            }
         }
     } else {
         # otherwise make one
         match <- 1
         mismatch <- -1
-        type <-'local'
+        type <- 'local'
         gapOpening <- 0
         gapExtension <- 1
         submat <- Biostrings::nucleotideSubstitutionMatrix(match = match,
@@ -106,7 +110,7 @@ find_dna_tailtype <- function(file_path = NA,
                                    plotting_library)
 
     # get event data table and the fastQ
-    event_data <- read_data$event_data
+    #event_data <- read_data$event_data
     fastq <- read_data$fastq
 
     # define the adaptor sequences
@@ -122,9 +126,13 @@ find_dna_tailtype <- function(file_path = NA,
         fp <- Biostrings::DNAString('ATTTAGGTGACACTATAGCGCTCCATGCAAACCTGTC')
         ep <- Biostrings::DNAString('GAGTCCGGGCGGCGC')
         threshold <- 0.68
+    } else if (dna_datatype == 'custom-cdna') {
+        fp <- Biostrings::DNAString(fp)
+        ep <- Biostrings::DNAString(ep)
+        threshold <- 0.6
     }
 
-    rc_fp <- Biostrings::reverseComplement(fp)
+    #rc_fp <- Biostrings::reverseComplement(fp)
     rc_ep <- Biostrings::reverseComplement(ep)
 
     # RECIPE:
