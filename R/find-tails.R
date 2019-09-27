@@ -141,7 +141,10 @@ find_tails <- function(fast5_dir,
     # as they may be dangerous for normal users
     show_plots <- FALSE
 
-    dna_datatype <- process_optional_params(...)  # R CMD NOTE
+    dna_datatype <- get_dna_datatype(...)  # R CMD NOTE
+    if (dna_datatype == 'custom-cdna') {
+        fp_ep_list <- get_custom_fp_ep(...)  # R CMD NOTE
+    }
 
     # start a log file
     if (dir.exists(file.path(save_dir))) {
@@ -168,7 +171,7 @@ find_tails <- function(fast5_dir,
     cat(paste(cli::symbol$pointer, ' save_plots:        ', save_plots, '\n', sep=''))
     cat(paste(cli::symbol$pointer, ' plot_debug_traces: ', plot_debug_traces, '\n', sep=''))
     cat(paste(cli::symbol$pointer, ' plotting_library:  ', plotting_library, '\n', sep=''))
-    if (dna_datatype == 'pcr-dna'){
+    if (dna_datatype == 'pcr-dna' | dna_datatype == 'custom-cdna') {
         cat(paste(cli::symbol$pointer, ' dna_datatype:      ', dna_datatype, '\n', sep=''))
     }
 
@@ -323,7 +326,7 @@ find_tails <- function(fast5_dir,
     if (experiment_type == 'dna') {
         match <- 1
         mismatch <- -1
-        type <-'local'
+        type <- 'local'
         gapOpening <- 0
         gapExtension <- 1
         submat <- Biostrings::nucleotideSubstitutionMatrix(match = match,
@@ -335,6 +338,12 @@ find_tails <- function(fast5_dir,
                          gapOpening = gapOpening,
                          gapExtension = gapExtension,
                          submat = submat)
+
+        # append custom front and end primers to DNA options if it is custom
+        # cDNA
+        if (dna_datatype == 'custom-cdna') {
+            dna_opts <- c(dna_opts, fp_ep_list)
+        }
     }
 
     # If the fast5 are multifast5, then build an index of all the reads within these files
@@ -525,7 +534,7 @@ find_tails <- function(fast5_dir,
                                               .combine = 'rbind',
                                               .inorder = FALSE,
                                               .options.snow = opts,
-                                              .options.multicore = mcoptions) %dopar% {
+                                              .options.multicore = mcoptions) %do% {
                                                  tryCatch({
                                                      find_dna_tail_per_read(file_path = file_path,
                                                                             basecall_group = basecall_group,
