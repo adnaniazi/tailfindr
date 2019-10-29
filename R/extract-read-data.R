@@ -109,6 +109,14 @@ extract_read_data <- function(file_path = NA,
         } else {
             stride <- event_data$length[1]
         }
+
+        # Albacore latest version does not output start column;
+        # this is a dirty fix for it
+        if (!("start" %in% colnames(event_data))) {
+            make_event_data = TRUE
+            move <- event_data$move
+        }
+
     } else {
         move <- f5_obj[[event_data_fastq_path]]$open('Move')$read()
         stride <- f5_obj[[basecall_1d_template_path]]$attr_open('block_stride')$read()
