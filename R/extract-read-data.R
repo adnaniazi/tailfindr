@@ -137,11 +137,39 @@ extract_read_data <- function(file_path = NA,
         start_col <- seq(from = start,
                          to = start + stride * (length(move) - 1),
                          by = stride)
-        event_data <- data.frame(move = move,
-                                 start = start_col,
-                                 move_cumsum = cumsum(move),
-                                 fastq_bases = fastq,
-                                 stringsAsFactors = FALSE)
+
+        # in case of RNA, the event data fastQ should be the reverse
+        # of actual FASTQ
+        # find U in the sequence to determine if it is RNA
+        # find if data is dna or rna
+        if (!multifast5) {
+            context_tags_path <- f5_tree[grepl('.*context_tags$', f5_tree)]
+        } else {
+            context_tags_path <- paste(first_read_name,
+                                       '/context_tags',
+                                       sep = '')
+        }
+        sequencing_kit <- f5_obj[[context_tags_path]]$attr_open('sequencing_kit')$read()
+        if (grepl('rna', sequencing_kit)) {
+            experiment_type <- 'rna'
+        } else {
+            experiment_type <- 'dna'
+        }
+
+        if (experiment_type == 'dna') {
+            event_data <- data.frame(move = move,
+                                     start = start_col,
+                                     move_cumsum = cumsum(move),
+                                     fastq_bases = fastq,
+                                     stringsAsFactors = FALSE)
+        } else {
+            fastq_rev <- Biostrings::reverse(fastq)
+            event_data <- data.frame(move = move,
+                                     start = start_col,
+                                     move_cumsum = cumsum(move),
+                                     fastq_bases = fastq_rev,
+                                     stringsAsFactors = FALSE)
+        }
 
         # The line below is there to remove R CMD CHECK
         # "no visible binding for global variable" error

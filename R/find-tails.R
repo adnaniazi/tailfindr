@@ -587,7 +587,10 @@ find_tails <- function(fast5_dir,
                                                                 tail_end = NA,
                                                                 samples_per_nt = NA,
                                                                 tail_length = NA,
-                                                                polya_fastq = NA,
+                                                                tail_start_base_index = NA,
+                                                                tail_end_base_index = NA,
+                                                                polya_tail_fasta_seq = NA,
+                                                                full_read_fasta_seq = NA,
                                                                 file_path = file_path)
                                                  })
                                              }
@@ -612,7 +615,7 @@ find_tails <- function(fast5_dir,
         result <- within(result, rm(has_precise_boundary))
     } else {
         polya_fastq <- NULL  # R CMD CHECK
-        result <- within(result, rm(polya_fastq))
+        #result <- within(result, rm(polya_fastq))
     }
     result$tail_length <- round(result$tail_length, digits = 2)
     result$samples_per_nt <- round(result$samples_per_nt, digits = 2)

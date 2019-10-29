@@ -115,6 +115,17 @@ find_rna_polya_tail_per_read <- function(file_path = NA,
         tail_start <- precise_polya_boundries$start
         tail_end <- precise_polya_boundries$end
         tail_length <- (tail_end - tail_start) / read_data$samples_per_nt
+        start_end_base_indices <-
+            extract_tail_boundaries_in_fastq_base_number(event_data,
+                                                         tail_start,
+                                                         tail_end,
+                                                         read_data$fastq)
+        polya_tail_seq <- extract_sequence_between_boundaries(event_data,
+                                                              tail_start,
+                                                              tail_end)
+
+        # make the sequence 5 prime to 3 prime
+        polya_tail_seq <- Biostrings::reverse(polya_tail_seq)
     }
 
     if (show_plots | save_plots) {
@@ -264,7 +275,10 @@ find_rna_polya_tail_per_read <- function(file_path = NA,
                  tail_end = precise_polya_boundries$end,
                  samples_per_nt = read_data$samples_per_nt,
                  tail_length = tail_length,
-                 polya_fastq = poly_a_fastq,
+                 tail_start_base_index = start_end_base_indices$start_base_index,
+                 tail_end_base_index = start_end_base_indices$end_base_index,
+                 polya_tail_fasta_seq = polya_tail_seq,
+                 full_read_fasta_seq = read_data$fastq,
                  file_path = file_path)
     return(data)
 }
