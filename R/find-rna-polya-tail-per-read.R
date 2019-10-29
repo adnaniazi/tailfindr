@@ -107,6 +107,10 @@ find_rna_polya_tail_per_read <- function(file_path = NA,
     tail_length <- NA
     tail_start <- NA
     tail_end <- NA
+    tail_start_base_index <- NA
+    tail_end_base_index <-  NA
+    polya_tail_fasta_seq <- NA
+
     if (!is.na(precise_polya_boundries$start) & !is.na(precise_polya_boundries$end)) {
         # poly_a_fastq <- extract_sequence_between_boundaries(read_data$event_data,
         #                                                     precise_polya_boundries$start,
@@ -115,6 +119,7 @@ find_rna_polya_tail_per_read <- function(file_path = NA,
         tail_start <- precise_polya_boundries$start
         tail_end <- precise_polya_boundries$end
         tail_length <- (tail_end - tail_start) / read_data$samples_per_nt
+
         start_end_base_indices <-
             extract_tail_boundaries_in_fastq_base_number(event_data,
                                                          tail_start,
