@@ -219,7 +219,7 @@ guppy_basecaller \
 2. Guppy v2.2.2, v2.3.1, v3.0.1. Guppy v2.2.2, v2.3.1 were tested with flipflop basecalling for DNA, and Guppy v3.0.1 was tested with flipflop basecalling for RNA.
 
 ## Want to know more?
-We have written a book chapter on how you can use *tailfindr* for transcript isofrom-specific poly(A) tail profiling. It has a detailed protocol and analysis pipeline for processing the data through *tailfindr* The chapter can be downloaded from [here](https://adnaniazi.com/website-assets/niazi_and_krause_2019_springer_book_chapter.pdf).
+We have written a book chapter on how you can use *tailfindr* for transcript isofrom-specific poly(A) tail profiling. It has a detailed protocol and analysis pipeline for processing the data through *tailfindr* .The chapter can be downloaded from [here](https://adnaniazi.com/website-assets/niazi_and_krause_2019_springer_book_chapter.pdf).
 
 
 ## Getting help

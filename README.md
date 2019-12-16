@@ -321,7 +321,7 @@ guppy_basecaller \
 We have written a book chapter on how you can use *tailfindr* for
 transcript isofrom-specific poly(A) tail profiling. It has a detailed
 protocol and analysis pipeline for processing the data through
-*tailfindr* The chapter can be downloaded from
+*tailfindr* .The chapter can be downloaded from
 [here](https://adnaniazi.com/website-assets/niazi_and_krause_2019_springer_book_chapter.pdf).
 
 ## Getting help
