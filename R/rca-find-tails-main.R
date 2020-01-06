@@ -97,13 +97,15 @@ rca_find_tails_main <- function(file_path,
                     content_string = content_string,
                     fastq_start_string = fastq_start_string,
                     fastq_length = fastq_length,
-                    file_path = file_path))
+                    file_path = file_path,
+                    fastq = fastq))
     } else {
         return(list(read_id = read_data$read_id,
                     content_string = NA,
                     fastq_start_string = NA,
                     fastq_length = fastq_length,
-                    file_path = file_path))
+                    file_path = file_path,
+                    fastq = fastq))
     }
 
 }

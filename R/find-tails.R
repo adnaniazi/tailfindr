@@ -472,6 +472,7 @@ find_tails <- function(fast5_dir,
                                                           fastq_start_string = NA,
                                                           fastq_length = NA,
                                                           file_path = file_path,
+                                                          fastq = fastq
                                                       )
                                                   })
                                               }
@@ -621,7 +622,7 @@ find_tails <- function(fast5_dir,
                                                           fastq_start_string = NA,
                                                           fastq_length = NA,
                                                           file_path = file_path,
-
+                                                          fastq = fastq
                                                       )
                                                   })
                                               }
