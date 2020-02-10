@@ -48,5 +48,14 @@ extract_sequence_between_boundaries <- function(event_data, start, end) {
         }
         i <- i + 1
     }
+
+    # fix for Albacore which outputs a 5-mer prediction
+    # so the FASTA of the poly(A) tail ends up being 4 longer than it should be
+    # We just trim of two  bases from both the left and right ends of the sequence
+    # See issue: https://github.com/adnaniazi/tailfindr/issues/9
+    if (model_state_length_1 == FALSE) {
+        len <- nchar(fastq_bases)
+        fastq_bases <- substr(fastq_bases, 3, (len-2))
+    }
     return(fastq_bases)
 }
