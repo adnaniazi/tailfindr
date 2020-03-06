@@ -441,6 +441,10 @@ find_tails <- function(fast5_dir,
                                                                  tail_end = NA,
                                                                  samples_per_nt = NA,
                                                                  tail_length = NA,
+                                                                 tail_start_base_index = NA,
+                                                                 tail_end_base_index = NA,
+                                                                 polya_tail_fasta_seq = NA,
+                                                                 full_read_fasta_seq = NA,
                                                                  file_path = riff$fast5_file,
                                                                  has_precise_boundary = NA)
                                                   })
@@ -473,6 +477,10 @@ find_tails <- function(fast5_dir,
                                                                  samples_per_nt = NA,
                                                                  tail_length = NA,
                                                                  polya_fastq = NA,
+                                                                 tail_start_base_index = NA,
+                                                                 tail_end_base_index = NA,
+                                                                 polya_tail_fasta_seq = NA,
+                                                                 full_read_fasta_seq = NA,
                                                                  file_path = riff$fast5_file)
                                                   })
                                               }
@@ -557,6 +565,10 @@ find_tails <- function(fast5_dir,
                                                                 tail_end = NA,
                                                                 samples_per_nt = NA,
                                                                 tail_length = NA,
+                                                                tail_start_base_index = NA,
+                                                                tail_end_base_index = NA,
+                                                                polya_tail_fasta_seq = NA,
+                                                                full_read_fasta_seq = NA,
                                                                 file_path = file_path,
                                                                 has_precise_boundary = NA)
                                                  })

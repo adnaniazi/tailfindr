@@ -289,6 +289,17 @@ find_dna_tail_per_read <- function(file_path = NA,
         tail_end <- polya_end
     }
 
+    # find tail coordinates in FASTA
+    start_end_base_indices <-
+        dna_extract_tail_boundaries_in_fastq_base_number(event_data,
+                                                     tail_start,
+                                                     tail_end,
+                                                     read_data$fastq)
+    polya_tail_seq <- extract_sequence_between_boundaries(event_data,
+                                                          tail_start,
+                                                          tail_end)
+
+
     # calculate the tail length
     tail_length = (tail_end - tail_start)/read_data$samples_per_nt
 
@@ -481,6 +492,10 @@ find_dna_tail_per_read <- function(file_path = NA,
                 tail_end = tail_end,
                 samples_per_nt = samples_per_nt,
                 tail_length = tail_length,
+                tail_start_base_index = start_end_base_indices$start_base_index,
+                tail_end_base_index = start_end_base_indices$end_base_index,
+                polya_tail_fasta_seq = polya_tail_seq,
+                full_read_fasta_seq = read_data$fastq,
                 file_path = file_path,
                 has_precise_boundary = has_precise_boundary))
 }
