@@ -78,6 +78,10 @@ find_dna_tail_per_read <- function(file_path = NA,
                     tail_end = NA,
                     samples_per_nt = samples_per_nt,
                     tail_length = NA,
+                    tail_start_base_index = NA,
+                    tail_end_base_index = NA,
+                    polya_tail_fasta_seq = NA,
+                    full_read_fasta_seq = read_data$fastq,
                     file_path = file_path,
                     has_precise_boundary = has_precise_boundary))
     }
