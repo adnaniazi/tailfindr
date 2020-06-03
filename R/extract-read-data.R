@@ -65,7 +65,19 @@ extract_read_data <- function(file_path = NA,
     raw_data <- f5_obj[[raw_signal_path]]$read()
     read_id <- f5_obj[[read_id_path]]$attr_open('read_id')$read()
     fastq <- f5_obj[[event_data_fastq_path]]$open('Fastq')$read()
-    start <- f5_obj[[segmentation_path]]$attr_open('first_sample_template')$read()
+
+    # ONT's newest data format has no first sample template information
+    # as it probably stores the raw data starting from the sample 1
+    #start <- f5_obj[[segmentation_path]]$attr_open('first_sample_template')$read()
+    start <- tryCatch(
+        {
+            f5_obj[[segmentation_path]]$attr_open('first_sample_template')$read()
+        },
+        error = function(e){
+            1
+        }
+    )
+
     called_events <- f5_obj[[basecall_1d_template_path]]$attr_open('called_events')$read()
 
     # get the event data, if present -- or make it, if not present
