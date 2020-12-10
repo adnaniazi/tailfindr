@@ -625,7 +625,7 @@ find_tails <- function(fast5_dir,
                                                   },
                                                   error=function(e){
                                                       ls <-data.frame(
-                                                          error = e,
+                                                          
                                                           start = NA,
                                                           end = NA,
                                                           fastq_segment = NA,
