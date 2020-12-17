@@ -4,8 +4,12 @@
 \alias{find_rna_polya_crude_start_end}
 \title{Find the crude start and end of polyA tail in RNA read}
 \usage{
-find_rna_polya_crude_start_end(rle_lengths, rle_values, rle_indices,
-  trough_threshold)
+find_rna_polya_crude_start_end(
+  rle_lengths,
+  rle_values,
+  rle_indices,
+  trough_threshold
+)
 }
 \arguments{
 \item{rle_lengths}{a numeric vector. A vector of RLE lengths in samples}

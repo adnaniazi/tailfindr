@@ -4,8 +4,13 @@
 \alias{find_rna_polya_precise_start_end}
 \title{Finds the precise RNA tail and start}
 \usage{
-find_rna_polya_precise_start_end(truncated_data, POLY_A_RNA_THRESHOLD,
-  crude_polya_boundries, save_plots, show_plots)
+find_rna_polya_precise_start_end(
+  truncated_data,
+  POLY_A_RNA_THRESHOLD,
+  crude_polya_boundries,
+  save_plots,
+  show_plots
+)
 }
 \arguments{
 \item{truncated_data}{numeric vector}

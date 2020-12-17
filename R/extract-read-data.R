@@ -157,7 +157,7 @@ extract_read_data <- function(file_path = NA,
         if (!multifast5) {
             context_tags_path <- f5_tree[grepl('.*context_tags$', f5_tree)]
         } else {
-            context_tags_path <- paste(first_read_name,
+            context_tags_path <- paste(full_read_id,
                                        '/context_tags',
                                        sep = '')
         }

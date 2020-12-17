@@ -4,9 +4,18 @@
 \alias{find_dna_tailtype}
 \title{Finds if a DNA read is poly(A) read or poly(T) read}
 \usage{
-find_dna_tailtype(file_path = NA, basecall_group = "Basecall_1D_000",
-  dna_datatype = "cdna", plot_debug = FALSE, basecalled_with,
-  multifast5, model, read_id_fast5_file = NA, plotting_library, ...)
+find_dna_tailtype(
+  file_path = NA,
+  basecall_group = "Basecall_1D_000",
+  dna_datatype = "cdna",
+  plot_debug = FALSE,
+  basecalled_with,
+  multifast5,
+  model,
+  read_id_fast5_file = NA,
+  plotting_library,
+  ...
+)
 }
 \arguments{
 \item{file_path}{a character string[NA]. Full path of the read whose type is
