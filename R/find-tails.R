@@ -417,7 +417,7 @@ find_tails <- function(fast5_dir,
                                               .inorder = FALSE,
                                               .errorhandling = 'pass',
                                               .options.snow = opts,
-                                              .options.multicore = mcoptions) %do% {
+                                              .options.multicore = mcoptions) %dopar% {
                                                   tryCatch({
                                                       find_dna_tail_per_read(read_id_fast5_file = riff,
                                                                              file_path = NA,
