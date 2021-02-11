@@ -606,7 +606,7 @@ find_tails <- function(fast5_dir,
     result <- dplyr::bind_rows(result, .id = "chunk")
     result <- dplyr::select(result, -chunk)
     # cleanup the tibble
-    result <- tidyr::unnest(result)
+    result <- tidyr::unnest(result, cols=colnames(result))
     if (experiment_type == 'dna') {
         has_precise_boundary <- NULL  # R CMD CHECK
         result <- within(result, rm(has_precise_boundary))
