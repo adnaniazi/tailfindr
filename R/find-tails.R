@@ -357,7 +357,7 @@ find_tails <- function(fast5_dir,
             f5_obj <- hdf5r::H5File$new(fast5_file, mode = 'r')
             f5_tree <- f5_obj$ls(recursive = FALSE)
             f5_tree <- f5_tree$name
-            f5_tree <- dplyr::mutate(dplyr::tbl_df(f5_tree), fast5_file = fast5_file)
+            f5_tree <- dplyr::mutate(dplyr::as_tibble(f5_tree), fast5_file = fast5_file)
             value <- NULL  # R CMD CHECK
             f5_tree <- dplyr::rename(f5_tree, read_id = value)
             read_id_fast5_file <- rbind(read_id_fast5_file, f5_tree)
@@ -471,12 +471,11 @@ find_tails <- function(fast5_dir,
                                                                                    plot_debug = plot_debug)
                                                   },
                                                   error=function(e){
-                                                      ls <- list(read_id = NA,
+                                                      ls <- list(read_id = riff$read_id,
                                                                  tail_start = NA,
                                                                  tail_end = NA,
                                                                  samples_per_nt = NA,
                                                                  tail_length = NA,
-                                                                 polya_fastq = NA,
                                                                  tail_start_base_index = NA,
                                                                  tail_end_base_index = NA,
                                                                  polya_tail_fasta_seq = NA,
@@ -621,7 +620,7 @@ find_tails <- function(fast5_dir,
     result <- dplyr::bind_rows(result, .id = "chunk")
     result <- dplyr::select(result, -chunk)
     # cleanup the tibble
-    result <- tidyr::unnest(result)
+    result <- tidyr::unnest(result, cols=colnames(result))
     if (experiment_type == 'dna') {
         has_precise_boundary <- NULL  # R CMD CHECK
         result <- within(result, rm(has_precise_boundary))
