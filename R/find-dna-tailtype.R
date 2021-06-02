@@ -119,8 +119,13 @@ find_dna_tailtype <- function(file_path = NA,
 
     # define the primer sequences
     if (dna_datatype == 'cdna') {
-        fp <- Biostrings::DNAString('TTTCTGTTGGTGCTGATATTGCTGCCATTACGGCCGGG')
-        ep <- Biostrings::DNAString('ACTTGCCTGTCGCTCTATCTTC')
+        # # these are the legacy front and end primers
+        # fp <- Biostrings::DNAString('TTTCTGTTGGTGCTGATATTGCTGCCATTACGGCCGGG')
+        # ep <- Biostrings::DNAString('ACTTGCCTGTCGCTCTATCTTC')
+
+        # new front and end primers from ONT's PCS110 kit
+        fp <- Biostrings::DNAString('TTTCTGTTGGTGCTGATATTGCTT')
+        ep <- Biostrings::DNAString('CTTGCCTGTCGCTCTATCTTCAGAGGAGAGTCCGCCGCCCGCAAG')
         threshold <- 0.6
     } else if (dna_datatype == 'pcr-dna') {
         fp <- Biostrings::DNAString('ATTTAGGTGACACTATAGCGCTCCATGCAAACCTGTC')
@@ -140,8 +145,16 @@ find_dna_tailtype <- function(file_path = NA,
     #                                                 by checking for rc_ep at the end of the of the read
     # 2. Tail is poly(T) if nas_ep > nas_fp > 0.6
     # 3. Invalid otherwise
+
+    # define a search window width within which to find the ep and fp
+    if (dna_datatype == 'cdna') {
+        search_window <- 140 # The ep is longer with ONT's newer PCS110 kit requiring more search window
+    } else {
+        search_window <- 100 # For our legacy data and PCR DNA approach
+    }
+
     as_fp <- Biostrings::pairwiseAlignment(pattern=fp,
-                                           subject=Biostrings::DNAString(substr(fastq, start=1, stop=min(100, nchar(fastq)))),
+                                           subject=Biostrings::DNAString(substr(fastq, start=1, stop=min(search_window, nchar(fastq)))),
                                            substitutionMatrix=submat,
                                            type=type,
                                            scoreOnly=FALSE,
@@ -149,7 +162,7 @@ find_dna_tailtype <- function(file_path = NA,
                                            gapExtension=gapExtension)
 
     as_ep <- Biostrings::pairwiseAlignment(pattern=ep,
-                                           subject=Biostrings::DNAString(substr(fastq, start=1, stop=min(100, nchar(fastq)))),
+                                           subject=Biostrings::DNAString(substr(fastq, start=1, stop=min(search_window, nchar(fastq)))),
                                            substitutionMatrix=submat,
                                            type=type,
                                            scoreOnly=FALSE,
@@ -170,8 +183,16 @@ find_dna_tailtype <- function(file_path = NA,
         read_type <- 'polyA'
         # check if there is the end primer at the end of the polyA read
         # adjacent to the polyA tail
+
+        # define a search window width within which to find the ep and fp
+        if (dna_datatype == 'cdna') {
+            fp_search_window <- 80 # The ep is longer with ONT's newer PCS110 kit requiring more search window
+        } else {
+            fp_search_window <- 50  # For our legacy data and PCR DNA approach
+        }
+
         as_rc_ep <- Biostrings::pairwiseAlignment(pattern=rc_ep,
-                                                  subject=Biostrings::DNAString(substr(fastq, start=max(nchar(fastq)-50, 0), stop=nchar(fastq))),
+                                                  subject=Biostrings::DNAString(substr(fastq, start=max(nchar(fastq)-fp_search_window, 0), stop=nchar(fastq))),
                                                   substitutionMatrix=submat,
                                                   type=type,
                                                   scoreOnly=FALSE,
@@ -182,7 +203,7 @@ find_dna_tailtype <- function(file_path = NA,
 
         # If it is a valid polyA tail, then find the rough starting site of the tail
         if (tail_is_valid) {
-            polya_end_fastq <- as_rc_ep@subject@range@start + nchar(fastq)- 50 - 1 - as_rc_ep@pattern@range@start
+            polya_end_fastq <- as_rc_ep@subject@range@start + nchar(fastq) - fp_search_window - as_rc_ep@pattern@range@start
             polya_rough_end <- find_sample_index_for_fastq_base(read_data$event_data, polya_end_fastq, read_type)
             # for max remove later
             # as_rc_fp <- Biostrings::pairwiseAlignment(pattern=rc_fp,
