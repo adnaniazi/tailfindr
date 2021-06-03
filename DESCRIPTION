@@ -18,7 +18,7 @@ Depends: R (>= 3.5.0)
 SystemRequirements: libhdf5 (>= 1.8.13)
 biocViews:
 Imports: 
-    rbokeh (== 0.4.2),
+    rbokeh (>= 0.4.2),
     Biostrings (>= 2.48.0),
     ggplot2 (>= 3.0.0), 
     stats (>= 3.0.0), 

@@ -251,6 +251,10 @@ find_rna_polya_tail_per_read <- function(file_path = NA,
             else {
                 #rbokeh::widget2png(p, file = save_path_png)
                 rbokeh::rbokeh2html(p, file = save_path_html)
+                # Hack to make the plots working
+                tx  <- readLines(save_path_html)
+                tx2  <- gsub(pattern="bokeh-0.12.5", replace="bokeh-0.12.3", x=tx)
+                writeLines(tx2, con=save_path_html)
             }
         }
 
