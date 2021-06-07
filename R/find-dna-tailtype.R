@@ -191,8 +191,25 @@ find_dna_tailtype <- function(file_path = NA,
             fp_search_window <- 50  # For our legacy data and PCR DNA approach
         }
 
-        as_rc_ep <- Biostrings::pairwiseAlignment(pattern=rc_ep,
-                                                  subject=Biostrings::DNAString(substr(fastq, start=max(nchar(fastq)-fp_search_window, 0), stop=nchar(fastq))),
+        # #adnan
+        # as_rc_ep <- Biostrings::pairwiseAlignment(pattern=rc_ep,
+        #                                           subject=Biostrings::DNAString(substr(fastq, start=max(nchar(fastq)-fp_search_window, 0), stop=nchar(fastq))),
+        #                                           substitutionMatrix=submat,
+        #                                           type=type,
+        #                                           scoreOnly=FALSE,
+        #                                           gapOpening=gapOpening,
+        #                                           gapExtension=gapExtension)
+        # nas_rc_ep <- as_rc_ep@score/rc_ep@length
+        # tail_is_valid <- ifelse(nas_rc_ep > threshold, TRUE, FALSE)
+        #
+
+        # eaiser logic; convert the end of FASTQ to reverse complement
+        as_rc_ep <- Biostrings::pairwiseAlignment(pattern=ep,
+                                                  subject=Biostrings::reverseComplement(
+                                                      Biostrings::DNAString(
+                                                          substr(fastq, start=max(nchar(fastq)-fp_search_window-1, 0), stop=nchar(fastq))
+                                                          )
+                                                      ),
                                                   substitutionMatrix=submat,
                                                   type=type,
                                                   scoreOnly=FALSE,
@@ -201,9 +218,15 @@ find_dna_tailtype <- function(file_path = NA,
         nas_rc_ep <- as_rc_ep@score/rc_ep@length
         tail_is_valid <- ifelse(nas_rc_ep > threshold, TRUE, FALSE)
 
+
         # If it is a valid polyA tail, then find the rough starting site of the tail
         if (tail_is_valid) {
-            polya_end_fastq <- as_rc_ep@subject@range@start + nchar(fastq) - fp_search_window - as_rc_ep@pattern@range@start
+            #adnan
+            #polya_end_fastq <- as_rc_ep@subject@range@start + nchar(fastq) - fp_search_window - as_rc_ep@pattern@range@start
+
+            # easier logic
+            polya_end_fastq <- nchar(fastq) - as_rc_ep@subject@range@start - as_rc_ep@subject@range@width + as_rc_ep@pattern@range@start + 1
+
             polya_rough_end <- find_sample_index_for_fastq_base(read_data$event_data, polya_end_fastq, read_type)
             # for max remove later
             # as_rc_fp <- Biostrings::pairwiseAlignment(pattern=rc_fp,
