@@ -161,14 +161,31 @@ find_dna_tail_per_read <- function(file_path = NA,
         }
     }
 
+    #if it has precise boundary, but the signal
+    # is sloping, then find the point where the signal looks like
+    # a homopolymer stretch
+    m <- 1
+    if (has_precise_boundary) {
+        while (m < 20) {
+            if ((mean_data[m] > SLOPE_THRESHOLD) & (mean_data[m] > 0)) {
+                m <- m + 1
+            }
+            else {
+                break
+            }
+        }
+    }
+
+
     # Find the tail end
     if (!has_precise_boundary) {
         i <- k
     } else {
-        i <- 3
+        i <- m + 1
         # this is necesarry otherwise the loop below
         # will never find the tail end
     }
+
     small_glitch_count <- 0
     quit_searching <- FALSE
     tail_end <- NA
@@ -194,6 +211,7 @@ find_dna_tail_per_read <- function(file_path = NA,
             (smoothed_data[tail_start+i*window_size] < sm_data_threshold)) {
             tail_end <- i
             i <- i + 1
+            last_good_end <- i
         } else {
             j <- i
             while (j < length(slope)) {
@@ -201,7 +219,8 @@ find_dna_tail_per_read <- function(file_path = NA,
                     quit_searching <- TRUE
                     break
                 }
-                if ((slope[j] > SLOPE_THRESHOLD) | (slope[j] < -SLOPE_THRESHOLD)) {
+                #if ((slope[j] > SLOPE_THRESHOLD) | (slope[j] < -SLOPE_THRESHOLD)) {
+                if ((mean_data[j] > SLOPE_THRESHOLD) | (mean_data[j] < -SLOPE_THRESHOLD)) {
                     small_glitch_count <- 0
                     j <- j + 1
                 } else {
@@ -214,6 +233,7 @@ find_dna_tail_per_read <- function(file_path = NA,
                 }
             }
             if (quit_searching) {
+                i <- last_good_end
                 break
             }
             i <- j
@@ -236,22 +256,35 @@ find_dna_tail_per_read <- function(file_path = NA,
     }
 
 
-    # tail ends prematurely especially the poly(A) because of the main tail
-    # finding logic above. This code extends that tail so that it is correct
-    while (i < length(slope)) {
-        if (smoothed_data[tail_start+i * window_size] < sm_data_threshold) {
-            tail_end <- i
-            i <- i + 1
-        } else {
-            break
-        }
-    }
+    # # tail ends prematurely especially the poly(A) because of the main tail
+    # # finding logic above. This code extends that tail so that it is correct
+    # while (i < length(slope)) {
+    #     if (smoothed_data[tail_start+i * window_size] < sm_data_threshold) {
+    #         tail_end <- i
+    #         i <- i + 1
+    #     } else {
+    #         break
+    #     }
+    # }
 
+
+    # # tail ends prematurely especially the poly(A) because of the main tail
+    # # finding logic above. This code extends that tail so that it is correct
+    # while (i < length(slope)) {
+    #     if (mean_data[i] < sm_data_threshold/2) {
+    #         i <- i + 1
+    #     } else {
+    #         break
+    #     }
+    # }
+    # tail_end <- i
 
     if (has_precise_boundary){
         tail_end <- start + (tail_end)*window_size
     } else {
-        tail_end <- start + (tail_end+4)*window_size
+        #tail_end <- start + (tail_end+4)*window_size
+        tail_end <- start + (tail_end)*window_size
+
     }
 
     mean_data <- c(rep(NA, times=tail_start),
