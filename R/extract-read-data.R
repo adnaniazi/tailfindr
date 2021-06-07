@@ -92,6 +92,24 @@ extract_read_data <- function(file_path = NA,
         basecall_1d_template_path <- paste0('/', full_read_id, '/Analyses/', basecall_group, '/Summary/basecall_1d_template')
     }
 
+    # # ___ NEW
+    # # find if data is dna or rna
+    # if (!multifast5) {
+    #     context_tags_path <- f5_tree[grepl('.*context_tags$', f5_tree)]
+    # } else {
+    #     context_tags_path <- paste(first_read_name,
+    #                                '/context_tags',
+    #                                sep = '')
+    # }
+    # sequencing_kit <- f5_obj[[context_tags_path]]$attr_open('sequencing_kit')$read()
+    # if (grepl('rna', sequencing_kit)) {
+    #     experiment_type <- 'rna'
+    # } else {
+    #     experiment_type <- 'dna'
+    # }
+    # # ___ NEW END
+
+
     # get the data
     raw_data <- f5_obj[[raw_signal_path]]$read()
     read_id <- f5_obj[[read_id_path]]$attr_open('read_id')$read()
@@ -203,7 +221,7 @@ extract_read_data <- function(file_path = NA,
         # remove NAs
         event_length_vector <- event_length_vector[!is.na(event_length_vector)]
         # Normalizer for flip-flop based data
-        samples_per_nt <- mean(event_length_vector[event_length_vector <= stats::quantile(event_length_vector, 0.95)])
+        samples_per_nt <- mean(event_length_vector[event_length_vector <= stats::quantile(event_length_vector, 0.99)])
         # add the start column to the event table for legacy purposes
         start_col <-seq(from=start, to=(start + (nrow(event_data)-1)*stride), by=stride)
         event_data <- dplyr::mutate(event_data, start=start_col)
