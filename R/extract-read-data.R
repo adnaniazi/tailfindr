@@ -227,9 +227,9 @@ extract_read_data <- function(file_path = NA,
         event_length_vector <- event_length_vector[!is.na(event_length_vector)]
         # Normalizer for flip-flop based data
         if (experiment_type == 'rna') {
-            prob = 0.95
+            prob <- 0.95
         } else if (experiment_type == 'dna') {
-            prob = 0.99
+            prob <- 0.99
         }
         samples_per_nt <- mean(event_length_vector[event_length_vector <= stats::quantile(event_length_vector, prob)])
         # add the start column to the event table for legacy purposes
