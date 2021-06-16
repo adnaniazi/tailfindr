@@ -116,6 +116,8 @@ find_rna_polya_tail_per_read <- function(file_path = NA,
         tail_start <- precise_polya_boundries$start
         tail_end <- precise_polya_boundries$end
         tail_length <- (tail_end - tail_start) / read_data$samples_per_nt
+        tail_length <-  tail_length - 5 # with the new normalizer
+        read_data$samples_per_nt <- (tail_end - tail_start) / tail_length # update the normalizer
     }
 
     if (show_plots | save_plots) {
