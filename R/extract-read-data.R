@@ -30,6 +30,9 @@
 #'
 #' @param plotting_library a string
 #'
+#' @param experiment_type a string. Set to 'rna' for RNA data and 'dna' for DNA
+#' data
+#'
 #' @return a list
 #'
 #' @examples
@@ -42,7 +45,8 @@
 #'                   basecall_group = 'Basecall_1D_000',
 #'                   multifast5 = TRUE,
 #'                   model = 'standard',
-#'                   plotting_library = 'rbokeh')
+#'                   plotting_library = 'rbokeh',
+#'                   experiment_type = 'rna')
 #' }
 #'
 extract_read_data <- function(file_path = NA,
@@ -52,7 +56,8 @@ extract_read_data <- function(file_path = NA,
                               basecall_group,
                               multifast5,
                               model,
-                              plotting_library) {
+                              plotting_library,
+                              experiment_type) {
 
     if (!multifast5) {
         f5_obj <- hdf5r::H5File$new(file_path, mode='r')
@@ -221,7 +226,12 @@ extract_read_data <- function(file_path = NA,
         # remove NAs
         event_length_vector <- event_length_vector[!is.na(event_length_vector)]
         # Normalizer for flip-flop based data
-        samples_per_nt <- mean(event_length_vector[event_length_vector <= stats::quantile(event_length_vector, 0.99)])
+        if (experiment_type == 'rna') {
+            prob = 0.95
+        } else if (experiment_type == 'dna') {
+            prob = 0.99
+        }
+        samples_per_nt <- mean(event_length_vector[event_length_vector <= stats::quantile(event_length_vector, prob)])
         # add the start column to the event table for legacy purposes
         start_col <-seq(from=start, to=(start + (nrow(event_data)-1)*stride), by=stride)
         event_data <- dplyr::mutate(event_data, start=start_col)
