@@ -107,7 +107,8 @@ find_dna_tailtype <- function(file_path = NA,
                                    basecall_group,
                                    multifast5,
                                    model,
-                                   plotting_library)
+                                   plotting_library,
+                                   experiment_type = 'dna')
 
     # get event data table and the fastQ
     #event_data <- read_data$event_data

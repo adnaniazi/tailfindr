@@ -44,7 +44,8 @@ find_rna_polya_tail_per_read <- function(file_path = NA,
                                    basecall_group,
                                    multifast5,
                                    model,
-                                   plotting_library)
+                                   plotting_library,
+                                   experiment_type = 'rna')
 
     event_data <- read_data$event_data
     raw_data <- read_data$raw_data
