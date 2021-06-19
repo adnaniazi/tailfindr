@@ -37,6 +37,9 @@ find_rna_polya_tail_per_read <- function(file_path = NA,
     POLY_A_RNA_ADAPTOR_TROUGH_SIZE_THRESHOLD <- 2200
 
     # Read the FAST5 data
+    if (!save_plots) {
+        plot_debug <- FALSE
+    }
     read_data <- extract_read_data(file_path,
                                    read_id_fast5_file,
                                    plot_debug,
@@ -115,6 +118,16 @@ find_rna_polya_tail_per_read <- function(file_path = NA,
         poly_a_fastq <- NA
         tail_start <- precise_polya_boundries$start
         tail_end <- precise_polya_boundries$end
+
+        # ## Delete later
+        # tail_end_row_index <- event_data[which.min(abs(tail_start-event_data$start)),]
+        # tail_end_row_index <- as.numeric(rownames(tail_end_row_index)) - 2
+        # evl <- event_data$event_length_vector
+        # evl_subset <- evl[-(1:tail_end_row_index)]
+        # #evl_subset <- evl[tail_end_row_index:(tail_end_row_index+5000)]
+        # samples_per_nt <- psych::geometric.mean(evl_subset)
+        # read_data$samples_per_nt <- samples_per_nt
+
         tail_length <- (tail_end - tail_start) / read_data$samples_per_nt
         tail_length <-  tail_length - 5 # with the new normalizer
         read_data$samples_per_nt <- (tail_end - tail_start) / tail_length # update the normalizer
