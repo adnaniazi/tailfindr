@@ -201,7 +201,7 @@ find_dna_tail_per_read <- function(file_path = NA,
 
     # define smoothened data threshold first
     if (read_type == 'polyA') {
-        sm_data_threshold <- 0.6
+        sm_data_threshold <- 0.7 # change from 0.6 to 0.7
     } else if  (read_type == 'polyT') {
         sm_data_threshold <- 0.3
     }
