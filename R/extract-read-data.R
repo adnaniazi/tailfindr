@@ -210,7 +210,7 @@ extract_read_data <- function(file_path = NA,
         # Normalizer for flip-flop based data
         if (experiment_type == 'rna') {
             samples_per_nt <- psych::geometric.mean(event_length_vector)
-            samples_per_nt_2 <- mean(event_length_vector[event_length_vector <= stats::quantile(event_length_vector, 0.95)])
+            samples_per_nt_2 <- mean(event_length_vector[event_length_vector <= stats::quantile(event_length_vector, 0.99)])
             samples_per_nt <- (samples_per_nt + samples_per_nt_2)/2
         } else if (experiment_type == 'dna') {
             samples_per_nt <- mean(event_length_vector[event_length_vector <= stats::quantile(event_length_vector, 0.99)])
