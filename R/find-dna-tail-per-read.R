@@ -220,7 +220,7 @@ find_dna_tail_per_read <- function(file_path = NA,
                     break
                 }
                 #if ((slope[j] > SLOPE_THRESHOLD) | (slope[j] < -SLOPE_THRESHOLD)) {
-                if ((mean_data[j] > SLOPE_THRESHOLD) | (mean_data[j] < -SLOPE_THRESHOLD)) {
+                if ((mean_data[j] > SLOPE_THRESHOLD+0.1) | (mean_data[j] < -SLOPE_THRESHOLD-0.1)) {
                     small_glitch_count <- 0
                     j <- j + 1
                 } else {

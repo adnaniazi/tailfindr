@@ -357,9 +357,9 @@ find_tails <- function(fast5_dir,
             f5_obj <- hdf5r::H5File$new(fast5_file, mode = 'r')
             f5_tree <- f5_obj$ls(recursive = FALSE)
             f5_tree <- f5_tree$name
-            f5_tree <- dplyr::mutate(dplyr::tbl_df(f5_tree), fast5_file = fast5_file)
+            f5_tree <- dplyr::mutate(dplyr::tibble(f5_tree), fast5_file = fast5_file)
             value <- NULL  # R CMD CHECK
-            f5_tree <- dplyr::rename(f5_tree, read_id = value)
+            f5_tree <- dplyr::rename(f5_tree, read_id = f5_tree)
             read_id_fast5_file <- rbind(read_id_fast5_file, f5_tree)
             f5_obj$close_all()
         }
