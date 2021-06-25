@@ -121,9 +121,8 @@ find_rna_polya_tail_per_read <- function(file_path = NA,
 
         tail_length <- (tail_end - tail_start) / read_data$samples_per_nt
 
-        if (tail_length > 5) {
+        if (tail_length > 6) {
             tail_length <-  tail_length - 5 # with the new normalizer
-            read_data$samples_per_nt <- (tail_end - tail_start) / tail_length # update the normalizer
         }
     }
 
