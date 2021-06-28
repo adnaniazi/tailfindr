@@ -4,7 +4,6 @@
 # tailfindr <a href=''><img src='man/figures/tailfindr-logo.png' align="right" height="250" /></a>
 
 <!-- badges: start -->
-
 <!-- badges: end -->
 
 ## What is *tailfindr*?
@@ -14,12 +13,12 @@ Nanopore reads.
 
 ## Features of *tailfindr*
 
-  - Works for both RNA and DNA reads. In the case of DNA reads, it
+-   Works for both RNA and DNA reads. In the case of DNA reads, it
     estimates both poly(A)- and poly(T)-tail lengths.
-  - Supports data that has been basecalled with Albacore or Guppy. It
+-   Supports data that has been basecalled with Albacore or Guppy. It
     also support data that has been basecalled using the newer
     ‘flipflop’ model.
-  - Can work on single or multi-fast5 file reads.
+-   Can work on single or multi-fast5 file reads.
 
 *tailfindr* has been developed at [Valen
 Lab](https://www.cbu.uib.no/valen/) in [Computational Biology
@@ -28,15 +27,22 @@ Bergen](https://www.uib.no/), Norway.
 
 ## Installation
 
-#### Step 1. Installing HDF5 library
+#### Step 1. Installing VBZ plugin
+
+VBZ is a compression format used by Nanopore to compress the data inside
+a FAST5 file. You must install VBZ plugin for your operating system so
+that tailfindr can successfully read FAST5 files. Download and install
+VBZ plugin from
+[here](https://github.com/nanoporetech/vbz_compression/releases).
+
+#### Step 2. Installing HDF5 library
 
 tailfindr depends on the HDF5 library for reading Fast5 files. For OS X
 and Linux, the HDF5 library needs to be installed via one of the (shell)
-commands specified
-below:
+commands specified below:
 
 | System                                      | Command                            |
-| :------------------------------------------ | :--------------------------------- |
+|:--------------------------------------------|:-----------------------------------|
 | **OS X (using Homebrew)**                   | `brew install hdf5`                |
 | **Debian-based systems (including Ubuntu)** | `sudo apt-get install libhdf5-dev` |
 | **Systems supporting yum and RPMs**         | `sudo yum install hdf5-devel`      |
@@ -45,7 +51,7 @@ HDF5 1.8.14 has been pre-compiled for Windows and is available
 [here](https://github.com/mannau/h5-libwin) — thus no manual
 installation is required.
 
-#### Step 2. Installing devtools
+#### Step 3. Installing devtools
 
 Currently, *tailfindr* is not listed on CRAN/Bioconductor, so you need
 to install it using `devtools`. To install `devtools` use the following
@@ -55,7 +61,17 @@ command in R/R-studio:
 install.packages("devtools")
 ```
 
-#### Step 3. Installing tailfindr
+#### Step 4. Installing rbokeh
+
+rbokeh has been delisted from CRAN and therefore tailfindr cannot
+install itself. You need to manually install it yourself using the
+command below:
+
+``` r
+devtools::install_url('https://cran.r-project.org/src/contrib/Archive/rbokeh/rbokeh_0.5.1.tar.gz', type = "source", dependencies = TRUE)
+```
+
+#### Step 5. Installing tailfindr
 
 Now you can install tailfindr using the command below in R/R-studio:
 
@@ -64,8 +80,7 @@ devtools::install_github("adnaniazi/tailfindr")
 ```
 
 If you also want to build the vignette while installing tailfindr, then
-run the command
-below:
+run the command below:
 
 ``` r
 remotes::install_github('adnaniazi/tailfindr', build = TRUE, build_opts = c("--no-resave-data", "--no-manual"), force = TRUE)
@@ -75,7 +90,7 @@ Now you are ready to use *tailfindr*.
 
 ## Usage
 
-#### 1\. Minimal working example
+#### 1. Minimal working example
 
 `find_tails()` is the main function that you can use to find tail
 lengths in both RNA and DNA reads. It saves a CSV file containing all
@@ -100,7 +115,7 @@ this dataframe as a csv file (`rna_tails.csv`) in the user-specified
 also saved in the `save_dir`. The parameter `num_cores` can be increased
 depending on the number of *physical* cores at your disposal.
 
-#### 2\. Plotting the tail
+#### 2. Plotting the tail
 
 Additionally, *tailfindr* allows you to generate plots that show the
 tail location in the raw squiggle. You can save these plots as
@@ -128,13 +143,12 @@ However, note that generating plots can slow down the performance of
 tailfindr. We recommend that you generate these plots only for a small
 subset of your reads.
 
-#### 3\. Plotting the tail and debug traces
+#### 3. Plotting the tail and debug traces
 
 *tailfindr* can plot additional information that it used while deriving
 the tail boundaries. Please read our preprint to learn how *tailfindr*
 works. To plot this information, set the `plot_debug_traces` parameter
-to
-`TRUE`.
+to `TRUE`.
 
 ``` r
 df <- find_tails(fast5_dir = system.file('extdata', 'cdna', package = 'tailfindr'),
@@ -149,14 +163,13 @@ df <- find_tails(fast5_dir = system.file('extdata', 'cdna', package = 'tailfindr
 ![Poly(A) read squiggle
 plot](https://github.com/adnaniazi/tailfindr/raw/master/man/figures/poly_a_with_debug.gif)
 
-#### 4\. Specifying custom basecall group
+#### 4. Specifying custom basecall group
 
 *tailfindr* needs `Fastq` and `Events/Move` table to work on. By
 default, it searches for them in the `Basecall_1D_000` group in the
 Analyses section of the FAST5 file. If for whatever reason, you need
 *tailfindr* to read data from another basecall group – lets say
-`Basecall_1D_001` – then you can run *tailfindr* as
-below:
+`Basecall_1D_001` – then you can run *tailfindr* as below:
 
 ``` r
 df <- find_tails(fast5_dir = system.file('extdata', 'rna_basecall_1D_001', package = 'tailfindr'),
@@ -177,14 +190,13 @@ There are more options available in the find\_tails() function. Please
 see its
 [documentation](https://rdrr.io/github/adnaniazi/tailfindr/man/find_tails.html).
 
-#### 5\. Specifying custom cDNA primers
+#### 5. Specifying custom cDNA primers
 
 If you have used custom front and end primers while designing you cDNA
 sequences, you can now specify them in *tailfindr*. *tailfindr* will use
 these sequences instead of the defaults ones to find the orientation of
 the reads and one of the ends of the poly(A)/(T) tail. Here is how you
-call *tailfindr* if you have used custom
-primers:
+call *tailfindr* if you have used custom primers:
 
 ``` r
 df <- find_tails(fast5_dir = system.file('extdata', 'cdna', package = 'tailfindr'),
@@ -200,13 +212,10 @@ Important thing to note here is the use of three additional parameters:
 `dna_datatype`, `front_primer`, and `end_primer`.
 
 `front_primer` and `end_primer` sequences should always be specified in
-the 5’ to 3’
-direction.
+the 5’ to 3’ direction.
 
 <center>
-
-![cDNA](https://github.com/adnaniazi/tailfindr/raw/master/man/figures/cdna_construct.png)
-
+![cDNA](https://github.com/adnaniazi/tailfindr/raw/master/man/figures/cdna_construct.png "fig:")
 </center>
 
 ### Description of the CSV/Dataframe columns
@@ -214,13 +223,12 @@ direction.
 *tailfindr* returns tail data in a dataframe and also saves this
 information in a user-specified CSV file. The columns generated depend
 on the whether *tailfindr* was run on RNA or DNA data. Below is a
-description of columns for both thses
-scenarios:
+description of columns for both thses scenarios:
 
 ##### When input data is RNA
 
 | Column Names     | Datatype  | Description                                                                                                      |
-| :--------------- | :-------- | :--------------------------------------------------------------------------------------------------------------- |
+|:-----------------|:----------|:-----------------------------------------------------------------------------------------------------------------|
 | read\_id         | character | Read ID as given in the Fast5 file                                                                               |
 | tail\_start      | numeric   | Sample index of start site of the tail in raw data                                                               |
 | tail\_end        | numeric   | Sample index of end site of the tail in raw data                                                                 |
@@ -231,11 +239,10 @@ scenarios:
 ##### When input data is DNA
 
 Here are the columns that you will get from *tailfindr* if you have run
-it on DNA
-data:
+it on DNA data:
 
 | Column Names     | Datatype         | Description                                                                                                                                                                       |
-| ---------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|------------------|------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | read\_id         | character        | Read ID as given in the Fast5 file                                                                                                                                                |
 | read\_type       | character factor | Whether a read is `"polyA"`, `"polyT"`, or `"invalid"`. Invalid reads are those in which *tailfindr* wasn’t able to find Nanopore primers with high confidence.                   |
 | tail\_is\_valid  | logical          | Whether a poly(A) tail is a full-length read or not. This is important because a poly(A) tail is at the end of the read, and premature termination of reads is prevelant in cDNA. |
@@ -247,7 +254,7 @@ data:
 
 ## The devil👹 in the details
 
-  - tailfindr needs the `Events/Move` table in the FAST5 file to
+-   tailfindr needs the `Events/Move` table in the FAST5 file to
     calculate the read-specific normalizer – `samples_per_nt` – which is
     used to convert tail length in samples to tail length in
     nucleotides. If your data was basecalled with
@@ -266,21 +273,17 @@ data:
     `"Basecall_1D_001"` as shown in the use case \# 4 above.
 
 <center>
-
 ![MinKNOW Live Basecalling
-problem](https://github.com/adnaniazi/tailfindr/raw/master/man/figures/minkow_live_basecalling.png)
-
+problem](https://github.com/adnaniazi/tailfindr/raw/master/man/figures/minkow_live_basecalling.png "fig:")
 </center>
 
-  - For DNA data, *tailfindr* decides whether a read is poly(A) or
+-   For DNA data, *tailfindr* decides whether a read is poly(A) or
     poly(T) based on finding Nanopore primers/adaptors. If you are using
     the flipflop model to basecall DNA data, please ensure that the
     nanopore adaptors are not trimmed off while basecalling. This can be
     done by turning off `enabling_trimming` option in the basecalling
     script. The script below shows you how we have basecalled our reads
     using the flipflop model
-
-<!-- end list -->
 
 ``` bash
 #!/bin/sh
@@ -297,19 +300,14 @@ guppy_basecaller \
     --enable_trimming 0 
 ```
 
-  - *tailfindr* has been tested and validated using the following
+-   *tailfindr* has been tested and validated using the following
     sequencing kits:
-
-<!-- end list -->
 
 1.  SQK-RNA001 and SQK-RNA002 for RNA
 2.  SQK-LSK108 and SQK-LSK109 for DNA
+3.  SQK-PCS110 for PCR cDNA
 
-<!-- end list -->
-
-  - *tailfindr* has been tested and validated using the basecallers:
-
-<!-- end list -->
+-   *tailfindr* has been tested and validated using the basecallers:
 
 1.  Albacore v2.3.1 and v2.3.3.
 2.  Guppy v2.2.2, v2.3.1, v3.0.1. Guppy v2.2.2, v2.3.1 were tested with
