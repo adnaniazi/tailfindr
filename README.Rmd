@@ -34,7 +34,12 @@ tailfindr is a R package for estimating poly(A)-tail lengths in Oxford Nanopore 
 
 ## Installation
 
-#### Step 1. Installing HDF5 library
+#### Step 1. Installing VBZ plugin
+
+VBZ is a compression format used by Nanopore to compress the data inside a FAST5 file. You must install VBZ plugin for your operating system so that tailfindr can successfully read FAST5 files. Download and install VBZ plugin from [here](https://github.com/nanoporetech/vbz_compression/releases).
+
+
+#### Step 2. Installing HDF5 library
 
 tailfindr depends on the HDF5 library for reading Fast5 files. For OS X and Linux, the HDF5 library needs to be installed via one of the (shell) commands specified below:
 
@@ -46,14 +51,21 @@ tailfindr depends on the HDF5 library for reading Fast5 files. For OS X and Linu
 
 HDF5 1.8.14 has been pre-compiled for Windows and is available [here](https://github.com/mannau/h5-libwin) &mdash; thus no manual installation is required.
 
-#### Step 2. Installing devtools
+#### Step 3. Installing devtools
 Currently, *tailfindr* is not listed on CRAN/Bioconductor, so you need to install it using `devtools`. To install `devtools` use the following command in R/R-studio:
 
 ```{r, message = FALSE, eval = FALSE}
 install.packages("devtools")
 ```
 
-#### Step 3. Installing tailfindr
+#### Step 4. Installing rbokeh
+rbokeh has been delisted from CRAN and therefore tailfindr cannot install itself. You need to manually install it yourself using the command below: 
+
+```{r, message = FALSE, eval = FALSE}
+devtools::install_url('https://cran.r-project.org/src/contrib/Archive/rbokeh/rbokeh_0.5.1.tar.gz', type = "source", dependencies = TRUE)
+```
+
+#### Step 5. Installing tailfindr
 
 Now you can install tailfindr using the command below in R/R-studio:
 ````{r, message = FALSE, eval = FALSE}
@@ -213,6 +225,8 @@ guppy_basecaller \
 * *tailfindr* has been tested and validated using the following sequencing kits:
 1. SQK-RNA001 and SQK-RNA002 for RNA 
 2. SQK-LSK108 and SQK-LSK109 for DNA
+3. SQK-PCS110 for PCR cDNA
+
 
 * *tailfindr* has been tested and validated using the basecallers:
 1. Albacore v2.3.1 and v2.3.3.
