@@ -279,6 +279,10 @@ extract_read_data <- function(file_path = NA,
     }
     f5_obj$close_all()
 
+
+    # strip away read_ from the read_id if the reads have it
+    read_id = gsub("^read_", "", read_id)
+
     list(read_id = read_id,
          raw_data = raw_data,
          event_data = event_data,

@@ -153,7 +153,7 @@ find_dna_tail_per_read <- function(file_path = NA,
     if (!has_precise_boundary) {
         while (k < 20) {
             if ((slope[k] < SLOPE_THRESHOLD) & (slope[k] > -SLOPE_THRESHOLD) &
-                (mean_data[k] < SLOPE_THRESHOLD+0.1) & (mean_data[k] > 0)) { # changed it from mean_data[k] > -SLOPE_THRESHOLD
+                (mean_data[k] < SLOPE_THRESHOLD+0.1) & (mean_data[k] > 0) & (slope[k+1] < SLOPE_THRESHOLD) ) { # fixes the overestimation problem
                 precise_tail_start <- (k-1)*window_size + tail_start
                 break
             }
@@ -206,6 +206,7 @@ find_dna_tail_per_read <- function(file_path = NA,
         sm_data_threshold <- 0.3
     }
 
+    last_good_end <- 1
     while (i < length(slope)){
         if ((slope[i] < SLOPE_THRESHOLD) & (slope[i] > -SLOPE_THRESHOLD) &
             (smoothed_data[tail_start+i*window_size] < sm_data_threshold)) {
@@ -240,20 +241,7 @@ find_dna_tail_per_read <- function(file_path = NA,
         }
     }
 
-    # if tail end is not found for whatever reason
-    # perhaps due to wrong alignment location of end primer
-    # then return
-    if (is.na(tail_end)) {
-        return(list(read_id = read_data$read_id,
-                    read_type = read_type,
-                    tail_is_valid = tail_is_valid,
-                    tail_start = NA,
-                    tail_end = NA,
-                    samples_per_nt = samples_per_nt,
-                    tail_length = NA,
-                    file_path = file_path,
-                    has_precise_boundary = has_precise_boundary))
-    }
+
 
 
     # # tail ends prematurely especially the poly(A) because of the main tail
@@ -323,6 +311,7 @@ find_dna_tail_per_read <- function(file_path = NA,
     }
 
     # calculate the tail length
+    tail_length = -999
     tail_length = (tail_end - tail_start)/read_data$samples_per_nt
 
     if (save_plots | show_plots) {
@@ -512,15 +501,32 @@ find_dna_tail_per_read <- function(file_path = NA,
         }
     }
 
-    return(list(read_id = read_data$read_id,
-                read_type = read_type,
-                tail_is_valid = tail_is_valid,
-                tail_start = tail_start,
-                tail_end = tail_end,
-                samples_per_nt = samples_per_nt,
-                tail_length = tail_length,
-                file_path = file_path,
-                has_precise_boundary = has_precise_boundary))
+    # if tail end is not found for whatever reason
+    # perhaps due to wrong alignment location of end primer
+    # then return
+    if (is.na(tail_end)) {
+        return(list(read_id = read_data$read_id,
+                    read_type = read_type,
+                    tail_is_valid = FALSE,
+                    tail_start = NA,
+                    tail_end = NA,
+                    samples_per_nt = samples_per_nt,
+                    tail_length = 0,
+                    file_path = file_path,
+                    has_precise_boundary = has_precise_boundary))
+    } else {
+        return(list(read_id = read_data$read_id,
+                    read_type = read_type,
+                    tail_is_valid = tail_is_valid,
+                    tail_start = tail_start,
+                    tail_end = tail_end,
+                    samples_per_nt = samples_per_nt,
+                    tail_length = tail_length,
+                    file_path = file_path,
+                    has_precise_boundary = has_precise_boundary))
+    }
+
+
 }
 
 
