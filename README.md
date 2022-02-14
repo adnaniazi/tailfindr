@@ -186,7 +186,7 @@ In this case, the input FAST5 have two basecall groups:
 `Basecall_1D_000` and `Basecall_1D_001` but we configured *tailfindr* to
 use `Events/Move` table from the `Basecall_1D_001` group.
 
-There are more options available in the find\_tails() function. Please
+There are more options available in the find_tails() function. Please
 see its
 [documentation](https://rdrr.io/github/adnaniazi/tailfindr/man/find_tails.html).
 
@@ -214,9 +214,7 @@ Important thing to note here is the use of three additional parameters:
 `front_primer` and `end_primer` sequences should always be specified in
 the 5’ to 3’ direction.
 
-<center>
-![cDNA](https://github.com/adnaniazi/tailfindr/raw/master/man/figures/cdna_construct.png "fig:")
-</center>
+![cDNA](https://github.com/adnaniazi/tailfindr/raw/master/man/figures/cdna_construct.png)
 
 ### Description of the CSV/Dataframe columns
 
@@ -227,30 +225,30 @@ description of columns for both thses scenarios:
 
 ##### When input data is RNA
 
-| Column Names     | Datatype  | Description                                                                                                      |
-|:-----------------|:----------|:-----------------------------------------------------------------------------------------------------------------|
-| read\_id         | character | Read ID as given in the Fast5 file                                                                               |
-| tail\_start      | numeric   | Sample index of start site of the tail in raw data                                                               |
-| tail\_end        | numeric   | Sample index of end site of the tail in raw data                                                                 |
-| samples\_per\_nt | numeric   | Read rate in terms of samples per nucleotide                                                                     |
-| tail\_length     | numeric   | Tail length in nucleotides. It is the difference between `tail_end` and `tail_start` divided by `samples_per_nt` |
-| file\_path       | character | Absolute path of the Fast5 file                                                                                  |
+| Column Names   | Datatype  | Description                                                                                                      |
+|:---------------|:----------|:-----------------------------------------------------------------------------------------------------------------|
+| read_id        | character | Read ID as given in the Fast5 file                                                                               |
+| tail_start     | numeric   | Sample index of start site of the tail in raw data                                                               |
+| tail_end       | numeric   | Sample index of end site of the tail in raw data                                                                 |
+| samples_per_nt | numeric   | Read rate in terms of samples per nucleotide                                                                     |
+| tail_length    | numeric   | Tail length in nucleotides. It is the difference between `tail_end` and `tail_start` divided by `samples_per_nt` |
+| file_path      | character | Absolute path of the Fast5 file                                                                                  |
 
 ##### When input data is DNA
 
 Here are the columns that you will get from *tailfindr* if you have run
 it on DNA data:
 
-| Column Names     | Datatype         | Description                                                                                                                                                                       |
-|------------------|------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| read\_id         | character        | Read ID as given in the Fast5 file                                                                                                                                                |
-| read\_type       | character factor | Whether a read is `"polyA"`, `"polyT"`, or `"invalid"`. Invalid reads are those in which *tailfindr* wasn’t able to find Nanopore primers with high confidence.                   |
-| tail\_is\_valid  | logical          | Whether a poly(A) tail is a full-length read or not. This is important because a poly(A) tail is at the end of the read, and premature termination of reads is prevelant in cDNA. |
-| tail\_start      | numeric          | Sample index of start site of the tail in raw data                                                                                                                                |
-| tail\_end        | numeric          | Sample index of end site of the tail in raw data                                                                                                                                  |
-| samples\_per\_nt | numeric          | Read rate in terms of samples per nucleotide                                                                                                                                      |
-| tail\_length     | numeric          | Tail length in nucleotides. It is the difference between `tail_end` and `tail_start` divided by `samples_per_nt`                                                                  |
-| file\_path       | character        | Absolute path of the Fast5 file                                                                                                                                                   |
+| Column Names   | Datatype         | Description                                                                                                                                                                       |
+|----------------|------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| read_id        | character        | Read ID as given in the Fast5 file                                                                                                                                                |
+| read_type      | character factor | Whether a read is `"polyA"`, `"polyT"`, or `"invalid"`. Invalid reads are those in which *tailfindr* wasn’t able to find Nanopore primers with high confidence.                   |
+| tail_is_valid  | logical          | Whether a poly(A) tail is a full-length read or not. This is important because a poly(A) tail is at the end of the read, and premature termination of reads is prevelant in cDNA. |
+| tail_start     | numeric          | Sample index of start site of the tail in raw data                                                                                                                                |
+| tail_end       | numeric          | Sample index of end site of the tail in raw data                                                                                                                                  |
+| samples_per_nt | numeric          | Read rate in terms of samples per nucleotide                                                                                                                                      |
+| tail_length    | numeric          | Tail length in nucleotides. It is the difference between `tail_end` and `tail_start` divided by `samples_per_nt`                                                                  |
+| file_path      | character        | Absolute path of the Fast5 file                                                                                                                                                   |
 
 ## The devil👹 in the details
 
@@ -261,7 +259,7 @@ it on DNA data:
     *MinKNOW-Live-Basecalling*, then the Events/Move table might not be
     saved in the FAST5 file. In such a case, you can rebasecall your
     reads and adjust the `basecall_group` parameter accordingly when
-    calling `find_tails()` function as demonstrated in the use case \# 4
+    calling `find_tails()` function as demonstrated in the use case # 4
     above. This is because now the Events/Move table will now be under
     `Basecall_1D_001` instead of *tailfindr’s* default search location
     `Basecall_1D_000`. See the figure below: The panel on left shows
@@ -270,12 +268,10 @@ it on DNA data:
     re-basecalled using standalone Guppy. Now there is Event/Move table
     under the freshly-added basaecall group (`Basecall_1D_001`).
     `find_tails()` should be called with `basecall_group` set to
-    `"Basecall_1D_001"` as shown in the use case \# 4 above.
+    `"Basecall_1D_001"` as shown in the use case # 4 above.
 
-<center>
 ![MinKNOW Live Basecalling
-problem](https://github.com/adnaniazi/tailfindr/raw/master/man/figures/minkow_live_basecalling.png "fig:")
-</center>
+problem](https://github.com/adnaniazi/tailfindr/raw/master/man/figures/minkow_live_basecalling.png)
 
 -   For DNA data, *tailfindr* decides whether a read is poly(A) or
     poly(T) based on finding Nanopore primers/adaptors. If you are using
