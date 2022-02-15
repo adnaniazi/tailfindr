@@ -216,7 +216,7 @@ extract_read_data <- function(file_path = NA,
             # Just about right
             samples_per_nt <- (samples_per_nt_1 + samples_per_nt_2)/2
         } else if (experiment_type == 'dna') {
-            samples_per_nt <- mean(event_length_vector[event_length_vector <= stats::quantile(event_length_vector, 0.99)])
+            samples_per_nt <- mean(event_length_vector[event_length_vector <= stats::quantile(event_length_vector, 0.95)])
         }
         # add the start column to the event table for legacy purposes
         start_col <-seq(from=start, to=(start + (nrow(event_data)-1)*stride), by=stride)
