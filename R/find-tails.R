@@ -289,8 +289,8 @@ find_tails <- function(fast5_dir,
         cat('    for poly(A) tails.\n')
     } else {
         cat(paste('  ', crayon::green(cli::symbol$tick),
-                  ' The experiment type is DNA, so we will search\n', sep=''))
-        cat('    for both poly(A) and poly(T) tails.\n')
+                  ' The experiment type is DNA (Nano3P-seq), so we \n', sep=''))
+        cat('    search for reads with and without poly(T) tails.\n')
     }
     if (read_is_1d == TRUE){
         cat(paste('  ', crayon::green(cli::symbol$tick),
@@ -375,7 +375,7 @@ find_tails <- function(fast5_dir,
         #loop
         if (experiment_type == 'dna') {
             cat(paste(cli::symbol$bullet,
-                      ' Searching for Poly(A) and Poly(T) tails...\n', sep=''))
+                      ' Searching for reads with and without Poly(T) tails...\n', sep=''))
         } else {
             cat(paste(cli::symbol$bullet,
                       ' Searching for Poly(A) tails...\n', sep=''))
@@ -436,7 +436,6 @@ find_tails <- function(fast5_dir,
                                                   error=function(e){
                                                       ls <- list(read_id = riff$read_id,
                                                                  read_type = NA,
-                                                                 tail_is_valid = NA,
                                                                  tail_start = NA,
                                                                  tail_end = NA,
                                                                  samples_per_nt = NA,
@@ -552,7 +551,6 @@ find_tails <- function(fast5_dir,
                                                  error=function(e){
                                                      ls <- list(read_id = NA,
                                                                 read_type = NA,
-                                                                tail_is_valid = NA,
                                                                 tail_start = NA,
                                                                 tail_end = NA,
                                                                 samples_per_nt = NA,

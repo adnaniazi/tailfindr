@@ -72,8 +72,7 @@ find_dna_tail_per_read <- function(file_path = NA,
 
     if (!tail_is_valid) {
         return(list(read_id = read_data$read_id,
-                    read_type = read_type,
-                    tail_is_valid = tail_is_valid,
+                    read_type = 'no_adaptor_found',
                     tail_start = NA,
                     tail_end = NA,
                     samples_per_nt = samples_per_nt,
@@ -506,8 +505,7 @@ find_dna_tail_per_read <- function(file_path = NA,
     # then return
     if (is.na(tail_end)) {
         return(list(read_id = read_data$read_id,
-                    read_type = read_type,
-                    tail_is_valid = FALSE,
+                    read_type = 'contains_no_polyT_tail',
                     tail_start = NA,
                     tail_end = NA,
                     samples_per_nt = samples_per_nt,
@@ -516,8 +514,7 @@ find_dna_tail_per_read <- function(file_path = NA,
                     has_precise_boundary = has_precise_boundary))
     } else {
         return(list(read_id = read_data$read_id,
-                    read_type = read_type,
-                    tail_is_valid = tail_is_valid,
+                    read_type = 'contains_a_polyT_tail',
                     tail_start = tail_start,
                     tail_end = tail_end,
                     samples_per_nt = samples_per_nt,
