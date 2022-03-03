@@ -150,9 +150,17 @@ find_dna_tail_per_read <- function(file_path = NA,
     k <- 1
     precise_tail_start <- NA
     if (!has_precise_boundary) {
-        while (k < 20) {
-            if ((slope[k] < SLOPE_THRESHOLD) & (slope[k] > -SLOPE_THRESHOLD) &
-                (mean_data[k] < SLOPE_THRESHOLD+0.1) & (mean_data[k] > 0) & (slope[k+1] < SLOPE_THRESHOLD) ) { # fixes the overestimation problem
+        while (k < 60) {
+            if ((slope[k]   < SLOPE_THRESHOLD) & (slope[k]   > -SLOPE_THRESHOLD) &
+                (slope[k+1] < SLOPE_THRESHOLD) & (slope[k+1] > -SLOPE_THRESHOLD) &
+                (slope[k+2] < SLOPE_THRESHOLD) & (slope[k+2] > -SLOPE_THRESHOLD) &
+                (slope[k+3] < SLOPE_THRESHOLD) & (slope[k+3] > -SLOPE_THRESHOLD) &
+                (mean_data[k] < SLOPE_THRESHOLD+0.15) & (mean_data[k] > 0) &
+                (mean_data[k+1] < SLOPE_THRESHOLD+0.15) & (mean_data[k+1] > 0) &
+                (mean_data[k+2] < SLOPE_THRESHOLD+0.15) & (mean_data[k+2] > 0) &
+                (mean_data[k+3] < SLOPE_THRESHOLD+0.15) & (mean_data[k+3] > 0)
+                )
+            { # fixes the overestimation problem
                 precise_tail_start <- (k-1)*window_size + tail_start
                 break
             }
