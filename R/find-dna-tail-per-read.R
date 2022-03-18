@@ -327,7 +327,9 @@ find_dna_tail_per_read <- function(file_path = NA,
         tail_prox_transcript_variance = sd(raw_data[tail_end:(tail_end+100)])
         tail_variance = sd(raw_data[tail_start:tail_end])
         if (tail_variance > tail_prox_transcript_variance/2.5) { # it is a fake tail
-            is_a_low_confidence_tail = TRUE
+            tail_start <- NA
+            tail_end <- NA
+            tail_length <- NA
         }
 
     }
@@ -532,14 +534,8 @@ find_dna_tail_per_read <- function(file_path = NA,
                     file_path = file_path,
                     has_precise_boundary = has_precise_boundary))
     } else {
-        if (is_a_low_confidence_tail){
-            read_type = 'contains_a_low_confidence_tail'
-        } else {
-            read_type = 'contains_a_high_confidence_tail'
-
-        }
         return(list(read_id = read_data$read_id,
-                    read_type = read_type,
+                    read_type = 'contains_a_polyT_tail',
                     tail_start = tail_start,
                     tail_end = tail_end,
                     samples_per_nt = samples_per_nt,
