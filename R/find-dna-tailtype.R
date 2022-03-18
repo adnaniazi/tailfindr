@@ -121,7 +121,7 @@ find_dna_tailtype <- function(file_path = NA,
         ep = Biostrings::DNAString('CTTCTATCTCGCTGTCCGTTCACTAGCCTTC')
         #ep = Biostrings::DNAString('TCTTCTATCTCGCTGTCCGTTCA')
         fp = NA
-        threshold <- 0.35 #0.6
+        threshold <- 0.40 #raised the threshold from 0.35 to 0.40
     } else if (dna_datatype == 'pcr-dna') {
         fp <- Biostrings::DNAString('ATTTAGGTGACACTATAGCGCTCCATGCAAACCTGTC')
         ep <- Biostrings::DNAString('GAGTCCGGGCGGCGC')
