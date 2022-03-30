@@ -121,7 +121,7 @@ find_dna_tailtype <- function(file_path = NA,
         ep = Biostrings::DNAString('CTTCTATCTCGCTGTCCGTTCACTAGCCTTC')
         #ep = Biostrings::DNAString('TCTTCTATCTCGCTGTCCGTTCA')
         fp = NA
-        threshold <- 0.40 #raised the threshold from 0.35 to 0.40
+        threshold <- 0.30 #raised the threshold from 0.35 to 0.40
     } else if (dna_datatype == 'pcr-dna') {
         fp <- Biostrings::DNAString('ATTTAGGTGACACTATAGCGCTCCATGCAAACCTGTC')
         ep <- Biostrings::DNAString('GAGTCCGGGCGGCGC')
@@ -139,7 +139,7 @@ find_dna_tailtype <- function(file_path = NA,
     # 3. Invalid otherwise
 
     # define a search window width within which to find the ep and fp
-    search_window <- 100
+    search_window <- 150
 
     as_ep <- Biostrings::pairwiseAlignment(pattern=ep,
                                            subject=Biostrings::DNAString(substr(fastq, start=1, stop=min(search_window, nchar(fastq)))),
@@ -170,7 +170,7 @@ find_dna_tailtype <- function(file_path = NA,
                    stop=nchar(as.character(as_ep@subject))) == substr(ep,
                                                                       start=ep@length-bases_to_match+1,
                                                                       stop=ep@length)) {
-            has_precise_boundary <- TRUE
+            has_precise_boundary <- F#TRUE
         }
 
 
