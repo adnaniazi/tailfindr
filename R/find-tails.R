@@ -289,7 +289,7 @@ find_tails <- function(fast5_dir,
         cat('    for poly(A) tails.\n')
     } else {
         cat(paste('  ', crayon::green(cli::symbol$tick),
-                  ' The experiment type is DNA (Nano3P-seq), so we \n', sep=''))
+                  ' The experiment type is DNA (Jamie-Seq), so we \n', sep=''))
         cat('    search for reads with and without poly(T) tails.\n')
     }
     if (read_is_1d == TRUE){
