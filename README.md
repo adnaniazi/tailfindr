@@ -10,7 +10,7 @@
 
 tailfindr is a R package for estimating poly(A)-tail lengths in Oxford
 Nanopore reads. This branch is specifically designed for the
-[Nano3P-seq](https://www.biorxiv.org/content/10.1101/2021.09.22.461331)
+[Jamie-seq](https://www.biorxiv.org/content/10.1101/2021.09.22.461331)
 protocol. For all other needs, please install from the
 [main](https://github.com/adnaniazi/tailfindr) branch.
 
@@ -78,14 +78,14 @@ devtools::install_url('https://cran.r-project.org/src/contrib/Archive/rbokeh/rbo
 Now you can install tailfindr using the command below in R/R-studio:
 
 ``` r
-devtools::install_github("adnaniazi/tailfindr", ref='nano3p-seq')
+devtools::install_github("adnaniazi/tailfindr", ref='jamieseq')
 ```
 
 If you also want to build the vignette while installing tailfindr, then
 run the command below:
 
 ``` r
-remotes::install_github('adnaniazi/tailfindr', ref='nano3p-seq', build = TRUE, build_opts = c("--no-resave-data", "--no-manual"), force = TRUE)
+remotes::install_github('adnaniazi/tailfindr', ref='jamieseq', build = TRUE, build_opts = c("--no-resave-data", "--no-manual"), force = TRUE)
 ```
 
 Now you are ready to use *tailfindr*.
