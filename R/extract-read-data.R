@@ -274,7 +274,7 @@ extract_read_data <- function(file_path = NA,
         event_length_vector <- c(event_length_vector_1, event_length_vector_2)
         # reomve NAs
         event_length_vector <- event_length_vector[!is.na(event_length_vector)]
-        # compute geometric mean of modfied Albacore events table to get the normalizer
+        # compute geometric mean of modified Albacore events table to get the normalizer
         samples_per_nt <- psych::geometric.mean(event_length_vector)
     }
     f5_obj$close_all()

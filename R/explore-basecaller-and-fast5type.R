@@ -84,13 +84,12 @@ explore_basecaller_and_fast5type <- function(fast5file_path, basecall_group) {
     }
 
     # find if the model used was standard model or flipflop model
-    if (basecaller == 'guppy' & read_is_1d) {
-        trace <- sum(which(grepl('.*Trace$', f5_tree)))
-        model <- ifelse(trace > 0, 'flipflop', 'standard')
-    } else if (basecaller == 'albacore') {
+    if (basecaller == 'albacore') {
         model <- 'standard'
     } else if (basecaller == 'minknow') {
         model <- 'unknown'
+    } else {
+        model <- 'flipflop'
     }
 
     # find if data is dna or rna

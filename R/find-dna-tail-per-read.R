@@ -105,6 +105,8 @@ find_dna_tail_per_read <- function(file_path = NA,
         tail_start <- polyt_start
     }
 
+    # save for later use
+    adapter_end <- tail_start
 
     # Recitfy the data (flip anything that is below zero)
     rectified_data <- rectify(norm_data)
@@ -308,6 +310,10 @@ find_dna_tail_per_read <- function(file_path = NA,
         tail_start <- precise_tail_start
     }
     #############################################################
+    tail_starts_near_the_adapter <- FALSE
+    if (tail_start < adapter_end+200) {
+        tail_starts_near_the_adapter <- TRUE
+    }
 
     # correct tail start and ends for polyA reads (that have been reversed)
     if (read_type=='polyA'){
@@ -317,22 +323,37 @@ find_dna_tail_per_read <- function(file_path = NA,
         tail_end <- polya_end
     }
 
+
     # calculate the tail length
     tail_length = -999
     tail_length = (tail_end - tail_start)/read_data$samples_per_nt
 
     # validate the tail to remove false positive tails
     is_a_low_confidence_tail = FALSE
-    if (!is.na(tail_end)) {
+
+    if (!is.na(tail_end) && !is.na(tail_start)) {
         tail_prox_transcript_variance = sd(raw_data[(tail_end+100):(tail_end+200)])
         tail_variance = sd(raw_data[tail_start:tail_end])
-        if (tail_variance > tail_prox_transcript_variance/2.5) { # it is a fake tail
-            tail_start <- NA
-            tail_end <- NA
-            tail_length <- NA
-            is_a_low_confidence_tail <- TRUE
+        #have more strignent requirement of low variance for shorter tails
+        if (tail_length > 15) {
+            if (tail_variance > tail_prox_transcript_variance/2.5) { # it is a fake tail
+                tail_start <- NA
+                tail_end <- NA
+                tail_length <- NA
+                is_a_low_confidence_tail <- TRUE }
+        } else {
+            if (tail_variance > tail_prox_transcript_variance/3.5) { # it is a fake tail
+                tail_start <- NA
+                tail_end <- NA
+                tail_length <- NA
+                is_a_low_confidence_tail <- TRUE }
         }
+    }
 
+    if (!tail_starts_near_the_adapter) {
+        tail_start <- NA
+        tail_end <- NA
+        tail_length <- NA
     }
 
     if (save_plots | show_plots) {
@@ -526,9 +547,9 @@ find_dna_tail_per_read <- function(file_path = NA,
     # perhaps due to wrong alignment location of end primer
     # then return
     if (is.na(tail_end)) {
-        if (is_a_low_confidence_tail) {
+        if (is_a_low_confidence_tail | !tail_starts_near_the_adapter) {
             return(list(read_id = read_data$read_id,
-                        read_type = 'qc_failed',
+                        read_type = 'tail_region_qc_failed (low-confidance tail)',
                         tail_start = NA,
                         tail_end = NA,
                         samples_per_nt = samples_per_nt,
@@ -536,8 +557,13 @@ find_dna_tail_per_read <- function(file_path = NA,
                         file_path = file_path,
                         has_precise_boundary = has_precise_boundary))
         } else {
+            if (read_type=='polyA'){
+                output_read_type = 'no_polyA_tail_found'
+            } else {
+                output_read_type = 'no_polyT_tail_found'
+            }
             return(list(read_id = read_data$read_id,
-                        read_type = 'contains_no_polyT_tail',
+                        read_type = output_read_type,
                         tail_start = NA,
                         tail_end = NA,
                         samples_per_nt = samples_per_nt,
@@ -546,8 +572,13 @@ find_dna_tail_per_read <- function(file_path = NA,
                         has_precise_boundary = has_precise_boundary))
         }
     } else {
+        if (read_type=='polyA'){
+            output_read_type = 'contains_a_polyA_tail'}
+        else {
+            output_read_type = 'contains_a_polyT_tail'
+        }
         return(list(read_id = read_data$read_id,
-                    read_type = 'contains_a_polyT_tail',
+                    read_type = output_read_type,
                     tail_start = tail_start,
                     tail_end = tail_end,
                     samples_per_nt = samples_per_nt,
