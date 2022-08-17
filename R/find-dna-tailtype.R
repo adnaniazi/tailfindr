@@ -143,7 +143,7 @@ find_dna_tailtype <- function(file_path = NA,
     if (dna_datatype == 'cdna') {
         search_window <- 170 # The ep is longer with ONT's newer PCS110 kit requiring more search window
     } else {
-        search_window <- 100 # For our legacy data and PCR DNA approach
+        search_window <- 170 
     }
 
     as_fp <- Biostrings::pairwiseAlignment(pattern=fp,
@@ -181,7 +181,7 @@ find_dna_tailtype <- function(file_path = NA,
         if (dna_datatype == 'cdna') {
             fp_search_window <- 110 # The ep is longer with ONT's newer PCS110 kit requiring more search window
         } else {
-            fp_search_window <- 50  # For our legacy data and PCR DNA approach
+            fp_search_window <- 110
         }
 
         # #adnan
