@@ -435,13 +435,17 @@ find_tails <- function(fast5_dir,
                                                   },
                                                   error=function(e){
                                                       ls <- list(read_id = riff$read_id,
-                                                                 read_type = NA,
-                                                                 tail_start = NA,
-                                                                 tail_end = NA,
+                                                                 read_type = 'fatal_error_during_read_processing',
+                                                                 polya_length = NA,
+                                                                 polyu_length = NA,
+                                                                 polya_start = NA,
+                                                                 polya_end = NA,
+                                                                 polyu_start = NA,
+                                                                 polyu_end = NA,
                                                                  samples_per_nt = NA,
-                                                                 tail_length = NA,
-                                                                 file_path = riff$fast5_file,
-                                                                 has_precise_boundary = NA)
+                                                                 polya_tail_fasta = NA,
+                                                                 polyu_tail_fasta = NA,
+                                                                 file_path = riff$fast5_file)
                                                   })
                                               }
             } else {
@@ -550,13 +554,17 @@ find_tails <- function(fast5_dir,
                                                  },
                                                  error=function(e){
                                                      ls <- list(read_id = NA,
-                                                                read_type = NA,
-                                                                tail_start = NA,
-                                                                tail_end = NA,
+                                                                read_type = 'fatal_error_during_read_processing',
+                                                                polya_length = NA,
+                                                                polyu_length = NA,
+                                                                polya_start = NA,
+                                                                polya_end = NA,
+                                                                polyu_start = NA,
+                                                                polyu_end = NA,
                                                                 samples_per_nt = NA,
-                                                                tail_length = NA,
-                                                                file_path = file_path,
-                                                                has_precise_boundary = NA)
+                                                                polya_tail_fasta = NA,
+                                                                polyu_tail_fasta = NA,
+                                                                file_path = file_path)
                                                  })
                                              }
             } else {
@@ -605,14 +613,16 @@ find_tails <- function(fast5_dir,
     result <- dplyr::select(result, -chunk)
     # cleanup the tibble
     result <- tidyr::unnest(result)
-    if (experiment_type == 'dna') {
-        has_precise_boundary <- NULL  # R CMD CHECK
-        result <- within(result, rm(has_precise_boundary))
-    } else {
+    if (experiment_type == 'rna') {
         polya_fastq <- NULL  # R CMD CHECK
         result <- within(result, rm(polya_fastq))
+        result$tail_length <- round(result$tail_length, digits = 2)
+    } else {
+        result$polya_length <- round(result$polya_length, digits = 2)
+        result$polyu_length <- round(result$polyu_length, digits = 2)
     }
-    result$tail_length <- round(result$tail_length, digits = 2)
+
+
     result$samples_per_nt <- round(result$samples_per_nt, digits = 2)
     cat('  Done!\n')
 

@@ -118,10 +118,10 @@ find_dna_tailtype <- function(file_path = NA,
     # define the primer sequences
     if (dna_datatype == 'cdna') {
         # Nano3P seq front and end primers
-        ep = Biostrings::DNAString('CTTCTATCTCGCTGTCCGTTCACTAGCCTTC')
+        ep = Biostrings::DNAString('ACTTCGTTCAGTTACGTATTGC')
         #ep = Biostrings::DNAString('TCTTCTATCTCGCTGTCCGTTCA')
         fp = NA
-        threshold <- 0.30 #raised the threshold from 0.35 to 0.40
+        threshold <- 0.60 #raised the threshold from 0.35 to 0.40
     } else if (dna_datatype == 'pcr-dna') {
         fp <- Biostrings::DNAString('ATTTAGGTGACACTATAGCGCTCCATGCAAACCTGTC')
         ep <- Biostrings::DNAString('GAGTCCGGGCGGCGC')

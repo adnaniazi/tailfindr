@@ -4,9 +4,17 @@
 \alias{extract_read_data}
 \title{Extract the read data from a fast5 file}
 \usage{
-extract_read_data(file_path = NA, read_id_fast5_file = NA,
-  plot_debug = FALSE, basecalled_with, basecall_group, multifast5, model,
-  plotting_library)
+extract_read_data(
+  file_path = NA,
+  read_id_fast5_file = NA,
+  plot_debug = FALSE,
+  basecalled_with,
+  basecall_group,
+  multifast5,
+  model,
+  plotting_library,
+  experiment_type
+)
 }
 \arguments{
 \item{file_path}{a character string [NA]. Path of the single fast5 file.
@@ -35,6 +43,9 @@ file}
 Set to 'standard' if the basecalling model is standard model.}
 
 \item{plotting_library}{a string}
+
+\item{experiment_type}{a string. Set to 'rna' for RNA data and 'dna' for DNA
+data}
 }
 \value{
 a list
@@ -53,7 +64,8 @@ extract_read_data(file_path = '/path/to/the/file',
                   basecall_group = 'Basecall_1D_000',
                   multifast5 = TRUE,
                   model = 'standard',
-                  plotting_library = 'rbokeh')
+                  plotting_library = 'rbokeh',
+                  experiment_type = 'rna')
 }
 
 }

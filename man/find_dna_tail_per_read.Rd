@@ -4,11 +4,21 @@
 \alias{find_dna_tail_per_read}
 \title{Find poly(A)/poly(T) tail in a single DNA read}
 \usage{
-find_dna_tail_per_read(file_path = NA, read_id_fast5_file = NA,
-  basecall_group = "Basecall_1D_000", dna_datatype = "cdna",
-  save_plots = FALSE, show_plots = FALSE, plot_debug = FALSE,
-  save_dir = NA, plotting_library = "rbokeh", multifast5 = FALSE,
-  basecalled_with = "albacore", model = "standard", ...)
+find_dna_tail_per_read(
+  file_path = NA,
+  read_id_fast5_file = NA,
+  basecall_group = "Basecall_1D_000",
+  dna_datatype = "cdna",
+  save_plots = FALSE,
+  show_plots = FALSE,
+  plot_debug = FALSE,
+  save_dir = NA,
+  plotting_library = "rbokeh",
+  multifast5 = FALSE,
+  basecalled_with = "albacore",
+  model = "standard",
+  ...
+)
 }
 \arguments{
 \item{file_path}{a character string. Full path of the file that needs to be

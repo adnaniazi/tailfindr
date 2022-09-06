@@ -73,13 +73,19 @@ find_dna_tail_per_read <- function(file_path = NA,
     if (!tail_is_valid) {
         return(list(read_id = read_data$read_id,
                     read_type = 'no_adaptor_found',
-                    tail_start = NA,
-                    tail_end = NA,
+                    polya_length = NA,
+                    polyu_length = NA,
+                    polya_start = NA,
+                    polya_end = NA,
+                    polyu_start = NA,
+                    polyu_end = NA,
                     samples_per_nt = samples_per_nt,
-                    tail_length = NA,
-                    file_path = file_path,
-                    has_precise_boundary = has_precise_boundary))
+                    polya_tail_fasta = NA,
+                    polyu_tail_fasta = NA,
+                    file_path = file_path))
     }
+    polya_length = NA
+    polyu_length = NA
 
     # Empirical parameters
     #POLY_T_CNDA_THRESHOLD <- 0.20
@@ -97,12 +103,16 @@ find_dna_tail_per_read <- function(file_path = NA,
     read_length <- length(norm_data)
 
     # Reverse polyA reads
+    polyu_start <- NA
     if (read_type=='polyA') {
         norm_data <- rev(norm_data)
         polya_start <- read_length - polya_end
         tail_start <- polya_start
     } else {
         tail_start <- polyt_start
+        polyu_start <- polyt_start # where the adapter ends, the polyU tail starts
+        # we keep on going until we find the polyT tail
+        # the distance between the polyT and adapter end contains sequence for polyU tail
     }
 
 
@@ -335,6 +345,156 @@ find_dna_tail_per_read <- function(file_path = NA,
 
     }
 
+
+    ####################
+    # polyU tail logic
+    ####################
+    tail_length_u <-  NA
+    polyu_tail_fasta <-  NA
+    polyt_tail_fasta <- NA
+    precise_polyu_end_as_sample_index <- NA
+    precise_polyu_start_as_sample_index <- NA
+    handled_special_case <- FALSE
+
+    # do the logic only if the polyt tail exists
+    if (!is.na(tail_end) && !is.na(tail_start)) {
+        pt<- extract_fasta_between_start_and_end_sample_indices(event_data,
+                                                                tail_start,
+                                                                tail_end,
+                                                                read_data$fastq)
+        polyt_tail_fasta <- pt$fasta_bases
+
+
+        pu <- extract_fasta_between_start_and_end_sample_indices(event_data,
+                                                                 polyu_start,
+                                                                 tail_start,
+                                                                 read_data$fastq)
+        polyu_tail_fasta <- pu$fasta_bases
+        polyu_tail_fasta <- paste0(polyu_tail_fasta, polyt_tail_fasta, sep='')
+        rough_polyu_fasta_start_index <- pu$start_base_index
+
+        polyu_tail_fasta = substr(polyu_tail_fasta,1,nchar(polyu_tail_fasta)-1) # we don't want overlap so need
+        # to remove the last base which overlaps with next tail segment
+        x <- stringr::str_extract_all(polyu_tail_fasta, "A{3,}") # find stretches of 3 or more As
+        longest_a_stretch <- paste0(unlist(x), collapse ='')
+        # may be some other letter interspersed in between (due to basecalling errors)
+
+        if (longest_a_stretch != ''){
+            match <- 1
+            mismatch <- -1
+            type <- 'local'
+            gapOpening <- 0
+            gapExtension <- 0 #1
+            submat <- Biostrings::nucleotideSubstitutionMatrix(match = match,
+                                                               mismatch = mismatch,
+                                                               baseOnly = TRUE)
+            as <- Biostrings::pairwiseAlignment(pattern=Biostrings::DNAString(longest_a_stretch),
+                                                subject=Biostrings::DNAString(polyu_tail_fasta),
+                                                substitutionMatrix=submat,
+                                                type=type,
+                                                scoreOnly=FALSE,
+                                                gapOpening=gapOpening,
+                                                gapExtension=gapExtension)
+            polyu_length <- nchar(as.character(as@subject))
+
+            precise_polyu_start_as_fasta_index <- rough_polyu_fasta_start_index + as@subject@range@start - 1
+            precise_polyu_start_as_sample_index <- find_sample_index_for_fastq_base(
+                event_data,
+                precise_polyu_start_as_fasta_index,
+                read_type='polyT')
+            precise_polyu_end_as_fasta_index <- precise_polyu_start_as_fasta_index + as@subject@range@width + 1
+            precise_polyu_end_as_sample_index <- find_sample_index_for_fastq_base(
+                event_data,
+                precise_polyu_end_as_fasta_index,
+                read_type='polyT')
+
+            # update the end of the polyT tail; it should be adjacent to the polyU tail
+            # if the distance between the polyU end and the polyT start is greater than
+            # let say 4-5 bases, then it means that polyT was found wrong
+            if (abs(tail_start - precise_polyu_end_as_sample_index)/samples_per_nt > 4) {
+                tail_start <- NA
+                tail_end <- NA
+                tail_length <- NA
+                polyt_tail_fasta <- NA
+            } else {
+                # check to see if the polyT tail is valid
+                tail_start <- precise_polyu_end_as_sample_index
+                if (tail_start > tail_end) {
+                    tail_start <- NA
+                    tail_end <- NA
+                    tail_length <- NA
+                    polyt_tail_fasta <- NA
+                } else {
+                    tail_length <- (tail_end - tail_start)/samples_per_nt # polyT tail length
+                    # extract polyT tail fasta after the polyT start was updated
+                    pt<- extract_fasta_between_start_and_end_sample_indices(event_data,
+                                                                            tail_start,
+                                                                            tail_end,
+                                                                            read_data$fastq)
+                    polyt_tail_fasta <- pt$fasta_bases
+                }
+                handled_special_case <- TRUE
+            }
+                tail_length_u <- polyu_length
+                polyu_tail_fasta <- as.character(as@subject)
+
+        } else {
+            polyu_tail_fasta <- NA
+        }
+    }
+
+    # if the polyA tail does not exist, may be only polyU tail exists alone
+    if (!is.na(tail_start) && !(handled_special_case)){
+        pu <- extract_fasta_between_start_and_end_sample_indices(event_data,
+                                                                 polyu_start,
+                                                                 polyu_start+200, # only look in the ~20 bases next to adapter for polyU tail
+                                                                 read_data$fastq)
+        polyu_tail_fasta <- pu$fasta_bases
+        rough_polyu_fasta_start_index <- pu$start_base_index
+
+        polyu_tail_fasta = substr(polyu_tail_fasta,1,nchar(polyu_tail_fasta)-1) # we don't want overlap so need
+        # to remove the last base which overlaps with next tail segment
+        x <- stringr::str_extract_all(polyu_tail_fasta, "A{3,}") # find stretches of 3 or more As
+        longest_a_stretch <- paste0(unlist(x), collapse ='')
+        # may be some other letter interspersed in between (due to basecalling errors)
+
+        if (longest_a_stretch != ''){
+            match <- 1
+            mismatch <- -1
+            type <- 'local'
+            gapOpening <- 0
+            gapExtension <- 1
+            submat <- Biostrings::nucleotideSubstitutionMatrix(match = match,
+                                                               mismatch = mismatch,
+                                                               baseOnly = TRUE)
+            as <- Biostrings::pairwiseAlignment(pattern=Biostrings::DNAString(longest_a_stretch),
+                                                subject=Biostrings::DNAString(polyu_tail_fasta),
+                                                substitutionMatrix=submat,
+                                                type=type,
+                                                scoreOnly=FALSE,
+                                                gapOpening=gapOpening,
+                                                gapExtension=gapExtension)
+            polyu_length <- nchar(as.character(as@subject))
+
+            precise_polyu_start_as_fasta_index <- rough_polyu_fasta_start_index + as@subject@range@start - 1
+            precise_polyu_start_as_sample_index <- find_sample_index_for_fastq_base(
+                event_data,
+                precise_polyu_start_as_fasta_index,
+                read_type='polyT')
+            precise_polyu_end_as_fasta_index <- precise_polyu_start_as_fasta_index + as@subject@range@width + 1
+            precise_polyu_end_as_sample_index <- find_sample_index_for_fastq_base(
+                event_data,
+                precise_polyu_end_as_fasta_index,
+                read_type='polyT')
+            # we assign polyU tail length based on only basecalls because its more accurate
+            tail_length_u <- polyu_length
+            polyu_tail_fasta <- as.character(as@subject)
+
+        } else {
+            polyu_tail_fasta <- NA
+        }
+    }
+
     if (save_plots | show_plots) {
         df = data.frame(x=c(0:(length(read_data$raw_data)-1)),
                         raw_data=raw_data,
@@ -367,11 +527,22 @@ find_dna_tail_per_read <- function(file_path = NA,
                                       raw_data[tail_start:tail_end],
                                       rep(NA, times=(read_length-tail_end)))
             }
-            plot_title <- paste('Poly(T) tail  |  ',
-                                'Tail length [nt]: ', round(tail_length, 2), '  |  ',
-                                'Tail start: ', tail_start, '  |  ',
-                                'Tail end: ', tail_end, '  |  ',
-                                'Tail duration [Sa]: ', tail_end-tail_start, '  |  ',
+
+            if (!is.na(precise_polyu_start_as_sample_index) & (!is.na(precise_polyu_end_as_sample_index))) {
+                polyu_tail <- NULL  # CRAN R CMD
+                df['polyu_tail'] <- c(rep(NA, times=precise_polyu_start_as_sample_index-1),
+                                      raw_data[precise_polyu_start_as_sample_index:precise_polyu_end_as_sample_index],
+                                      rep(NA, times=(read_length-precise_polyu_end_as_sample_index)))
+            }
+
+            plot_title <- paste('Poly(A) tail >> ',
+                                'Length [nt]: ', round(tail_length_u, 2), ',  ',
+                                'Start: ', precise_polyu_start_as_sample_index, ',  ',
+                                'End: ', precise_polyu_end_as_sample_index, '  |  ',
+                                'Poly(T) tail >> ',
+                                'Length [nt]: ', round(tail_length, 2), ',  ',
+                                'Start: ', tail_start, ',  ',
+                                'End: ', tail_end, '  |  ',
                                 'Samples per nt: ', round(samples_per_nt, 2),
                                 sep='')
         }
@@ -408,13 +579,23 @@ find_dna_tail_per_read <- function(file_path = NA,
 
             # poly(A)/(T) plot
             p1 <- rbokeh::ly_lines(p1, x=x, y=raw_data, width=1.5, color='#b2b2b2', legend = "Raw data")
-            if (!is.na(tail_start) & (!is.na(tail_end))) {
+            if (!is.na(tail_start) & !is.na(tail_end)) {
                 if (read_type=='polyT') {
                     p1 <- rbokeh::ly_lines(p1, x=x, y=polyt_tail, width=1.5, color = '#ea3e13', legend = "Poly(T) tail")
                 } else {
                     p1 <- rbokeh::ly_lines(p1, x=x, y=polya_tail, width=1.5, color = '#ea3e13', legend = "Poly(A) tail")
                 }
             }
+
+
+            if (!is.na(precise_polyu_start_as_sample_index) & !is.na(precise_polyu_end_as_sample_index)) {
+                if (read_type=='polyT') {
+                    p1 <- rbokeh::ly_lines(p1, x=x, y=polyu_tail, width=1.5, color = '#5F1FFF', legend = "Poly(A) tail")
+                } else {
+                    p1 <- rbokeh::ly_lines(p1, x=x, y=polya_tail, width=1.5, color = '#ea3e13', legend = "Poly(A) tail")
+                }
+            }
+
 
             p1 <- rbokeh::y_axis(p1, label='pA', num_minor_ticks=2)
             p1 <- rbokeh::x_axis(p1, label='Sample index')
@@ -430,9 +611,13 @@ find_dna_tail_per_read <- function(file_path = NA,
                 #p2 <- rbokeh::ly_lines(p2, moves, color='#b2b2b2', width=1, legend = "Moves")
                 p2 <- rbokeh::ly_abline(p2, h=SLOPE_THRESHOLD, color = '#c581f5', type = 3, width=2, legend = "Slope upper bound")
                 p2 <- rbokeh::ly_abline(p2, h=-SLOPE_THRESHOLD, color = '#ff6e24', width=2, type = 3, legend = "Slope lower bound")
+                if  (!is.na(precise_polyu_start_as_sample_index) & (!is.na(precise_polyu_end_as_sample_index))) {
+                    p2 <- rbokeh::ly_abline(p2, v=precise_polyu_start_as_sample_index, color = '#8F64FC', width=2, legend = "PolyA tail start")
+                    p2 <- rbokeh::ly_abline(p2, v=precise_polyu_end_as_sample_index, color = '#D8C202', width=2, legend = "PolyA tail end")
+                }
                 if (!is.na(tail_start) & (!is.na(tail_end))) {
-                    p2 <- rbokeh::ly_abline(p2, v=tail_start, color = '#4497b9', width=2, legend = "Tail start")
-                    p2 <- rbokeh::ly_abline(p2, v=tail_end, color = '#879833', width=2, legend = "Tail end")
+                    p2 <- rbokeh::ly_abline(p2, v=tail_start, color = '#4497b9', width=2, legend = "PolyT tail start")
+                    p2 <- rbokeh::ly_abline(p2, v=tail_end, color = '#879833', width=2, legend = "PolyT tail end")
                 }
                 p2 <- rbokeh::y_axis(p2, label='z-normalized data values', num_minor_ticks=4, desired_num_ticks = 5)
                 p2 <- rbokeh::x_axis(p2, label='Sample index')
@@ -522,39 +707,35 @@ find_dna_tail_per_read <- function(file_path = NA,
         }
     }
 
-    # if tail end is not found for whatever reason
-    # perhaps due to wrong alignment location of end primer
-    # then return
-    if (is.na(tail_end)) {
+    reads_nature <- NA
+    if (!is.na(tail_length) & !is.na(polyu_length)) {
+        reads_nature <- 'contains_polya_and_polyu'
+    } else if (is.na(tail_length) & !is.na(polyu_length)) {
+        reads_nature <- 'contains_only_polyu_tail'
+    } else if (!is.na(tail_length) & is.na(polyu_length)) {
+        reads_nature <- 'contains_only_polya_tail'
+    } else if (is.na(tail_length) & is.na(polyu_length)) {
         if (is_a_low_confidence_tail) {
-            return(list(read_id = read_data$read_id,
-                        read_type = 'qc_failed',
-                        tail_start = NA,
-                        tail_end = NA,
-                        samples_per_nt = samples_per_nt,
-                        tail_length = NA,
-                        file_path = file_path,
-                        has_precise_boundary = has_precise_boundary))
+            reads_nature <- 'tail_qc_failed (probably a false positive tail)'
         } else {
-            return(list(read_id = read_data$read_id,
-                        read_type = 'contains_no_polyT_tail',
-                        tail_start = NA,
-                        tail_end = NA,
-                        samples_per_nt = samples_per_nt,
-                        tail_length = 0,
-                        file_path = file_path,
-                        has_precise_boundary = has_precise_boundary))
+            reads_nature <- 'contains_no_tail'
         }
-    } else {
-        return(list(read_id = read_data$read_id,
-                    read_type = 'contains_a_polyT_tail',
-                    tail_start = tail_start,
-                    tail_end = tail_end,
-                    samples_per_nt = samples_per_nt,
-                    tail_length = tail_length,
-                    file_path = file_path,
-                    has_precise_boundary = has_precise_boundary))
     }
+
+    return(list(read_id = read_data$read_id,
+                read_type = reads_nature,
+                polya_length = tail_length,
+                polyu_length = polyu_length,
+                polya_start = tail_start,
+                polya_end = tail_end,
+                polyu_start = precise_polyu_start_as_sample_index,
+                polyu_end = precise_polyu_end_as_sample_index,
+                samples_per_nt = samples_per_nt,
+                polya_tail_fasta = polyt_tail_fasta,
+                polyu_tail_fasta = polyu_tail_fasta,
+                file_path = file_path
+                ))
+
 
 
 }

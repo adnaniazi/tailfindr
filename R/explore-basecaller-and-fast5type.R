@@ -84,13 +84,12 @@ explore_basecaller_and_fast5type <- function(fast5file_path, basecall_group) {
     }
 
     # find if the model used was standard model or flipflop model
-    if (basecaller == 'guppy' & read_is_1d) {
-        trace <- sum(which(grepl('.*Trace$', f5_tree)))
-        model <- ifelse(trace > 0, 'flipflop', 'standard')
-    } else if (basecaller == 'albacore') {
+    if (basecaller == 'albacore') {
         model <- 'standard'
     } else if (basecaller == 'minknow') {
         model <- 'unknown'
+    } else {
+        model <- 'flipflop'
     }
 
     # find if data is dna or rna
@@ -98,8 +97,8 @@ explore_basecaller_and_fast5type <- function(fast5file_path, basecall_group) {
         context_tags_path <- f5_tree[grepl('.*context_tags$', f5_tree)]
     } else {
         context_tags_path <- paste(first_read_name,
-                            '/context_tags',
-                            sep = '')
+                                   '/context_tags',
+                                   sep = '')
     }
     sequencing_kit <- f5_obj[[context_tags_path]]$attr_open('sequencing_kit')$read()
     if (grepl('rna', sequencing_kit)) {

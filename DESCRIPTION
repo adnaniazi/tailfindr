@@ -13,7 +13,7 @@ Description: An alignment-free tool to estimate poly(A)/poly(T) tail lengths in 
 License: GPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.1
 Depends: R (>= 3.5.0)
 SystemRequirements: libhdf5 (>= 1.8.13)
 biocViews:
@@ -36,7 +36,8 @@ Imports:
     cli (>= 1.0.1),
     tidyr (>= 0.8.3),
     Rsamtools (>= 2.0.1),
-    magrittr (>= 1.5)
+    magrittr (>= 1.5),
+    stringr(>= 1.4.1)
 Suggests: 
     testthat,
     knitr,
