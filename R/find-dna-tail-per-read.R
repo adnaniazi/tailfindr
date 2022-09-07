@@ -587,7 +587,6 @@ find_dna_tail_per_read <- function(file_path = NA,
                 }
             }
 
-
             if (!is.na(precise_polyu_start_as_sample_index) & !is.na(precise_polyu_end_as_sample_index)) {
                 if (read_type=='polyT') {
                     p1 <- rbokeh::ly_lines(p1, x=x, y=polyu_tail, width=1.5, color = '#5F1FFF', legend = "Poly(A) tail")
@@ -595,7 +594,6 @@ find_dna_tail_per_read <- function(file_path = NA,
                     p1 <- rbokeh::ly_lines(p1, x=x, y=polya_tail, width=1.5, color = '#ea3e13', legend = "Poly(A) tail")
                 }
             }
-
 
             p1 <- rbokeh::y_axis(p1, label='pA', num_minor_ticks=2)
             p1 <- rbokeh::x_axis(p1, label='Sample index')
