@@ -535,11 +535,11 @@ find_dna_tail_per_read <- function(file_path = NA,
                                       rep(NA, times=(read_length-precise_polyu_end_as_sample_index)))
             }
 
-            plot_title <- paste('Poly(A) tail >> ',
+            plot_title <- paste('Poly(U) tail >> ',
                                 'Length [nt]: ', round(tail_length_u, 2), ',  ',
                                 'Start: ', precise_polyu_start_as_sample_index, ',  ',
                                 'End: ', precise_polyu_end_as_sample_index, '  |  ',
-                                'Poly(T) tail >> ',
+                                'Poly(A) tail >> ',
                                 'Length [nt]: ', round(tail_length, 2), ',  ',
                                 'Start: ', tail_start, ',  ',
                                 'End: ', tail_end, '  |  ',
@@ -579,17 +579,18 @@ find_dna_tail_per_read <- function(file_path = NA,
 
             # poly(A)/(T) plot
             p1 <- rbokeh::ly_lines(p1, x=x, y=raw_data, width=1.5, color='#b2b2b2', legend = "Raw data")
-            if (!is.na(tail_start) & !is.na(tail_end)) {
+
+            if (!is.na(precise_polyu_start_as_sample_index) & !is.na(precise_polyu_end_as_sample_index)) {
                 if (read_type=='polyT') {
-                    p1 <- rbokeh::ly_lines(p1, x=x, y=polyt_tail, width=1.5, color = '#ea3e13', legend = "Poly(T) tail")
+                    p1 <- rbokeh::ly_lines(p1, x=x, y=polyu_tail, width=1.5, color = '#5F1FFF', legend = "Poly(U) tail")
                 } else {
                     p1 <- rbokeh::ly_lines(p1, x=x, y=polya_tail, width=1.5, color = '#ea3e13', legend = "Poly(A) tail")
                 }
             }
 
-            if (!is.na(precise_polyu_start_as_sample_index) & !is.na(precise_polyu_end_as_sample_index)) {
+            if (!is.na(tail_start) & !is.na(tail_end)) {
                 if (read_type=='polyT') {
-                    p1 <- rbokeh::ly_lines(p1, x=x, y=polyu_tail, width=1.5, color = '#5F1FFF', legend = "Poly(U) tail")
+                    p1 <- rbokeh::ly_lines(p1, x=x, y=polyt_tail, width=1.5, color = '#ea3e13', legend = "Poly(A) tail")
                 } else {
                     p1 <- rbokeh::ly_lines(p1, x=x, y=polya_tail, width=1.5, color = '#ea3e13', legend = "Poly(A) tail")
                 }
@@ -610,12 +611,12 @@ find_dna_tail_per_read <- function(file_path = NA,
                 p2 <- rbokeh::ly_abline(p2, h=SLOPE_THRESHOLD, color = '#c581f5', type = 3, width=2, legend = "Slope upper bound")
                 p2 <- rbokeh::ly_abline(p2, h=-SLOPE_THRESHOLD, color = '#ff6e24', width=2, type = 3, legend = "Slope lower bound")
                 if  (!is.na(precise_polyu_start_as_sample_index) & (!is.na(precise_polyu_end_as_sample_index))) {
-                    p2 <- rbokeh::ly_abline(p2, v=precise_polyu_start_as_sample_index, color = '#8F64FC', width=2, legend = "PolyA tail start")
-                    p2 <- rbokeh::ly_abline(p2, v=precise_polyu_end_as_sample_index, color = '#D8C202', width=2, legend = "PolyA tail end")
+                    p2 <- rbokeh::ly_abline(p2, v=precise_polyu_start_as_sample_index, color = '#8F64FC', width=2, legend = "PolyU tail start")
+                    p2 <- rbokeh::ly_abline(p2, v=precise_polyu_end_as_sample_index, color = '#D8C202', width=2, legend = "PolyU tail end")
                 }
                 if (!is.na(tail_start) & (!is.na(tail_end))) {
-                    p2 <- rbokeh::ly_abline(p2, v=tail_start, color = '#4497b9', width=2, legend = "PolyT tail start")
-                    p2 <- rbokeh::ly_abline(p2, v=tail_end, color = '#879833', width=2, legend = "PolyT tail end")
+                    p2 <- rbokeh::ly_abline(p2, v=tail_start, color = '#4497b9', width=2, legend = "PolyA tail start")
+                    p2 <- rbokeh::ly_abline(p2, v=tail_end, color = '#879833', width=2, legend = "PolyA tail end")
                 }
                 p2 <- rbokeh::y_axis(p2, label='z-normalized data values', num_minor_ticks=4, desired_num_ticks = 5)
                 p2 <- rbokeh::x_axis(p2, label='Sample index')
