@@ -127,9 +127,9 @@ find_dna_tailtype <- function(file_path = NA,
         ep <- Biostrings::DNAString('GAGTCCGGGCGGCGC')
         threshold <- 0.68
     } else if (dna_datatype == 'custom-cdna') {
-        fp <- Biostrings::DNAString(fp)
+        fp <- NA
         ep <- Biostrings::DNAString(ep)
-        threshold <- 0.6
+        threshold <- 0.60
     }
 
     # RECIPE:
