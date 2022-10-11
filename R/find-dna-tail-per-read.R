@@ -319,6 +319,11 @@ find_dna_tail_per_read <- function(file_path = NA,
     if (read_type=='polyA'){
         polya_start <- read_length-tail_end
         polya_end <-  read_length-tail_start
+
+        if (is.na(polya_start)) {
+            polya_end <- NA
+        }
+
         tail_start <- polya_start
         tail_end <- polya_end
     }
