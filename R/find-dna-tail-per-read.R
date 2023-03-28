@@ -87,7 +87,7 @@ find_dna_tail_per_read <- function(file_path = NA,
     #POLY_A_CNDA_THRESHOLD <- 0.31
     SPIKE_THRESHOLD <- 2.0
     MOVING_WINDOW_SIZE <- 30
-    MAX_GAP_BETWEEN_TAILS <- 120 * samples_per_nt
+    MAX_GAP_BETWEEN_TAILS <- 240 * samples_per_nt
     #SEC_TAIL_MIN_SIZE <- read_data$samples_per_nt * 15
     SLOPE_THRESHOLD <- 0.20
 
@@ -128,7 +128,7 @@ find_dna_tail_per_read <- function(file_path = NA,
     step_size <-  10
 
     start <- tail_start
-    end <- min(start+3000, length(norm_data))
+    end <- min(start+4000, length(norm_data))
     data <- truncated_data[start:end]
     total <- length(data)
     spots <- seq(from = 1, to = (total - window_size), by = step_size)
@@ -226,7 +226,7 @@ find_dna_tail_per_read <- function(file_path = NA,
                 } else {
                     small_glitch_count <- small_glitch_count + 1
                     j <- j + 1
-                    if (small_glitch_count > 6){ # previously set to 6
+                    if (small_glitch_count > 3){ # previously set to 6
                         i <- j
                         break
                     }
@@ -279,13 +279,49 @@ find_dna_tail_per_read <- function(file_path = NA,
     # }
     # tail_end <- i
 
-    if (has_precise_boundary){
-        tail_end <- start + (tail_end)*window_size
-    } else {
-        #tail_end <- start + (tail_end+4)*window_size
-        tail_end <- start + (tail_end)*window_size
+    # if the tail end is imprecise and the algorithm includes part of the
+    # transcript inside in the tail end, then we should start from the tail end
+    # and keep triming the tail end until we arrive at the low variance region
 
+    # we do this by sliding a window from right and moving it until the mean of
+    # of the signal in this window nearly equals the mean of the polyT segment before it (seg3)
+    ts <- start
+    te <- start + (tail_end)*window_size
+    len <- te - ts
+    lend <- floor(len/4)
+    var_seg1 <- var(rectified_data[ts:(ts+lend)])
+    var_seg2 <- var(rectified_data[(ts+lend):(ts+2*lend)])
+    var_seg3 <- var(rectified_data[(ts+2*lend):(ts+3*lend)])
+    var_seg4 <- var(rectified_data[(ts+3*lend):(ts+4*lend)])
+    mean_seg3 <- mean(rectified_data[(ts+2*lend):(ts+3*lend)])
+    mean_seg2 <- mean(rectified_data[(ts+lend):(ts+2*lend)])
+    mean_seg1 <- mean(rectified_data[ts:(ts+lend)])
+    mean_seg <- (mean_seg1 + mean_seg2 + mean_seg3)/3
+    # needs refinement
+    if (var_seg4 > 2*var_seg2 | var_seg4 > 2*var_seg1) {
+        # move back the last window
+        # define new window length
+        win_len <- 250 # samples
+        c <- 0
+        gradient <- 1
+        while (TRUE) {
+            win_sig_mean <- mean(rectified_data[(te-c*10-win_len):(te-c*10)])
+            c <- c + 1
+            if ( (win_sig_mean < (mean_seg + 0.04))) {
+                prob_end <- te-c*10
+                tail_end <- (prob_end - start)/window_size # twisted logic
+                break
+            }
+            if ( c*10+win_len > len ) { # no good end found
+                prob_end <- NA
+                break
+            }
+        }
     }
+
+
+    tail_end <- start + (tail_end)*window_size
+
 
     mean_data <- c(rep(NA, times=tail_start),
                    rep(mean_data, each=window_size),

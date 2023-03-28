@@ -1,7 +1,7 @@
 Package: tailfindr
 Type: Package
 Title: Poly(A) Tail Length Estimator for Oxford Nanopore RNA and DNA Reads
-Version: 1.3
+Version: 1.4
 Authors@R: c(
   person(given = "Adnan", family = "Niazi", email = "adnaniazi@gmail.com", role = c("aut", "cre", "cph")),
   person(given = "Maximilian", family = "Kruise", email = "Maximilian.Krause@uib.no", role = c("dtc")),
