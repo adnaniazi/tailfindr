@@ -298,10 +298,15 @@ find_dna_tail_per_read <- function(file_path = NA,
     mean_seg1 <- mean(rectified_data[ts:(ts+lend)])
     mean_seg <- (mean_seg1 + mean_seg2 + mean_seg3)/3
     # needs refinement
-    if ((var_seg4 > 2*var_seg2 | var_seg4 > 2*var_seg1) & (len > 900)) {
+    if (var_seg4 > 2*var_seg2 | var_seg4 > 2*var_seg1) {
         # move back the last window
         # define new window length
-        win_len <- 200 # samples
+        if (len > 900) {
+            win_len <- 200 # samples
+        } else{
+            win_len <- 50 # samples
+        }
+
         c <- 0
         gradient <- 1
         while (TRUE) {
