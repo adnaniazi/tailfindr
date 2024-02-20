@@ -119,7 +119,6 @@ find_dna_tailtype <- function(file_path = NA,
     if (dna_datatype == 'cdna') {
         # Nano3P seq front and end primers
         ep = Biostrings::DNAString('CTTCTATCTCGCTGTCCGTTCACTAGCCTTC')
-        #ep = Biostrings::DNAString('TCTTCTATCTCGCTGTCCGTTCA')
         fp = NA
         threshold <- 0.30 #raised the threshold from 0.35 to 0.40
     } else if (dna_datatype == 'pcr-dna') {
@@ -127,9 +126,10 @@ find_dna_tailtype <- function(file_path = NA,
         ep <- Biostrings::DNAString('GAGTCCGGGCGGCGC')
         threshold <- 0.68
     } else if (dna_datatype == 'custom-cdna') {
-        fp <- Biostrings::DNAString(fp)
-        ep <- Biostrings::DNAString(ep)
-        threshold <- 0.6
+        fp <- NA
+        # sequins have longer adapters
+        ep <- Biostrings::DNAString('CTTCCGATCACTTGCCTGTCGCTCTATCTTCTTAATTC')
+        threshold <- 0.3
     }
 
     # RECIPE:
@@ -139,7 +139,7 @@ find_dna_tailtype <- function(file_path = NA,
     # 3. Invalid otherwise
 
     # define a search window width within which to find the ep and fp
-    search_window <- 150
+    search_window <- 250
 
     as_ep <- Biostrings::pairwiseAlignment(pattern=ep,
                                            subject=Biostrings::DNAString(substr(fastq, start=1, stop=min(search_window, nchar(fastq)))),
