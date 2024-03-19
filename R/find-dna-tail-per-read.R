@@ -146,19 +146,29 @@ find_dna_tail_per_read <- function(file_path = NA,
         }
     }
 
+
+    # define smoothened data threshold first
+    if (read_type == 'polyA') {
+        sm_data_threshold <- 0.6 #0.6
+    } else if  (read_type == 'polyT') {
+        sm_data_threshold_low <- 0.5 #0.3
+        sm_data_threshold_high <- 0.6 #0.3
+
+    }
+
     # Refine the tail start if the boundary we found based on the adaptor is not precise
     k <- 1
     precise_tail_start <- NA
     if (!has_precise_boundary) {
-        while (k < 60) {
+        while (k < 10) {
             if ((slope[k]   < SLOPE_THRESHOLD) & (slope[k]   > -SLOPE_THRESHOLD) &
                 (slope[k+1] < SLOPE_THRESHOLD) & (slope[k+1] > -SLOPE_THRESHOLD) &
                 (slope[k+2] < SLOPE_THRESHOLD) & (slope[k+2] > -SLOPE_THRESHOLD) &
-                (slope[k+3] < SLOPE_THRESHOLD) & (slope[k+3] > -SLOPE_THRESHOLD) &
-                (mean_data[k] < SLOPE_THRESHOLD+0.15) & (mean_data[k] > 0) &
-                (mean_data[k+1] < SLOPE_THRESHOLD+0.15) & (mean_data[k+1] > 0) &
-                (mean_data[k+2] < SLOPE_THRESHOLD+0.15) & (mean_data[k+2] > 0) &
-                (mean_data[k+3] < SLOPE_THRESHOLD+0.15) & (mean_data[k+3] > 0)
+                (slope[k+3] < SLOPE_THRESHOLD) & (slope[k+3] > -SLOPE_THRESHOLD)
+                # & (mean_data[k] < sm_data_threshold_high) & (mean_data[k] > sm_data_threshold_low) &
+                # (mean_data[k+1] < sm_data_threshold_high) & (mean_data[k+1] > sm_data_threshold_low) &
+                # (mean_data[k+2] < sm_data_threshold_high) & (mean_data[k+2] > sm_data_threshold_low) &
+                # (mean_data[k+3] < sm_data_threshold_high) & (mean_data[k+3] > sm_data_threshold_low)
                 )
             { # fixes the overestimation problem
                 precise_tail_start <- (k-1)*window_size + tail_start
@@ -206,21 +216,19 @@ find_dna_tail_per_read <- function(file_path = NA,
     #     - the gap should be smaller than 120 nucleotide
     #
 
-    # define smoothened data threshold first
-    if (read_type == 'polyA') {
-        sm_data_threshold <- 0.6 #0.6
-    } else if  (read_type == 'polyT') {
-        sm_data_threshold <- 0.7 #0.3
-    }
+
 
     last_good_end <- 1
     while (i < length(slope)){
-        if ((slope[i] < SLOPE_THRESHOLD) & (slope[i] > -SLOPE_THRESHOLD) &
-            (smoothed_data[tail_start+i*window_size] < sm_data_threshold)) {
+        if ((slope[i] < SLOPE_THRESHOLD) & (slope[i] > -SLOPE_THRESHOLD)
+            #&(smoothed_data[tail_start+i*window_size] < sm_data_threshold_high) &
+            #(smoothed_data[tail_start+i*window_size] > sm_data_threshold_low)
+            ) {
             tail_end <- i
             i <- i + 1
             last_good_end <- i
         } else {
+            break
             j <- i
             while (j < length(slope)) {
                 if (j > floor(MAX_GAP_BETWEEN_TAILS/window_size)) {
@@ -229,6 +237,9 @@ find_dna_tail_per_read <- function(file_path = NA,
                 }
                 #if ((slope[j] > SLOPE_THRESHOLD) | (slope[j] < -SLOPE_THRESHOLD)) {
                 if ((mean_data[j] > SLOPE_THRESHOLD+0.1) | (mean_data[j] < -SLOPE_THRESHOLD-0.1)) {
+                    # quit_searching <- TRUE
+                    # last_good_end <- i
+                    # break
                     small_glitch_count <- 0
                     j <- j + 1
                 } else {
@@ -326,7 +337,7 @@ find_dna_tail_per_read <- function(file_path = NA,
     if (!is.na(tail_end)) {
         tail_prox_transcript_variance = sd(raw_data[(tail_end+100):(tail_end+200)])
         tail_variance = sd(raw_data[tail_start:tail_end])
-        if (tail_variance > tail_prox_transcript_variance/2.5) { # it is a fake tail
+        if (tail_variance > tail_prox_transcript_variance/2) { # it is a fake tail
             tail_start <- NA
             tail_end <- NA
             tail_length <- NA
@@ -522,6 +533,10 @@ find_dna_tail_per_read <- function(file_path = NA,
         }
     }
 
+
+
+
+
     # if tail end is not found for whatever reason
     # perhaps due to wrong alignment location of end primer
     # then return
@@ -536,27 +551,70 @@ find_dna_tail_per_read <- function(file_path = NA,
                         file_path = file_path,
                         has_precise_boundary = has_precise_boundary))
         } else {
+            if (data_list$unaligned_bases > 3 | data_list$alignment_counts$mismatches > 1) {
+                return(list(read_id = read_data$read_id,
+                            read_type = 'low_confidence_adapter',
+                            tail_start = NA,
+                            tail_end = NA,
+                            samples_per_nt = samples_per_nt,
+                            tail_length = NA,
+                            file_path = file_path,
+                            has_precise_boundary = has_precise_boundary))
+
+            }
+            else {
+                return(list(read_id = read_data$read_id,
+                            read_type = 'contains_no_polyT_tail',
+                            tail_start = NA,
+                            tail_end = NA,
+                            samples_per_nt = samples_per_nt,
+                            tail_length = 0,
+                            file_path = file_path,
+                            has_precise_boundary = has_precise_boundary))
+            }
+
+        }
+    }
+    else {
+        if (tail_length < 20) {
+            # check for majority T in the base sequence to confirm
+            pt<- extract_fasta_between_start_and_end_sample_indices(event_data,
+                                                                    tail_start,
+                                                                    tail_end,
+                                                                    read_data$fastq)
+            frequency_T <- sum(strsplit(pt$fasta_bases, "")[[1]] == "T")
+            if (frequency_T > floor(length(pt$fasta_bases)/2)) {
+                return(list(read_id = read_data$read_id,
+                            read_type = 'contains_a_polyT_tail',
+                            tail_start = tail_start,
+                            tail_end = tail_end,
+                            samples_per_nt = samples_per_nt,
+                            tail_length = tail_length,
+                            file_path = file_path,
+                            has_precise_boundary = has_precise_boundary))
+
+            } else {
+                return(list(read_id = read_data$read_id,
+                            read_type = 'qc_failed',
+                            tail_start = NA,
+                            tail_end = NA,
+                            samples_per_nt = samples_per_nt,
+                            tail_length = NA,
+                            file_path = file_path,
+                            has_precise_boundary = has_precise_boundary))
+            }
+
+        } else {
             return(list(read_id = read_data$read_id,
-                        read_type = 'contains_no_polyT_tail',
-                        tail_start = NA,
-                        tail_end = NA,
+                        read_type = 'contains_a_polyT_tail',
+                        tail_start = tail_start,
+                        tail_end = tail_end,
                         samples_per_nt = samples_per_nt,
-                        tail_length = 0,
+                        tail_length = tail_length,
                         file_path = file_path,
                         has_precise_boundary = has_precise_boundary))
         }
-    } else {
-        return(list(read_id = read_data$read_id,
-                    read_type = 'contains_a_polyT_tail',
-                    tail_start = tail_start,
-                    tail_end = tail_end,
-                    samples_per_nt = samples_per_nt,
-                    tail_length = tail_length,
-                    file_path = file_path,
-                    has_precise_boundary = has_precise_boundary))
     }
-
-
 }
 
 

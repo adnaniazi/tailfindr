@@ -154,11 +154,22 @@ find_dna_tailtype <- function(file_path = NA,
     nas_ep <- as_ep@score/ep@length
     has_precise_boundary <- FALSE
     bases_to_match <- 3
-
+    extra <- 0
     if (nas_ep > threshold) {
         read_type <- 'polyT'
         tail_is_valid <- T
         polyt_start_fastq <- as_ep@subject@range@start + as_ep@subject@range@width
+        # We roughly extend the polyT start by the number of missing bases of alignment
+        # near the polyT section. This helps us to reach nearer the polyT segment
+        # in cases where the alignment near the polyT tail is bad
+        # Assumption here is that there are no INDELS
+        extra <- ep@length - as_ep@pattern@range@width
+        substring <- substr(fastq, start = polyt_start_fastq, stop = polyt_start_fastq + extra)
+        frequency_T <- sum(strsplit(substring, "")[[1]] == "T")
+        if (frequency_T < floor(extra/2)) {
+            polyt_start_fastq <- polyt_start_fastq + extra
+        }
+
         polyt_rough_start <- find_sample_index_for_fastq_base(read_data$event_data, polyt_start_fastq, read_type)
         polya_end_fastq <- NA
         polya_rough_end <- NA
@@ -199,8 +210,20 @@ find_dna_tailtype <- function(file_path = NA,
     # print(p)
 
     # nchar(fastq)
+
+    # Extract the last 6 bases from the pattern and subject sequences
+    pattern <- as.character(as_ep@pattern)
+    subject <- as.character(as_ep@subject)
+    last_6_pattern <- substring(pattern, nchar(pattern) - 5, nchar(pattern))
+    last_6_subject <- substring(subject, nchar(subject) - 5, nchar(subject))
+    alignment_counts <- count_alignment(last_6_pattern, last_6_subject)
+
+
+
     list(read_data = read_data, # for max comment it out
+         unaligned_bases = extra,
          read_type = read_type,
+         alignment_counts = alignment_counts,
          tail_is_valid = tail_is_valid,
          polya_end_fastq = polya_end_fastq,
          polyt_start_fastq = polyt_start_fastq,
@@ -214,3 +237,11 @@ find_dna_tailtype <- function(file_path = NA,
     #nas_rc_fp=nas_rc_fp))
 }
 
+
+# Function to count matches, mismatches, and gaps
+count_alignment <- function(pattern, subject) {
+    matches <- sum(strsplit(pattern, "")[[1]] == strsplit(subject, "")[[1]])
+    mismatches <- sum(strsplit(pattern, "")[[1]] != strsplit(subject, "")[[1]] & strsplit(pattern, "")[[1]] != "-" & strsplit(subject, "")[[1]] != "-")
+    gaps <- sum(strsplit(pattern, "")[[1]] == "-") + sum(strsplit(subject, "")[[1]] == "-")
+    return(list(matches = matches, mismatches = mismatches, gaps = gaps))
+}
