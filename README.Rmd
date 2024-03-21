@@ -13,22 +13,10 @@ knitr::opts_chunk$set(
 )
 options(tibble.print_min = 5, tibble.print_max = 5)
 ```
-<style>
-.logo-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
 
-.logo {
-  max-width: 200px;
-}
-</style>
-
-<div class="logo-container">
-  <img class="logo" src="man/figures/tailfindr-logo.png" alt="Logo">
+<div style="display: flex; justify-content: space-between; align-items: center;">
+  <img src="man/figures/tailfindr-logo.png" alt="Logo" style="max-width: 200px;">
 </div>
-
 
 
 

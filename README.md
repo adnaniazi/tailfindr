@@ -1,19 +1,9 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-<style>
-.logo-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-&#10;.logo {
-  max-width: 200px;
-}
-</style>
 
-<div class="logo-container">
+<div style="display: flex; justify-content: space-between; align-items: center;">
 
-<img class="logo" src="man/figures/tailfindr-logo.png" alt="Logo">
+<img src="man/figures/tailfindr-logo.png" alt="Logo" style="max-width: 200px;">
 
 </div>
 
