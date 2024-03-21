@@ -3,7 +3,7 @@
 
 <div style="display: flex; justify-content: space-between; align-items: center;">
 
-<img src="man/figures/tailfindr-logo.png" alt="Logo" style="max-width: 200px;">
+<img src="man/figures/tailfindr-logo.png" alt="Logo" style="max-width: 100px;">
 
 </div>
 
