@@ -13,7 +13,7 @@ Nanopore reads.
 
 ## Features of *tailfindr*
 
--   Works for both RNA and DNA reads. In the case of DNA reads, it
+-   Works for both RNA and DNA reads. In the case of DNA reads, it 
     estimates both poly(A)- and poly(T)-tail lengths.
 -   Supports data that has been basecalled with Albacore or Guppy. It
     also support data that has been basecalled using the newer
