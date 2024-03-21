@@ -13,14 +13,30 @@ knitr::opts_chunk$set(
 )
 options(tibble.print_min = 5, tibble.print_max = 5)
 ```
+<style>
+.logo-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
-# tailfindr <a href=''><img src='man/figures/tailfindr-logo.png' align="right" height="250" /></a>
+.logo {
+  max-width: 200px;
+}
+</style>
+
+<div class="logo-container">
+  <img class="logo" src="man/figures/tailfindr-logo.png" alt="Logo">
+</div>
+
+
+
 
 <!-- badges: start -->
 
 <!-- badges: end -->
 
-## What is *tailfindr*?
+## tailfindr?
 
 tailfindr is a R package for estimating poly(A)-tail lengths in Oxford Nanopore reads. 
 

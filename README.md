@@ -1,24 +1,38 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+<style>
+.logo-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+&#10;.logo {
+  max-width: 200px;
+}
+</style>
 
-# tailfindr <a href=''><img src='man/figures/tailfindr-logo.png' align="right" height="250" /></a>
+<div class="logo-container">
+
+<img class="logo" src="man/figures/tailfindr-logo.png" alt="Logo">
+
+</div>
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-## What is *tailfindr*?
+## tailfindr?
 
 tailfindr is a R package for estimating poly(A)-tail lengths in Oxford
 Nanopore reads.
 
 ## Features of *tailfindr*
 
--   Works for both RNA and DNA reads. In the case of DNA reads, it 
-    estimates both poly(A)- and poly(T)-tail lengths.
--   Supports data that has been basecalled with Albacore or Guppy. It
-    also support data that has been basecalled using the newer
-    ‘flipflop’ model.
--   Can work on single or multi-fast5 file reads.
+- Works for both RNA and DNA reads. In the case of DNA reads, it
+  estimates both poly(A)- and poly(T)-tail lengths.
+- Supports data that has been basecalled with Albacore or Guppy. It also
+  support data that has been basecalled using the newer ‘flipflop’
+  model.
+- Can work on single or multi-fast5 file reads.
 
 *tailfindr* has been developed at [Valen
 Lab](https://www.cbu.uib.no/valen/) in [Computational Biology
@@ -136,8 +150,12 @@ df <- find_tails(fast5_dir = system.file('extdata', 'cdna', package = 'tailfindr
                  plotting_library = 'rbokeh')
 ```
 
-![Poly(T) read squiggle
-plot](https://github.com/adnaniazi/tailfindr/raw/master/man/figures/poly_t_without_debug.gif)
+<figure>
+<img
+src="https://github.com/adnaniazi/tailfindr/raw/master/man/figures/poly_t_without_debug.gif"
+alt="Poly(T) read squiggle plot" />
+<figcaption aria-hidden="true">Poly(T) read squiggle plot</figcaption>
+</figure>
 
 However, note that generating plots can slow down the performance of
 tailfindr. We recommend that you generate these plots only for a small
@@ -160,8 +178,12 @@ df <- find_tails(fast5_dir = system.file('extdata', 'cdna', package = 'tailfindr
                  plotting_library = 'rbokeh')
 ```
 
-![Poly(A) read squiggle
-plot](https://github.com/adnaniazi/tailfindr/raw/master/man/figures/poly_a_with_debug.gif)
+<figure>
+<img
+src="https://github.com/adnaniazi/tailfindr/raw/master/man/figures/poly_a_with_debug.gif"
+alt="Poly(A) read squiggle plot" />
+<figcaption aria-hidden="true">Poly(A) read squiggle plot</figcaption>
+</figure>
 
 #### 4. Specifying custom basecall group
 
@@ -214,7 +236,12 @@ Important thing to note here is the use of three additional parameters:
 `front_primer` and `end_primer` sequences should always be specified in
 the 5’ to 3’ direction.
 
-![cDNA](https://github.com/adnaniazi/tailfindr/raw/master/man/figures/cdna_construct.png)
+<figure>
+<img
+src="https://github.com/adnaniazi/tailfindr/raw/master/man/figures/cdna_construct.png"
+alt="cDNA" />
+<figcaption aria-hidden="true">cDNA</figcaption>
+</figure>
 
 ### Description of the CSV/Dataframe columns
 
@@ -252,34 +279,39 @@ it on DNA data:
 
 ## The devil👹 in the details
 
--   tailfindr needs the `Events/Move` table in the FAST5 file to
-    calculate the read-specific normalizer – `samples_per_nt` – which is
-    used to convert tail length in samples to tail length in
-    nucleotides. If your data was basecalled with
-    *MinKNOW-Live-Basecalling*, then the Events/Move table might not be
-    saved in the FAST5 file. In such a case, you can rebasecall your
-    reads and adjust the `basecall_group` parameter accordingly when
-    calling `find_tails()` function as demonstrated in the use case # 4
-    above. This is because now the Events/Move table will now be under
-    `Basecall_1D_001` instead of *tailfindr’s* default search location
-    `Basecall_1D_000`. See the figure below: The panel on left shows
-    that the MinKNOW live basecalled read; it has no Event/Move table.
-    The panel on the right shows the same read after it has been
-    re-basecalled using standalone Guppy. Now there is Event/Move table
-    under the freshly-added basaecall group (`Basecall_1D_001`).
-    `find_tails()` should be called with `basecall_group` set to
-    `"Basecall_1D_001"` as shown in the use case # 4 above.
+- tailfindr needs the `Events/Move` table in the FAST5 file to calculate
+  the read-specific normalizer – `samples_per_nt` – which is used to
+  convert tail length in samples to tail length in nucleotides. If your
+  data was basecalled with *MinKNOW-Live-Basecalling*, then the
+  Events/Move table might not be saved in the FAST5 file. In such a
+  case, you can rebasecall your reads and adjust the `basecall_group`
+  parameter accordingly when calling `find_tails()` function as
+  demonstrated in the use case \# 4 above. This is because now the
+  Events/Move table will now be under `Basecall_1D_001` instead of
+  *tailfindr’s* default search location `Basecall_1D_000`. See the
+  figure below: The panel on left shows that the MinKNOW live basecalled
+  read; it has no Event/Move table. The panel on the right shows the
+  same read after it has been re-basecalled using standalone Guppy. Now
+  there is Event/Move table under the freshly-added basaecall group
+  (`Basecall_1D_001`). `find_tails()` should be called with
+  `basecall_group` set to `"Basecall_1D_001"` as shown in the use case
+  \# 4 above.
 
-![MinKNOW Live Basecalling
-problem](https://github.com/adnaniazi/tailfindr/raw/master/man/figures/minkow_live_basecalling.png)
+<figure>
+<img
+src="https://github.com/adnaniazi/tailfindr/raw/master/man/figures/minkow_live_basecalling.png"
+alt="MinKNOW Live Basecalling problem" />
+<figcaption aria-hidden="true">MinKNOW Live Basecalling
+problem</figcaption>
+</figure>
 
--   For DNA data, *tailfindr* decides whether a read is poly(A) or
-    poly(T) based on finding Nanopore primers/adaptors. If you are using
-    the flipflop model to basecall DNA data, please ensure that the
-    nanopore adaptors are not trimmed off while basecalling. This can be
-    done by turning off `enabling_trimming` option in the basecalling
-    script. The script below shows you how we have basecalled our reads
-    using the flipflop model
+- For DNA data, *tailfindr* decides whether a read is poly(A) or poly(T)
+  based on finding Nanopore primers/adaptors. If you are using the
+  flipflop model to basecall DNA data, please ensure that the nanopore
+  adaptors are not trimmed off while basecalling. This can be done by
+  turning off `enabling_trimming` option in the basecalling script. The
+  script below shows you how we have basecalled our reads using the
+  flipflop model
 
 ``` bash
 #!/bin/sh
@@ -296,14 +328,14 @@ guppy_basecaller \
     --enable_trimming 0 
 ```
 
--   *tailfindr* has been tested and validated using the following
-    sequencing kits:
+- *tailfindr* has been tested and validated using the following
+  sequencing kits:
 
 1.  SQK-RNA001 and SQK-RNA002 for RNA
 2.  SQK-LSK108 and SQK-LSK109 for DNA
 3.  SQK-PCS110 for PCR cDNA
 
--   *tailfindr* has been tested and validated using the basecallers:
+- *tailfindr* has been tested and validated using the basecallers:
 
 1.  Albacore v2.3.1 and v2.3.3.
 2.  Guppy v2.2.2, v2.3.1, v3.0.1. Guppy v2.2.2, v2.3.1 were tested with
