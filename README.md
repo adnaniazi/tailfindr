@@ -1,11 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-<div style="display: flex; justify-content: space-between; align-items: center;">
-
-<img src="man/figures/tailfindr-logo.png" alt="Logo" style="max-width: 100px;">
-
-</div>
+<img src="man/figures/tailfindr-logo.png" width="100" />
 
 <!-- badges: start -->
 <!-- badges: end -->
