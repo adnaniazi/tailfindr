@@ -116,20 +116,24 @@ find_dna_tailtype <- function(file_path = NA,
 
 
     # define the primer sequences
+    fp = NA
+    threshold <- 0.30 #raised the threshold from 0.35 to 0.40
+
     if (dna_datatype == 'cdna') {
         # Nano3P seq front and end primers
         ep = Biostrings::DNAString('CTTCTATCTCGCTGTCCGTTCACTAGCCTTC')
-        fp = NA
-        threshold <- 0.30 #raised the threshold from 0.35 to 0.40
-    } else if (dna_datatype == 'pcr-dna') {
-        fp <- Biostrings::DNAString('ATTTAGGTGACACTATAGCGCTCCATGCAAACCTGTC')
-        ep <- Biostrings::DNAString('GAGTCCGGGCGGCGC')
-        threshold <- 0.68
-    } else if (dna_datatype == 'custom-cdna') {
-        fp <- NA
+    } else if (dna_datatype == 'old') {
+        # sequins have longer adapters
+        ep <- Biostrings::DNAString('CTTCTATCTCGCTGTCCGTTCACTAGCCTTC')
+    } else if (dna_datatype == 'old-seq') {
         # sequins have longer adapters
         ep <- Biostrings::DNAString('CTTCCGATCACTTGCCTGTCGCTCTATCTTCTTAATTC')
-        threshold <- 0.3
+    } else if (dna_datatype == 'new') {
+        # sequins have longer adapters
+        ep <- Biostrings::DNAString('ACTTGCCTGTCGCTCTATCTGCAGAGCAGAG')
+    } else if (dna_datatype == 'new-seq') {
+        # sequins have longer adapters
+        ep <- Biostrings::DNAString('ACTTGCCTGTCGCTCTATCTGCAGAGCAGAGTTAATTC')
     }
 
     # RECIPE:
