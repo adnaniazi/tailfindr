@@ -335,7 +335,12 @@ find_dna_tail_per_read <- function(file_path = NA,
     # validate the tail to remove false positive tails
     is_a_low_confidence_tail = FALSE
     if (!is.na(tail_end)) {
-        tail_prox_transcript_variance = sd(raw_data[(tail_end+100):(tail_end+200)])
+        if ((tail_end + 400) <= length(raw_data)) {
+            tail_prox_transcript_variance <- sd(raw_data[(tail_end + 100):(tail_end + 400)])
+        } else {
+            tail_prox_transcript_variance <- sd(raw_data[(tail_end + 100):length(raw_data)])
+        }
+
         tail_variance = sd(raw_data[tail_start:tail_end])
         if (tail_variance > tail_prox_transcript_variance/2) { # it is a fake tail
             tail_start <- NA
