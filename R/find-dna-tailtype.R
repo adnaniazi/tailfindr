@@ -123,13 +123,11 @@ find_dna_tailtype <- function(file_path = NA,
         # Nano3P seq front and end primers
         ep = Biostrings::DNAString('CTTCTATCTCGCTGTCCGTTCACTAGCCTTC')
     } else if (dna_datatype == 'old') {
-        # sequins have longer adapters
         ep <- Biostrings::DNAString('CTTCTATCTCGCTGTCCGTTCACTAGCCTTC')
     } else if (dna_datatype == 'old-seq') {
         # sequins have longer adapters
-        ep <- Biostrings::DNAString('CTTCCGATCACTTGCCTGTCGCTCTATCTTCTTAATTC')
+        ep <- Biostrings::DNAString('CTTCCGATCACTTGCCTGTCGCTCTATCTTCAATTC')
     } else if (dna_datatype == 'new') {
-        # sequins have longer adapters
         ep <- Biostrings::DNAString('ACTTGCCTGTCGCTCTATCTGCAGAGCAGAG')
     } else if (dna_datatype == 'new-seq') {
         # sequins have longer adapters
