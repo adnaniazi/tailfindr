@@ -12,7 +12,7 @@ RUN echo "options(repos = c(CRAN = 'https://cran.rstudio.com/'), download.file.m
 RUN Rscript -e 'remotes::install_version("rbokeh")'
 
 RUN apt-get update && apt-get install patch
-RUN Rscript -e "remotes::install_github('adnaniazi/tailfindr', ref='nano3p-seq')"
+RUN Rscript -e "remotes::install_github('adnaniazi/tailfindr', ref='nano3p-seq-r10')"
 
 # Install VBZ plugin
 RUN apt-get update && apt-get install -y wget
